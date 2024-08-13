@@ -1,7 +1,3 @@
-Here’s a sample `README.md` for your AcadiCron project on GitHub. This template covers the basics of what should be included. Feel free to customize it according to your specific needs and additional details.
-
----
-
 # AcadiCron
 
 **AcadiCron** is a modern ERP (Enterprise Resource Planning) system designed to streamline and manage various academic processes. Built on the Laravel framework, AcadiCron offers a comprehensive suite of tools to manage academic institutions efficiently.
