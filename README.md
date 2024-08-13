@@ -96,8 +96,4 @@ AcadiCron is licensed under the MIT License. See the [LICENSE](LICENSE) file for
 
 ## Contact
 
-For questions or support, please contact [your-email@example.com](mailto:your-email@example.com).
-
----
-
-Feel free to adjust any section or add more specific details relevant to AcadiCron’s features and setup.
+For questions or support, please contact [info@veerit.com](mailto:info@veerit.com).
