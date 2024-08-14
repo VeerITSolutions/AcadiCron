@@ -19,5 +19,12 @@ Route::get('/welcome', function () {
 });
 
 
-Route::get('/', [SiteController::class, 'showLoginForm'])->name('login');
-Route::post('/login', [SiteController::class, 'login']);
+/* Route::get('/', [SiteController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [SiteController::class, 'login']); */
+
+
+Route::get('/register', [SiteController::class, 'showRegistrationForm']);
+Route::post('/register', [SiteController::class, 'register'])->name('register');
+
+Route::get('/', [SiteController::class, 'showLoginForm']);
+Route::post('/login', [SiteController::class, 'login'])->name('login');

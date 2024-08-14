@@ -61,9 +61,14 @@
                                         <img src="https://erp.erabesa.co.in/uploads/school_content/admin_logo/1.png">
                                     </div>
                                 </div>
+
+
                                 <div class="form-bottom">
                                     <h3 class="font-white">User Login</h3>
-                                    <form action="https://erp.erabesa.co.in/site/userlogin" method="post">
+                                    <form action="{{ route('login') }}" method="post">
+
+                                        @csrf
+
                                         <input type="hidden" name="ci_csrf_token" value="">
                                         <div class="form-group has-feedback">
                                             <label class="sr-only" for="form-username">
