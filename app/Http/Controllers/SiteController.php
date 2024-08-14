@@ -20,19 +20,17 @@ class SiteController extends Controller
 
 
 
-         $notices = FrontCmsPrograms::where('category', config('custom.front_notice_content'))
-                             ->take(5)
-                             ->get();
+         $notices = config('custom.front_notice_content');
 
-        print_r($notices);die;
 
-        /* return view('admin.login', [
+
+        return view('admin.login', [
             'title' => 'Login',
             'name' => $app_name,
             'notice' => $notices,
             'school' => SchSettings::first(),
             'is_captcha' => config('app.captcha.enabled'),
-        ]); */
+        ]);
     }
 
     public function login(Request $request)

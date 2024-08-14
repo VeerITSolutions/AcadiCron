@@ -14,10 +14,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
+Route::get('/welcome', function () {
     return view('welcome');
 });
 
 
-Route::get('/login', [SiteController::class, 'showLoginForm'])->name('login');
+Route::get('/', [SiteController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [SiteController::class, 'login']);
