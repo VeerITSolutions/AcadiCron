@@ -98,3 +98,5 @@
 
         checksidebar();
     </script>
+
+    <div class="wrapper">
