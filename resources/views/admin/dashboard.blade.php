@@ -1,4 +1,4 @@
-@extends('admin.layouts.main')
+@extends('layouts.main')
 
 
 
@@ -159,10 +159,10 @@
                         </div>
 
                         <!--  <div class="box-body">
-                                                         <div class="chart">
-                                                             <canvas id="lineChart" style="height: 233px; width: 100%; white-space: nowrap;"></canvas>
-                                                         </div>
-                                                     </div> -->
+                                                                 <div class="chart">
+                                                                     <canvas id="lineChart" style="height: 233px; width: 100%; white-space: nowrap;"></canvas>
+                                                                 </div>
+                                                             </div> -->
                     </div>
 
                 </div><!--./col-lg-7-->
