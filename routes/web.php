@@ -26,8 +26,13 @@ Route::post('/login', [SiteController::class, 'login']); */
 Route::get('/register', [SiteController::class, 'showRegistrationForm']);
 Route::post('/register', [SiteController::class, 'register'])->name('register');
 
-Route::get('/', [SiteController::class, 'showLoginForm']);
+Route::get('/', [SiteController::class, 'showLoginForm'])->name('main');
 Route::post('/login', [SiteController::class, 'login'])->name('login');
 
-Route::get('administrator/dashboard', [SiteController::class, 'dashboard'])->name('admin.dashboard');
+Route::middleware(['auth:staff', 'staff'])->group(function () {
+    Route::get('administrator/dashboard', [SiteController::class, 'dashboard'])->name('admin.dashboard');
+});
+
+
+
 Route::get('site/logout', [SiteController::class, 'logout'])->name('admin.logout');
