@@ -39,7 +39,7 @@ class SiteController extends Controller
 
     public function login(Request $request)
     {
-        $credentials = $request->only('email', 'password');
+        $credentials = $request->only('username', 'password');
 
 
         $user = Staff::where('email', $request->username)->first();
@@ -49,12 +49,52 @@ class SiteController extends Controller
 
             // Check if the password matches using CodeIgniter's hashing method
             if (password_verify($request->password, $user->password)) {
-                Auth::login($user);
-                print_r('false 1');die;
-            }
+
+
+                Auth::guard('staff')->login($user);
+
+
+
+            return redirect()->route('admin.dashboard');  // Redirect after login
+    } else {
+
+
+        return redirect()->back()->with('error', 'Invalid credentials');
+    }
 
 
     }
+
+    public function dashboard(Request $request){
+        return view('admin.dashboard');
+    }
+
+    public function logout(Request $request)
+{
+    // Log out the user
+    Auth::guard('staff')->logout();
+
+    // Invalidate the session
+    $request->session()->invalidate();
+
+    // Regenerate the session token to prevent session fixation attacks
+    $request->session()->regenerateToken();
+
+    // Redirect the user to the login page (or wherever you want)
+
+    /* // Error message
+return redirect()->back()->with('error', 'Your custom error message here');
+
+// Success message
+return redirect()->back()->with('success', 'Your custom success message here');
+
+// Info message
+return redirect()->back()->with('info', 'Your custom info message here');
+
+// Warning message
+return redirect()->back()->with('warning', 'Your custom warning message here'); */
+    return redirect('/')->with('success', 'Logout Successfully!');
+}
 
     protected function generateCaptcha()
     {

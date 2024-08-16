@@ -28,3 +28,6 @@ Route::post('/register', [SiteController::class, 'register'])->name('register');
 
 Route::get('/', [SiteController::class, 'showLoginForm']);
 Route::post('/login', [SiteController::class, 'login'])->name('login');
+
+Route::get('administrator/dashboard', [SiteController::class, 'dashboard'])->name('admin.dashboard');
+Route::get('site/logout', [SiteController::class, 'logout'])->name('admin.logout');

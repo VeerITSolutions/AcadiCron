@@ -16,6 +16,8 @@
     <link rel="stylesheet" href="https://erp.erabesa.co.in/backend/usertemplate/assets/css/style.css">
     <link rel="stylesheet"
         href="https://erp.erabesa.co.in/backend/usertemplate/assets/css/jquery.mCustomScrollbar.min.css">
+
+
     <style type="text/css">
         body {
             background: linear-gradient(to right, #676767 0, #dadada 100%);
@@ -100,11 +102,10 @@
             </div>
         </div>
     </div>
-    <script src="https://erp.erabesa.co.in/backend/usertemplate/assets/js/jquery-1.11.1.min.js"></script>
-    <script src="https://erp.erabesa.co.in/backend/usertemplate/assets/bootstrap/js/bootstrap.min.js"></script>
-    <script src="https://erp.erabesa.co.in/backend/usertemplate/assets/js/jquery.backstretch.min.js"></script>
-    <script src="https://erp.erabesa.co.in/backend/usertemplate/assets/js/jquery.mCustomScrollbar.min.js"></script>
-    <script src="https://erp.erabesa.co.in/backend/usertemplate/assets/js/jquery.mousewheel.min.js"></script>
+    <link rel="stylesheet" type="text/css"
+        href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/0.8.2/css/flag-icon.min.css">
+    <link rel="stylesheet" type="text/css" href="https://erp.erabesa.co.in/backend/dist/css/bootstrap-select.min.css">
+
 
 
     <script type="text/javascript">
