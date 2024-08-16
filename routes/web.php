@@ -1,6 +1,26 @@
 <?php
 
+use App\Http\Controllers\ComplaintController;
+use App\Http\Controllers\ContentsController;
+use App\Http\Controllers\DisableReasonController;
+use App\Http\Controllers\EnquiryController;
+use App\Http\Controllers\ExamGroupsController;
+use App\Http\Controllers\ExamResultsController;
+use App\Http\Controllers\FeeGroupsController;
+use App\Http\Controllers\FeemastersController;
+use App\Http\Controllers\FeesDiscountsController;
+use App\Http\Controllers\FeetypeController;
+use App\Http\Controllers\IncomeController;
+use App\Http\Controllers\ItemController;
+use App\Http\Controllers\NotificationRolesController;
+use App\Http\Controllers\OnlineexamStudentsController;
+use App\Http\Controllers\SchoolHousesController;
 use App\Http\Controllers\SiteController;
+use App\Http\Controllers\StaffAttendanceController;
+use App\Http\Controllers\StaffController;
+use App\Http\Controllers\StudentAttendencesController;
+use App\Http\Controllers\TimetablesController;
+use App\Models\FeeSessionGroups;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -31,51 +51,51 @@ Route::post('/login', [SiteController::class, 'login'])->name('login');
 
 Route::middleware(['auth:staff', 'staff'])->group(function () {
     Route::get('administrator/dashboard', [SiteController::class, 'dashboard'])->name('admin.dashboard');
-    Route::get('/admin/income', [SiteController::class, 'adminIncome']);
+    Route::get('/admin/income', [IncomeController::class, 'adminIncome']);
 
-    
 
-        Route::get('/admin/expense', [SiteController::class, 'adminExpense']);
 
-        Route::get('/admin/stuattendence', [SiteController::class, 'adminStuAttendance']);
+        Route::get('/admin/expense', [IncomeController::class, 'adminExpense']);
 
-        Route::get('/admin/staffattendance', [SiteController::class, 'adminStaffAttendance']);
+        Route::get('/admin/stuattendence', [StudentAttendencesController::class, 'adminStuAttendance']);
 
-        Route::get('/admin/staff', [SiteController::class, 'adminStaff']);
+        Route::get('/admin/staffattendance', [StaffAttendanceController::class, 'adminStaffAttendance']);
 
-        Route::get('/admin/examgroup', [SiteController::class, 'adminExamGroup']);
+        Route::get('/admin/staff', [StaffController::class, 'adminStaff']);
 
-        Route::get('/admin/examresult', [SiteController::class, 'adminExamResult']);
+        Route::get('/admin/examgroup', [ExamGroupsController::class, 'adminExamGroup']);
 
-        Route::get('/admin/timetable/create', [SiteController::class, 'adminCreateTimetable']);
+        Route::get('/admin/examresult', [ExamResultsController::class, 'adminExamResult']);
 
-        Route::get('/admin/enquiry', [SiteController::class, 'adminEnquiry']);
+        Route::get('/admin/timetable/create', [TimetablesController::class, 'adminCreateTimetable']);
 
-        Route::get('/admin/complaint', [SiteController::class, 'adminComplaint']);
+        Route::get('/admin/enquiry', [EnquiryController::class, 'adminEnquiry']);
 
-        Route::get('/admin/content', [SiteController::class, 'adminContent']);
+        Route::get('/admin/complaint', [ComplaintController::class, 'adminComplaint']);
 
-        Route::get('/admin/itemstock', [SiteController::class, 'adminItemStock']);
+        Route::get('/admin/content', [ContentsController::class, 'adminContent']);
 
-        Route::get('/admin/notification', [SiteController::class, 'adminNotification']);
+        Route::get('/admin/itemstock', [ItemController::class, 'adminItemStock']);
 
-        Route::get('/admin/mailsms/compose', [SiteController::class, 'adminMailSmsCompose']);
+        Route::get('/admin/notification', [NotificationRolesController::class, 'adminNotification']);
 
-        Route::get('/admin/onlinestudent', [SiteController::class, 'adminOnlineStudent']);
+        Route::get('/admin/mailsms/compose', [ComplaintController::class, 'adminMailSmsCompose']);
 
-        Route::get('/admin/schoolhouse', [SiteController::class, 'adminSchoolHouse']);
+        Route::get('/admin/onlinestudent', [OnlineexamStudentsController::class, 'adminOnlineStudent']);
 
-        Route::get('/admin/disable_reason', [SiteController::class, 'adminDisableReason']);
+        Route::get('/admin/schoolhouse', [SchoolHousesController::class, 'adminSchoolHouse']);
 
-        Route::get('/admin/feemaster', [SiteController::class, 'adminFeeMaster']);
+        Route::get('/admin/disable_reason', [DisableReasonController::class, 'adminDisableReason']);
 
-        Route::get('/admin/feegroup', [SiteController::class, 'adminFeeGroup']);
+        Route::get('/admin/feemaster', [FeemastersController::class, 'adminFeeMaster']);
 
-        Route::get('/admin/feetype', [SiteController::class, 'adminFeeType']);
+        Route::get('/admin/feegroup', [FeeGroupsController::class, 'adminFeeGroup']);
 
-        Route::get('/admin/feediscount', [SiteController::class, 'adminFeeDiscount']);
+        Route::get('/admin/feetype', [FeetypeController::class, 'adminFeeType']);
 
-        Route::get('/admin/feesforward', [SiteController::class, 'adminFeesForward']);
+        Route::get('/admin/feediscount', [FeesDiscountsController::class, 'adminFeeDiscount']);
+
+        Route::get('/admin/feesforward', [FeeSessionGroups::class, 'adminFeesForward']);
 
         Route::get('/admin/feereminder/setting', [SiteController::class, 'adminFeeReminderSetting']);
 
@@ -183,30 +203,30 @@ Route::middleware(['auth:staff', 'staff'])->group(function () {
 
 
 
-Route::get('/student/search', [SiteController::class, 'studentSearch']);
-Route::get('/studentfee', [SiteController::class, 'studentFee']);
-Route::get('/student/create', [SiteController::class, 'studentCreate']);
-Route::get('/student/disablestudentslist', [SiteController::class, 'studentDisableStudentsList']);
-Route::get('/student/multiclass', [SiteController::class, 'studentMultiClass']);
-Route::get('/student/bulkdelete', [SiteController::class, 'studentBulkDelete']);
-Route::get('/category', [SiteController::class, 'category']);
-Route::get('/studentfee/searchpayment', [SiteController::class, 'studentFeeSearchPayment']);
-Route::get('/studentfee/feesearch', [SiteController::class, 'studentFeeSearch']);
-Route::get('/classes', [SiteController::class, 'classes']);
-Route::get('/sections', [SiteController::class, 'sections']);
-Route::get('/student/bulkmail', [SiteController::class, 'studentBulkMail']);
-Route::get('/homework', [SiteController::class, 'homework']);
-Route::get('/report/studentinformation', [SiteController::class, 'reportStudentInformation']);
-Route::get('/report/finance', [SiteController::class, 'reportFinance']);
-Route::get('/report/attendance', [SiteController::class, 'reportAttendance']);
-Route::get('/report/examinations', [SiteController::class, 'reportExaminations']);
-Route::get('/report/lesson_plan', [SiteController::class, 'reportLessonPlan']);
-Route::get('/report/staff_report', [SiteController::class, 'reportStaffReport']);
-Route::get('/schsettings', [SiteController::class, 'schSettings']);
-Route::get('/sessions', [SiteController::class, 'sessions']);
-Route::get('/smsconfig', [SiteController::class, 'smsConfig']);
-Route::get('/emailconfig', [SiteController::class, 'emailConfig']);
-Route::get('/student/profilesetting', [SiteController::class, 'studentProfileSetting']);
+        Route::get('/student/search', [SiteController::class, 'studentSearch']);
+        Route::get('/studentfee', [SiteController::class, 'studentFee']);
+        Route::get('/student/create', [SiteController::class, 'studentCreate']);
+        Route::get('/student/disablestudentslist', [SiteController::class, 'studentDisableStudentsList']);
+        Route::get('/student/multiclass', [SiteController::class, 'studentMultiClass']);
+        Route::get('/student/bulkdelete', [SiteController::class, 'studentBulkDelete']);
+        Route::get('/category', [SiteController::class, 'category']);
+        Route::get('/studentfee/searchpayment', [SiteController::class, 'studentFeeSearchPayment']);
+        Route::get('/studentfee/feesearch', [SiteController::class, 'studentFeeSearch']);
+        Route::get('/classes', [SiteController::class, 'classes']);
+        Route::get('/sections', [SiteController::class, 'sections']);
+        Route::get('/student/bulkmail', [SiteController::class, 'studentBulkMail']);
+        Route::get('/homework', [SiteController::class, 'homework']);
+        Route::get('/report/studentinformation', [SiteController::class, 'reportStudentInformation']);
+        Route::get('/report/finance', [SiteController::class, 'reportFinance']);
+        Route::get('/report/attendance', [SiteController::class, 'reportAttendance']);
+        Route::get('/report/examinations', [SiteController::class, 'reportExaminations']);
+        Route::get('/report/lesson_plan', [SiteController::class, 'reportLessonPlan']);
+        Route::get('/report/staff_report', [SiteController::class, 'reportStaffReport']);
+        Route::get('/schsettings', [SiteController::class, 'schSettings']);
+        Route::get('/sessions', [SiteController::class, 'sessions']);
+        Route::get('/smsconfig', [SiteController::class, 'smsConfig']);
+        Route::get('/emailconfig', [SiteController::class, 'emailConfig']);
+        Route::get('/student/profilesetting', [SiteController::class, 'studentProfileSetting']);
 
 });
 
