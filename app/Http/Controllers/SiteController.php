@@ -10,6 +10,7 @@ use App\Models\SchSettings;
 use App\Models\CmsProgram;
 use App\Models\FrontCmsPrograms;
 use App\Models\Staff;
+use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
 
@@ -38,15 +39,21 @@ class SiteController extends Controller
 
     public function login(Request $request)
     {
-        $credentials = $request->only('username', 'password');
+        $credentials = $request->only('email', 'password');
 
-        if (Auth::attempt($credentials)) {
-            /* return redirect()->intended('/'); */
 
-            print_r('true');die;
-        }
-        print_r('false');die;
-        return redirect('/')->with('error', 'Invalid credentials. Please try again.');
+        $user = Staff::where('email', $request->username)->first();
+
+
+
+
+            // Check if the password matches using CodeIgniter's hashing method
+            if (password_verify($request->password, $user->password)) {
+                Auth::login($user);
+                print_r('false 1');die;
+            }
+
+
     }
 
     protected function generateCaptcha()
