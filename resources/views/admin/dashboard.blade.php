@@ -1,113 +1,14 @@
-<html class=" ">
-
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Era International School</title>
-    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    <meta http-equiv="Cache-control" content="no-cache">
-    <meta name="theme-color" content="#424242">
-    <link href="https://erp.erabesa.co.in/uploads/school_content/admin_small_logo/1.png" rel="shortcut icon"
-        type="image/x-icon">
-
-    <link rel="stylesheet" href="https://erp.erabesa.co.in/backend/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://erp.erabesa.co.in/backend/dist/css/jquery.mCustomScrollbar.min.css">
-    <link rel="stylesheet" href="https://erp.erabesa.co.in/backend/dist/themes/white/skins/_all-skins.min.css">
-    <link rel="stylesheet" href="https://erp.erabesa.co.in/backend/dist/themes/white/ss-main.css">
-    <link rel="stylesheet" href="https://erp.erabesa.co.in/backend/dist/css/main.css">
-
-    <!-- Toastr CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+@extends('admin.layouts.main')
 
 
 
-    <link rel="stylesheet" href="https://erp.erabesa.co.in/backend/dist/css/font-awesome.min.css">
-    <link rel="stylesheet" href="https://erp.erabesa.co.in/backend/dist/css/ionicons.min.css">
-    <link rel="stylesheet" href="https://erp.erabesa.co.in/backend/plugins/iCheck/flat/blue.css">
-    <link rel="stylesheet" href="https://erp.erabesa.co.in/backend/plugins/morris/morris.css">
-    <link rel="stylesheet" href="https://erp.erabesa.co.in/backend/plugins/jvectormap/jquery-jvectormap-1.2.2.css">
-    <link rel="stylesheet" href="https://erp.erabesa.co.in/backend/plugins/datepicker/datepicker3.css">
-    <link rel="stylesheet" href="https://erp.erabesa.co.in/backend/plugins/colorpicker/bootstrap-colorpicker.css">
+@section('main-container')
 
-    <link rel="stylesheet" href="https://erp.erabesa.co.in/backend/plugins/daterangepicker/daterangepicker-bs3.css">
-    <link rel="stylesheet"
-        href="https://erp.erabesa.co.in/backend/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
-
-    <link rel="stylesheet" href="https://erp.erabesa.co.in/backend/dist/css/custom_style.css">
-    <link rel="stylesheet" href="https://erp.erabesa.co.in/backend/datepicker/css/bootstrap-datetimepicker.css">
-    <!--file dropify-->
-    <link rel="stylesheet" href="https://erp.erabesa.co.in/backend/dist/css/dropify.min.css">
-    <!--file nprogress-->
-    <link href="https://erp.erabesa.co.in/backend/dist/css/nprogress.css" rel="stylesheet">
-
-    <!--print table-->
-    <link href="https://erp.erabesa.co.in/backend/dist/datatables/css/jquery.dataTables.min.css" rel="stylesheet">
-    <link href="https://erp.erabesa.co.in/backend/dist/datatables/css/buttons.dataTables.min.css" rel="stylesheet">
-    <link href="https://erp.erabesa.co.in/backend/dist/datatables/css/dataTables.bootstrap.min.css" rel="stylesheet">
-    <!--print table mobile support-->
-    <link href="https://erp.erabesa.co.in/backend/dist/datatables/css/responsive.dataTables.min.css" rel="stylesheet">
-    <link href="https://erp.erabesa.co.in/backend/dist/datatables/css/rowReorder.dataTables.min.css" rel="stylesheet">
-    <!--language css-->
-    <link rel="stylesheet" type="text/css"
-        href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/0.8.2/css/flag-icon.min.css">
-    <link rel="stylesheet" type="text/css" href="https://erp.erabesa.co.in/backend/dist/css/bootstrap-select.min.css">
-    <script src="https://erp.erabesa.co.in/backend/custom/jquery.min.js"></script>
-    <script src="https://erp.erabesa.co.in/backend/dist/js/moment.min.js"></script>
-    <script src="https://erp.erabesa.co.in/backend/datepicker/js/bootstrap-datetimepicker.js"></script>
-    <script src="https://erp.erabesa.co.in/backend/plugins/colorpicker/bootstrap-colorpicker.js"></script>
-    <script src="https://erp.erabesa.co.in/backend/datepicker/date.js"></script>
-    <script src="https://erp.erabesa.co.in/backend/dist/js/jquery-ui.min.js"></script>
-    <script src="https://erp.erabesa.co.in/backend/js/school-custom.js"></script>
-    <script src="https://erp.erabesa.co.in/backend/js/school-admin-custom.js"></script>
-    <script src="https://erp.erabesa.co.in/backend/js/sstoast.js"></script>
-    <!-- <script src="https://code.jquery.com/jquery-3.5.1.js"></script>          -->
-    <!-- fullCalendar -->
-    <link rel="stylesheet" href="https://erp.erabesa.co.in/backend/fullcalendar/dist/fullcalendar.min.css">
-    <link rel="stylesheet" href="https://erp.erabesa.co.in/backend/fullcalendar/dist/fullcalendar.print.min.css"
-        media="print">
-    <script type="text/javascript">
-        var baseurl = "https://erp.erabesa.co.in/";
-        var start_week = 1;
-        var chk_validate = "QBP5VG-U2TW26-E44VDK-dHRORjJDR0xyS2szd2JUTkVUaW1Bbm9kc1c2QjVHdWZvdlUvNDVObFNxcz0=";
-    </script>
-
-    <style type="text/css">
-        span.flag-icon.flag-icon-us {
-            text-orientation: mixed;
-        }
-    </style>
-</head>
-
-<body class="skin-blue fixed sidebar-mini">
-
-
-
-    <script>
-        function collapseSidebar() {
-
-            if (Boolean(sessionStorage.getItem('sidebar-toggle-collapsed'))) {
-                sessionStorage.setItem('sidebar-toggle-collapsed', '');
-            } else {
-                sessionStorage.setItem('sidebar-toggle-collapsed', '1');
-            }
-
-        }
-
-        function checksidebar() {
-            if (Boolean(sessionStorage.getItem('sidebar-toggle-collapsed'))) {
-                var body = document.getElementsByTagName('body')[0];
-                body.className = body.className + ' sidebar-collapse';
-            }
-        }
-
-        checksidebar();
-    </script>
     <div class="wrapper">
 
         <header class="main-header affix-top" id="alert">
             <a href="https://erp.erabesa.co.in/admin/admin/dashboard" class="logo">
-                <span class="logo-mini"><img
-                        src="https://erp.erabesa.co.in/uploads/school_content/admin_small_logo/1.png"
+                <span class="logo-mini"><img src="https://erp.erabesa.co.in/uploads/school_content/admin_small_logo/1.png"
                         alt="Era International School"></span>
                 <span class="logo-lg"><img src="https://erp.erabesa.co.in/uploads/school_content/admin_logo/1.png"
                         alt="Era International School"></span>
@@ -142,26 +43,22 @@
 
                         </form>
                         <div class="navbar-custom-menu">
-                            <div class="langdiv"><select class="languageselectpicker"
-                                    onchange="set_languages(this.value)" type="text" id="languageSwitcher"
-                                    style="display: none;">
+                            <div class="langdiv"><select class="languageselectpicker" onchange="set_languages(this.value)"
+                                    type="text" id="languageSwitcher" style="display: none;">
 
-                                    <option
-                                        data-content="<span class=&quot;flag-icon flag-icon-us&quot;></span> English"
+                                    <option data-content="<span class=&quot;flag-icon flag-icon-us&quot;></span> English"
                                         value="4" selected=""></option>
 
                                 </select>
                                 <div class="btn-group bootstrap-select language"><button type="button"
                                         class="btn dropdown-toggle selectpicker btn-default" data-toggle="dropdown"
                                         data-id="languageSwitcher" title="English"><span
-                                            class="filter-option pull-left"><span
-                                                class="flag-icon flag-icon-us"></span> English</span>&nbsp;<span
-                                            class="caret"></span></button>
+                                            class="filter-option pull-left"><span class="flag-icon flag-icon-us"></span>
+                                            English</span>&nbsp;<span class="caret"></span></button>
                                     <div class="dropdown-menu open">
                                         <ul class="dropdown-menu inner selectpicker" role="menu">
                                             <li rel="0" class="selected"><a tabindex="0" class=""
-                                                    style=""><span class="flag-icon flag-icon-us"></span>
-                                                    English<i
+                                                    style=""><span class="flag-icon flag-icon-us"></span> English<i
                                                         class="glyphicon glyphicon-ok icon-ok check-mark"></i></a></li>
                                         </ul>
                                     </div>
@@ -195,14 +92,14 @@
                                                 <div class="sspass">
                                                     <a href="https://erp.erabesa.co.in/admin/staff/profile/1"
                                                         data-toggle="tooltip" title=""
-                                                        data-original-title="My Profile"><i
-                                                            class="fa fa-user"></i>Profile </a>
+                                                        data-original-title="My Profile"><i class="fa fa-user"></i>Profile
+                                                    </a>
                                                     <a class="pl25"
                                                         href="https://erp.erabesa.co.in/admin/admin/changepass"
                                                         data-toggle="tooltip" title=""
                                                         data-original-title="Change Password"><i
                                                             class="fa fa-key"></i>Password</a> <a class="pull-right"
-                                                        href="{{ url('site/logout') }}"><i
+                                                        href="https://erp.erabesa.co.in/site/logout"><i
                                                             class="fa fa-sign-out fa-fw"></i>Logout</a>
                                                 </div>
                                             </div><!--./sstopuser-->
@@ -243,8 +140,8 @@
             </form>
 
 
-            <div class="slimScrollDiv" style="position: relative; overflow: hidden; width: auto; height: 473px;">
-                <section class="sidebar" id="sibe-box" style="height: 473px; overflow: hidden; width: auto;">
+            <div class="slimScrollDiv" style="position: relative; overflow: hidden; width: auto; height: 547px;">
+                <section class="sidebar" id="sibe-box" style="height: 547px; overflow: hidden; width: auto;">
 
                     <ul class="sessionul fixedmenu">
                         <li class="removehover">
@@ -265,8 +162,7 @@
 
                                 <li role="presentation"><a
                                         style="color:#282828; font-family: 'Roboto-Bold';padding:6px 20px;"
-                                        role="menuitem" tabindex="-1"
-                                        href="https://erp.erabesa.co.in/student/search"><i
+                                        role="menuitem" tabindex="-1" href="https://erp.erabesa.co.in/student/search"><i
                                             class="fa fa-user-plus"></i>Student Details</a></li>
 
 
@@ -283,8 +179,7 @@
 
                                 <li role="presentation"><a
                                         style="color:#282828; font-family: 'Roboto-Bold';padding:6px 20px;"
-                                        role="menuitem" tabindex="-1"
-                                        href="https://erp.erabesa.co.in/admin/expense"><i
+                                        role="menuitem" tabindex="-1" href="https://erp.erabesa.co.in/admin/expense"><i
                                             class="fa fa-credit-card"></i>Add Expense</a></li>
 
 
@@ -304,16 +199,15 @@
 
                                 <li role="presentation"><a
                                         style="color:#282828; font-family: 'Roboto-Bold';padding:6px 20px;"
-                                        role="menuitem" tabindex="-1"
-                                        href="https://erp.erabesa.co.in/admin/staff"><i
+                                        role="menuitem" tabindex="-1" href="https://erp.erabesa.co.in/admin/staff"><i
                                             class="fa fa-calendar-check-o"></i>Staff Directory</a></li>
 
 
                                 <li role="presentation"><a
                                         style="color:#282828; font-family: 'Roboto-Bold';padding:6px 20px;"
                                         role="menuitem" tabindex="-1"
-                                        href="https://erp.erabesa.co.in/admin/examgroup"><i
-                                            class="fa fa-map-o"></i>Exam Group</a></li>
+                                        href="https://erp.erabesa.co.in/admin/examgroup"><i class="fa fa-map-o"></i>Exam
+                                        Group</a></li>
 
 
                                 <li role="presentation"><a
@@ -332,8 +226,7 @@
 
                                 <li role="presentation"><a
                                         style="color:#282828; font-family: 'Roboto-Bold';padding:6px 20px;"
-                                        role="menuitem" tabindex="-1"
-                                        href="https://erp.erabesa.co.in/admin/enquiry"><i
+                                        role="menuitem" tabindex="-1" href="https://erp.erabesa.co.in/admin/enquiry"><i
                                             class="fa fa-calendar-check-o"></i>Admission Enquiry</a></li>
 
                                 <li role="presentation"><a
@@ -344,8 +237,7 @@
 
                                 <li role="presentation"><a
                                         style="color:#282828; font-family: 'Roboto-Bold';padding:6px 20px;"
-                                        role="menuitem" tabindex="-1"
-                                        href="https://erp.erabesa.co.in/admin/content"><i
+                                        role="menuitem" tabindex="-1" href="https://erp.erabesa.co.in/admin/content"><i
                                             class="fa fa-download"></i>Upload Content</a></li>
 
 
@@ -679,8 +571,7 @@
                                             class="fa fa-angle-double-right"></i> Payroll</a></li>
 
 
-                                <li class=""><a
-                                        href="https://erp.erabesa.co.in/admin/leaverequest/leaverequest"><i
+                                <li class=""><a href="https://erp.erabesa.co.in/admin/leaverequest/leaverequest"><i
                                             class="fa fa-angle-double-right"></i> Approve Leave Request</a></li>
 
 
@@ -709,8 +600,7 @@
 
 
 
-                                <li class=""><a
-                                        href="https://erp.erabesa.co.in/admin/designation/designation"><i
+                                <li class=""><a href="https://erp.erabesa.co.in/admin/designation/designation"><i
                                             class="fa fa-angle-double-right"></i> Designation</a></li>
 
 
@@ -1047,7 +937,7 @@
 
                 </section>
                 <div class="slimScrollBar"
-                    style="background: rgba(0, 0, 0, 0.2); width: 3px; position: absolute; top: 0px; opacity: 0.4; display: none; border-radius: 7px; z-index: 99; right: 1px; height: 473px;">
+                    style="background: rgba(0, 0, 0, 0.2); width: 3px; position: absolute; top: 0px; opacity: 0.4; display: none; border-radius: 7px; z-index: 99; right: 1px; height: 547px;">
                 </div>
                 <div class="slimScrollRail"
                     style="width: 3px; height: 100%; position: absolute; top: 0px; display: none; border-radius: 7px; background: rgb(51, 51, 51); opacity: 0.2; z-index: 90; right: 1px;">
@@ -1107,7 +997,7 @@
                 height: 100% !important;
             }
         </style>
-        <div class="content-wrapper" style="min-height: 504px;">
+        <div class="content-wrapper" style="min-height: 578px;">
             <section class="content">
                 <div class="">
 
@@ -1145,9 +1035,8 @@
 
                     <div class="col-lg-3 col-md-6 col-sm-6">
                         <div class="topprograssstart">
-                            <p class="text-uppercase mt5 clearfix"><i
-                                    class="fa fa-calendar-check-o ftlayer"></i>Student Present Today<span
-                                    class="pull-right"> 0/678</span>
+                            <p class="text-uppercase mt5 clearfix"><i class="fa fa-calendar-check-o ftlayer"></i>Student
+                                Present Today<span class="pull-right"> 0/678</span>
                             </p>
                             <div class="progress-group">
                                 <div class="progress progress-minibar">
@@ -1204,10 +1093,10 @@
                             </div>
 
                             <!--  <div class="box-body">
-                                 <div class="chart">
-                                     <canvas id="lineChart" style="height: 233px; width: 100%; white-space: nowrap;"></canvas>
-                                 </div>
-                             </div> -->
+                                             <div class="chart">
+                                                 <canvas id="lineChart" style="height: 233px; width: 100%; white-space: nowrap;"></canvas>
+                                             </div>
+                                         </div> -->
                         </div>
 
                     </div><!--./col-lg-7-->
@@ -1405,26 +1294,19 @@
                                                                                             <span>all-day</span>
                                                                                         </td>
                                                                                         <td class="fc-day fc-widget-content fc-mon fc-past"
-                                                                                            data-date="2024-08-12">
-                                                                                        </td>
+                                                                                            data-date="2024-08-12"></td>
                                                                                         <td class="fc-day fc-widget-content fc-tue fc-past"
-                                                                                            data-date="2024-08-13">
-                                                                                        </td>
+                                                                                            data-date="2024-08-13"></td>
                                                                                         <td class="fc-day fc-widget-content fc-wed fc-past"
-                                                                                            data-date="2024-08-14">
-                                                                                        </td>
+                                                                                            data-date="2024-08-14"></td>
                                                                                         <td class="fc-day fc-widget-content fc-thu fc-past"
-                                                                                            data-date="2024-08-15">
-                                                                                        </td>
+                                                                                            data-date="2024-08-15"></td>
                                                                                         <td class="fc-day fc-widget-content fc-fri fc-today "
-                                                                                            data-date="2024-08-16">
-                                                                                        </td>
+                                                                                            data-date="2024-08-16"></td>
                                                                                         <td class="fc-day fc-widget-content fc-sat fc-future"
-                                                                                            data-date="2024-08-17">
-                                                                                        </td>
+                                                                                            data-date="2024-08-17"></td>
                                                                                         <td class="fc-day fc-widget-content fc-sun fc-future"
-                                                                                            data-date="2024-08-18">
-                                                                                        </td>
+                                                                                            data-date="2024-08-18"></td>
                                                                                     </tr>
                                                                                 </tbody>
                                                                             </table>
@@ -1459,26 +1341,19 @@
                                                                                         <td class="fc-axis fc-widget-content"
                                                                                             style="width: 40px;"></td>
                                                                                         <td class="fc-day fc-widget-content fc-mon fc-past"
-                                                                                            data-date="2024-08-12">
-                                                                                        </td>
+                                                                                            data-date="2024-08-12"></td>
                                                                                         <td class="fc-day fc-widget-content fc-tue fc-past"
-                                                                                            data-date="2024-08-13">
-                                                                                        </td>
+                                                                                            data-date="2024-08-13"></td>
                                                                                         <td class="fc-day fc-widget-content fc-wed fc-past"
-                                                                                            data-date="2024-08-14">
-                                                                                        </td>
+                                                                                            data-date="2024-08-14"></td>
                                                                                         <td class="fc-day fc-widget-content fc-thu fc-past"
-                                                                                            data-date="2024-08-15">
-                                                                                        </td>
+                                                                                            data-date="2024-08-15"></td>
                                                                                         <td class="fc-day fc-widget-content fc-fri fc-today "
-                                                                                            data-date="2024-08-16">
-                                                                                        </td>
+                                                                                            data-date="2024-08-16"></td>
                                                                                         <td class="fc-day fc-widget-content fc-sat fc-future"
-                                                                                            data-date="2024-08-17">
-                                                                                        </td>
+                                                                                            data-date="2024-08-17"></td>
                                                                                         <td class="fc-day fc-widget-content fc-sun fc-future"
-                                                                                            data-date="2024-08-18">
-                                                                                        </td>
+                                                                                            data-date="2024-08-18"></td>
                                                                                     </tr>
                                                                                 </tbody>
                                                                             </table>
@@ -1491,285 +1366,247 @@
                                                                                             style="width: 40px;">
                                                                                             <span>12am</span>
                                                                                         </td>
-                                                                                        <td class="fc-widget-content">
-                                                                                        </td>
+                                                                                        <td class="fc-widget-content"></td>
                                                                                     </tr>
                                                                                     <tr data-time="00:30:00"
                                                                                         class="fc-minor">
                                                                                         <td class="fc-axis fc-time fc-widget-content"
                                                                                             style="width: 40px;"></td>
-                                                                                        <td class="fc-widget-content">
-                                                                                        </td>
+                                                                                        <td class="fc-widget-content"></td>
                                                                                     </tr>
                                                                                     <tr data-time="01:00:00">
                                                                                         <td class="fc-axis fc-time fc-widget-content"
                                                                                             style="width: 40px;">
                                                                                             <span>1am</span>
                                                                                         </td>
-                                                                                        <td class="fc-widget-content">
-                                                                                        </td>
+                                                                                        <td class="fc-widget-content"></td>
                                                                                     </tr>
                                                                                     <tr data-time="01:30:00"
                                                                                         class="fc-minor">
                                                                                         <td class="fc-axis fc-time fc-widget-content"
                                                                                             style="width: 40px;"></td>
-                                                                                        <td class="fc-widget-content">
-                                                                                        </td>
+                                                                                        <td class="fc-widget-content"></td>
                                                                                     </tr>
                                                                                     <tr data-time="02:00:00">
                                                                                         <td class="fc-axis fc-time fc-widget-content"
                                                                                             style="width: 40px;">
                                                                                             <span>2am</span>
                                                                                         </td>
-                                                                                        <td class="fc-widget-content">
-                                                                                        </td>
+                                                                                        <td class="fc-widget-content"></td>
                                                                                     </tr>
                                                                                     <tr data-time="02:30:00"
                                                                                         class="fc-minor">
                                                                                         <td class="fc-axis fc-time fc-widget-content"
                                                                                             style="width: 40px;"></td>
-                                                                                        <td class="fc-widget-content">
-                                                                                        </td>
+                                                                                        <td class="fc-widget-content"></td>
                                                                                     </tr>
                                                                                     <tr data-time="03:00:00">
                                                                                         <td class="fc-axis fc-time fc-widget-content"
                                                                                             style="width: 40px;">
                                                                                             <span>3am</span>
                                                                                         </td>
-                                                                                        <td class="fc-widget-content">
-                                                                                        </td>
+                                                                                        <td class="fc-widget-content"></td>
                                                                                     </tr>
                                                                                     <tr data-time="03:30:00"
                                                                                         class="fc-minor">
                                                                                         <td class="fc-axis fc-time fc-widget-content"
                                                                                             style="width: 40px;"></td>
-                                                                                        <td class="fc-widget-content">
-                                                                                        </td>
+                                                                                        <td class="fc-widget-content"></td>
                                                                                     </tr>
                                                                                     <tr data-time="04:00:00">
                                                                                         <td class="fc-axis fc-time fc-widget-content"
                                                                                             style="width: 40px;">
                                                                                             <span>4am</span>
                                                                                         </td>
-                                                                                        <td class="fc-widget-content">
-                                                                                        </td>
+                                                                                        <td class="fc-widget-content"></td>
                                                                                     </tr>
                                                                                     <tr data-time="04:30:00"
                                                                                         class="fc-minor">
                                                                                         <td class="fc-axis fc-time fc-widget-content"
                                                                                             style="width: 40px;"></td>
-                                                                                        <td class="fc-widget-content">
-                                                                                        </td>
+                                                                                        <td class="fc-widget-content"></td>
                                                                                     </tr>
                                                                                     <tr data-time="05:00:00">
                                                                                         <td class="fc-axis fc-time fc-widget-content"
                                                                                             style="width: 40px;">
                                                                                             <span>5am</span>
                                                                                         </td>
-                                                                                        <td class="fc-widget-content">
-                                                                                        </td>
+                                                                                        <td class="fc-widget-content"></td>
                                                                                     </tr>
                                                                                     <tr data-time="05:30:00"
                                                                                         class="fc-minor">
                                                                                         <td class="fc-axis fc-time fc-widget-content"
                                                                                             style="width: 40px;"></td>
-                                                                                        <td class="fc-widget-content">
-                                                                                        </td>
+                                                                                        <td class="fc-widget-content"></td>
                                                                                     </tr>
                                                                                     <tr data-time="06:00:00">
                                                                                         <td class="fc-axis fc-time fc-widget-content"
                                                                                             style="width: 40px;">
                                                                                             <span>6am</span>
                                                                                         </td>
-                                                                                        <td class="fc-widget-content">
-                                                                                        </td>
+                                                                                        <td class="fc-widget-content"></td>
                                                                                     </tr>
                                                                                     <tr data-time="06:30:00"
                                                                                         class="fc-minor">
                                                                                         <td class="fc-axis fc-time fc-widget-content"
                                                                                             style="width: 40px;"></td>
-                                                                                        <td class="fc-widget-content">
-                                                                                        </td>
+                                                                                        <td class="fc-widget-content"></td>
                                                                                     </tr>
                                                                                     <tr data-time="07:00:00">
                                                                                         <td class="fc-axis fc-time fc-widget-content"
                                                                                             style="width: 40px;">
                                                                                             <span>7am</span>
                                                                                         </td>
-                                                                                        <td class="fc-widget-content">
-                                                                                        </td>
+                                                                                        <td class="fc-widget-content"></td>
                                                                                     </tr>
                                                                                     <tr data-time="07:30:00"
                                                                                         class="fc-minor">
                                                                                         <td class="fc-axis fc-time fc-widget-content"
                                                                                             style="width: 40px;"></td>
-                                                                                        <td class="fc-widget-content">
-                                                                                        </td>
+                                                                                        <td class="fc-widget-content"></td>
                                                                                     </tr>
                                                                                     <tr data-time="08:00:00">
                                                                                         <td class="fc-axis fc-time fc-widget-content"
                                                                                             style="width: 40px;">
                                                                                             <span>8am</span>
                                                                                         </td>
-                                                                                        <td class="fc-widget-content">
-                                                                                        </td>
+                                                                                        <td class="fc-widget-content"></td>
                                                                                     </tr>
                                                                                     <tr data-time="08:30:00"
                                                                                         class="fc-minor">
                                                                                         <td class="fc-axis fc-time fc-widget-content"
                                                                                             style="width: 40px;"></td>
-                                                                                        <td class="fc-widget-content">
-                                                                                        </td>
+                                                                                        <td class="fc-widget-content"></td>
                                                                                     </tr>
                                                                                     <tr data-time="09:00:00">
                                                                                         <td class="fc-axis fc-time fc-widget-content"
                                                                                             style="width: 40px;">
                                                                                             <span>9am</span>
                                                                                         </td>
-                                                                                        <td class="fc-widget-content">
-                                                                                        </td>
+                                                                                        <td class="fc-widget-content"></td>
                                                                                     </tr>
                                                                                     <tr data-time="09:30:00"
                                                                                         class="fc-minor">
                                                                                         <td class="fc-axis fc-time fc-widget-content"
                                                                                             style="width: 40px;"></td>
-                                                                                        <td class="fc-widget-content">
-                                                                                        </td>
+                                                                                        <td class="fc-widget-content"></td>
                                                                                     </tr>
                                                                                     <tr data-time="10:00:00">
                                                                                         <td class="fc-axis fc-time fc-widget-content"
                                                                                             style="width: 40px;">
                                                                                             <span>10am</span>
                                                                                         </td>
-                                                                                        <td class="fc-widget-content">
-                                                                                        </td>
+                                                                                        <td class="fc-widget-content"></td>
                                                                                     </tr>
                                                                                     <tr data-time="10:30:00"
                                                                                         class="fc-minor">
                                                                                         <td class="fc-axis fc-time fc-widget-content"
                                                                                             style="width: 40px;"></td>
-                                                                                        <td class="fc-widget-content">
-                                                                                        </td>
+                                                                                        <td class="fc-widget-content"></td>
                                                                                     </tr>
                                                                                     <tr data-time="11:00:00">
                                                                                         <td class="fc-axis fc-time fc-widget-content"
                                                                                             style="width: 40px;">
                                                                                             <span>11am</span>
                                                                                         </td>
-                                                                                        <td class="fc-widget-content">
-                                                                                        </td>
+                                                                                        <td class="fc-widget-content"></td>
                                                                                     </tr>
                                                                                     <tr data-time="11:30:00"
                                                                                         class="fc-minor">
                                                                                         <td class="fc-axis fc-time fc-widget-content"
                                                                                             style="width: 40px;"></td>
-                                                                                        <td class="fc-widget-content">
-                                                                                        </td>
+                                                                                        <td class="fc-widget-content"></td>
                                                                                     </tr>
                                                                                     <tr data-time="12:00:00">
                                                                                         <td class="fc-axis fc-time fc-widget-content"
                                                                                             style="width: 40px;">
                                                                                             <span>12pm</span>
                                                                                         </td>
-                                                                                        <td class="fc-widget-content">
-                                                                                        </td>
+                                                                                        <td class="fc-widget-content"></td>
                                                                                     </tr>
                                                                                     <tr data-time="12:30:00"
                                                                                         class="fc-minor">
                                                                                         <td class="fc-axis fc-time fc-widget-content"
                                                                                             style="width: 40px;"></td>
-                                                                                        <td class="fc-widget-content">
-                                                                                        </td>
+                                                                                        <td class="fc-widget-content"></td>
                                                                                     </tr>
                                                                                     <tr data-time="13:00:00">
                                                                                         <td class="fc-axis fc-time fc-widget-content"
                                                                                             style="width: 40px;">
                                                                                             <span>1pm</span>
                                                                                         </td>
-                                                                                        <td class="fc-widget-content">
-                                                                                        </td>
+                                                                                        <td class="fc-widget-content"></td>
                                                                                     </tr>
                                                                                     <tr data-time="13:30:00"
                                                                                         class="fc-minor">
                                                                                         <td class="fc-axis fc-time fc-widget-content"
                                                                                             style="width: 40px;"></td>
-                                                                                        <td class="fc-widget-content">
-                                                                                        </td>
+                                                                                        <td class="fc-widget-content"></td>
                                                                                     </tr>
                                                                                     <tr data-time="14:00:00">
                                                                                         <td class="fc-axis fc-time fc-widget-content"
                                                                                             style="width: 40px;">
                                                                                             <span>2pm</span>
                                                                                         </td>
-                                                                                        <td class="fc-widget-content">
-                                                                                        </td>
+                                                                                        <td class="fc-widget-content"></td>
                                                                                     </tr>
                                                                                     <tr data-time="14:30:00"
                                                                                         class="fc-minor">
                                                                                         <td class="fc-axis fc-time fc-widget-content"
                                                                                             style="width: 40px;"></td>
-                                                                                        <td class="fc-widget-content">
-                                                                                        </td>
+                                                                                        <td class="fc-widget-content"></td>
                                                                                     </tr>
                                                                                     <tr data-time="15:00:00">
                                                                                         <td class="fc-axis fc-time fc-widget-content"
                                                                                             style="width: 40px;">
                                                                                             <span>3pm</span>
                                                                                         </td>
-                                                                                        <td class="fc-widget-content">
-                                                                                        </td>
+                                                                                        <td class="fc-widget-content"></td>
                                                                                     </tr>
                                                                                     <tr data-time="15:30:00"
                                                                                         class="fc-minor">
                                                                                         <td class="fc-axis fc-time fc-widget-content"
                                                                                             style="width: 40px;"></td>
-                                                                                        <td class="fc-widget-content">
-                                                                                        </td>
+                                                                                        <td class="fc-widget-content"></td>
                                                                                     </tr>
                                                                                     <tr data-time="16:00:00">
                                                                                         <td class="fc-axis fc-time fc-widget-content"
                                                                                             style="width: 40px;">
                                                                                             <span>4pm</span>
                                                                                         </td>
-                                                                                        <td class="fc-widget-content">
-                                                                                        </td>
+                                                                                        <td class="fc-widget-content"></td>
                                                                                     </tr>
                                                                                     <tr data-time="16:30:00"
                                                                                         class="fc-minor">
                                                                                         <td class="fc-axis fc-time fc-widget-content"
                                                                                             style="width: 40px;"></td>
-                                                                                        <td class="fc-widget-content">
-                                                                                        </td>
+                                                                                        <td class="fc-widget-content"></td>
                                                                                     </tr>
                                                                                     <tr data-time="17:00:00">
                                                                                         <td class="fc-axis fc-time fc-widget-content"
                                                                                             style="width: 40px;">
                                                                                             <span>5pm</span>
                                                                                         </td>
-                                                                                        <td class="fc-widget-content">
-                                                                                        </td>
+                                                                                        <td class="fc-widget-content"></td>
                                                                                     </tr>
                                                                                     <tr data-time="17:30:00"
                                                                                         class="fc-minor">
                                                                                         <td class="fc-axis fc-time fc-widget-content"
                                                                                             style="width: 40px;"></td>
-                                                                                        <td class="fc-widget-content">
-                                                                                        </td>
+                                                                                        <td class="fc-widget-content"></td>
                                                                                     </tr>
                                                                                     <tr data-time="18:00:00">
                                                                                         <td class="fc-axis fc-time fc-widget-content"
                                                                                             style="width: 40px;">
                                                                                             <span>6pm</span>
                                                                                         </td>
-                                                                                        <td class="fc-widget-content">
-                                                                                        </td>
+                                                                                        <td class="fc-widget-content"></td>
                                                                                     </tr>
                                                                                     <tr data-time="18:30:00"
                                                                                         class="fc-minor">
                                                                                         <td class="fc-axis fc-time fc-widget-content"
                                                                                             style="width: 40px;"></td>
-                                                                                        <td class="fc-widget-content">
-                                                                                        </td>
+                                                                                        <td class="fc-widget-content"></td>
                                                                                     </tr>
                                                                                     <tr data-time="19:00:00">
                                                                                         <td class="fc-axis fc-time fc-widget-content"
@@ -1856,8 +1693,7 @@
                                                                                         <td class="fc-axis"
                                                                                             style="width: 40px;"></td>
                                                                                         <td>
-                                                                                            <div
-                                                                                                class="fc-content-col">
+                                                                                            <div class="fc-content-col">
                                                                                                 <div
                                                                                                     class="fc-event-container fc-helper-container">
                                                                                                 </div>
@@ -1876,8 +1712,7 @@
                                                                                             </div>
                                                                                         </td>
                                                                                         <td>
-                                                                                            <div
-                                                                                                class="fc-content-col">
+                                                                                            <div class="fc-content-col">
                                                                                                 <div
                                                                                                     class="fc-event-container fc-helper-container">
                                                                                                 </div>
@@ -1896,8 +1731,7 @@
                                                                                             </div>
                                                                                         </td>
                                                                                         <td>
-                                                                                            <div
-                                                                                                class="fc-content-col">
+                                                                                            <div class="fc-content-col">
                                                                                                 <div
                                                                                                     class="fc-event-container fc-helper-container">
                                                                                                 </div>
@@ -1916,8 +1750,7 @@
                                                                                             </div>
                                                                                         </td>
                                                                                         <td>
-                                                                                            <div
-                                                                                                class="fc-content-col">
+                                                                                            <div class="fc-content-col">
                                                                                                 <div
                                                                                                     class="fc-event-container fc-helper-container">
                                                                                                 </div>
@@ -1936,8 +1769,7 @@
                                                                                             </div>
                                                                                         </td>
                                                                                         <td>
-                                                                                            <div
-                                                                                                class="fc-content-col">
+                                                                                            <div class="fc-content-col">
                                                                                                 <div
                                                                                                     class="fc-event-container fc-helper-container">
                                                                                                 </div>
@@ -1956,8 +1788,7 @@
                                                                                             </div>
                                                                                         </td>
                                                                                         <td>
-                                                                                            <div
-                                                                                                class="fc-content-col">
+                                                                                            <div class="fc-content-col">
                                                                                                 <div
                                                                                                     class="fc-event-container fc-helper-container">
                                                                                                 </div>
@@ -1976,8 +1807,7 @@
                                                                                             </div>
                                                                                         </td>
                                                                                         <td>
-                                                                                            <div
-                                                                                                class="fc-content-col">
+                                                                                            <div class="fc-content-col">
                                                                                                 <div
                                                                                                     class="fc-event-container fc-helper-container">
                                                                                                 </div>
@@ -2104,8 +1934,7 @@
                             <form role="form" id="addevent_form" method="post" enctype="multipart/form-data"
                                 action="">
                                 <div class="form-group col-md-12">
-                                    <label for="exampleInputEmail1">Event Title</label><small class="req">
-                                        *</small>
+                                    <label for="exampleInputEmail1">Event Title</label><small class="req"> *</small>
                                     <input class="form-control" name="title" id="input-field">
                                     <span class="text-danger"></span>
 
@@ -2179,8 +2008,8 @@
                                     <br>
                                     <label class="radio-inline">
 
-                                        <input type="radio" name="event_type" value="public"
-                                            id="public">Public </label>
+                                        <input type="radio" name="event_type" value="public" id="public">Public
+                                    </label>
                                     <label class="radio-inline">
 
                                         <input type="radio" name="event_type" value="private" checked=""
@@ -2216,8 +2045,8 @@
                     <div class="modal-body">
 
                         <div class="row">
-                            <form role="form" method="post" id="updateevent_form"
-                                enctype="multipart/form-data" action="">
+                            <form role="form" method="post" id="updateevent_form" enctype="multipart/form-data"
+                                action="">
                                 <div class="form-group col-md-12">
                                     <label for="exampleInputEmail1">EventTitle</label>
                                     <input class="form-control" name="title" placeholder="" id="event_title">
@@ -2297,16 +2126,16 @@
                                     <label for="exampleInputEmail1">EventType</label>
                                     <label class="radio-inline">
 
-                                        <input type="radio" name="eventtype" value="public"
-                                            id="public">Public </label>
+                                        <input type="radio" name="eventtype" value="public" id="public">Public
+                                    </label>
                                     <label class="radio-inline">
 
                                         <input type="radio" name="eventtype" value="private"
                                             id="private">Private </label>
                                     <label class="radio-inline">
 
-                                        <input type="radio" name="eventtype" value="sameforall"
-                                            id="public">All Super Admin </label>
+                                        <input type="radio" name="eventtype" value="sameforall" id="public">All
+                                        Super Admin </label>
                                     <label class="radio-inline">
 
                                         <input type="radio" name="eventtype" value="protected"
@@ -2338,7 +2167,7 @@
         </style>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
         <!-- <script src="https://erp.erabesa.co.in/backend/js/Chart.min.js"></script>
-<script src="https://erp.erabesa.co.in/backend/js/utils.js"></script> -->
+            <script src="https://erp.erabesa.co.in/backend/js/utils.js"></script> -->
         <script type="text/javascript">
             new Chart(document.getElementById("doughnut-chart"), {
                 type: 'doughnut',
@@ -2578,665 +2407,4 @@
             © 2024 Era International School</footer>
         <div class="control-sidebar-bg" style="position: fixed; height: auto;"></div>
     </div>
-    <script>
-        $.widget.bridge('uibutton', $.ui.button);
-    </script>
-    <link href="https://erp.erabesa.co.in/backend/toast-alert/toastr.css" rel="stylesheet">
-    <script src="https://erp.erabesa.co.in/backend/toast-alert/toastr.js"></script>
-    <script src="https://erp.erabesa.co.in/backend/bootstrap/js/bootstrap.min.js"></script>
-    <link rel="stylesheet" href="https://erp.erabesa.co.in/backend/plugins/select2/select2.min.css">
-    <script src="https://erp.erabesa.co.in/backend/plugins/select2/select2.full.min.js"></script>
-    <script src="https://erp.erabesa.co.in/backend/plugins/input-mask/jquery.inputmask.js"></script>
-    <script src="https://erp.erabesa.co.in/backend/plugins/input-mask/jquery.inputmask.date.extensions.js"></script>
-    <script src="https://erp.erabesa.co.in/backend/plugins/input-mask/jquery.inputmask.extensions.js"></script>
-    <script src="https://erp.erabesa.co.in/backend/dist/js/moment.min.js"></script>
-    <script src="https://erp.erabesa.co.in/backend/plugins/daterangepicker/daterangepicker.js"></script>
-    <script src="https://erp.erabesa.co.in/backend/plugins/colorpicker/bootstrap-colorpicker.min.js"></script>
-    <script src="https://erp.erabesa.co.in/backend/plugins/timepicker/bootstrap-timepicker.min.js"></script>
-    <script src="https://erp.erabesa.co.in/backend/plugins/slimScroll/jquery.slimscroll.min.js"></script>
-    <script src="https://erp.erabesa.co.in/backend/dist/js/jquery.mCustomScrollbar.concat.min.js"></script>
-    <script type="text/javascript">
-        $('body').tooltip({
-            selector: '[data-toggle]',
-            trigger: 'click hover',
-            placement: 'top',
-            delay: {
-                show: 50,
-                hide: 400
-            }
-        })
-    </script>
-    <!--language js-->
-    <script type="text/javascript" src="https://erp.erabesa.co.in/backend/dist/js/bootstrap-select.min.js"></script>
-
-    <script type="text/javascript">
-        $(function() {
-            $('.languageselectpicker').selectpicker();
-        });
-    </script>
-    <script type="text/javascript">
-        $(document).ready(function() {
-            $(".studentsidebar").mCustomScrollbar({
-                theme: "minimal"
-            });
-
-            $('.studentsideclose, .overlay').on('click', function() {
-                $('.studentsidebar').removeClass('active');
-                $('.overlay').fadeOut();
-            });
-
-            $('#sidebarCollapse').on('click', function() {
-                $('.studentsidebar').addClass('active');
-                $('.overlay').fadeIn();
-                $('.collapse.in').toggleClass('in');
-                $('a[aria-expanded=true]').attr('aria-expanded', 'false');
-            });
-        });
-    </script>
-
-
-    <script src="https://erp.erabesa.co.in/backend/plugins/iCheck/icheck.min.js"></script>
-    <script src="https://erp.erabesa.co.in/backend/plugins/datepicker/bootstrap-datepicker.js"></script>
-    <script src="https://erp.erabesa.co.in/backend/datepicker/js/bootstrap-datetimepicker.js"></script>
-
-    <script src="https://erp.erabesa.co.in/backend/plugins/chartjs/Chart.min.js"></script>
-    <script src="https://erp.erabesa.co.in/backend/plugins/fastclick/fastclick.min.js"></script>
-    <script src="https://erp.erabesa.co.in/backend/dist/js/app.min.js"></script>
-    <!--nprogress-->
-    <script src="https://erp.erabesa.co.in/backend/dist/js/nprogress.js"></script>
-    <!--file dropify-->
-    <script src="https://erp.erabesa.co.in/backend/dist/js/dropify.min.js"></script>
-    <script type="text/javascript" src="https://erp.erabesa.co.in/backend/dist/datatables/js/jquery.dataTables.min.js">
-    </script>
-    <script type="text/javascript" src="https://erp.erabesa.co.in/backend/dist/datatables/js/dataTables.buttons.min.js">
-    </script>
-    <script type="text/javascript" src="https://erp.erabesa.co.in/backend/dist/datatables/js/jszip.min.js"></script>
-    <script type="text/javascript" src="https://erp.erabesa.co.in/backend/dist/datatables/js/pdfmake.min.js"></script>
-    <script type="text/javascript" src="https://erp.erabesa.co.in/backend/dist/datatables/js/vfs_fonts.js"></script>
-    <script type="text/javascript" src="https://erp.erabesa.co.in/backend/dist/datatables/js/buttons.html5.min.js"></script>
-    <script type="text/javascript" src="https://erp.erabesa.co.in/backend/dist/datatables/js/buttons.print.min.js"></script>
-    <script type="text/javascript" src="https://erp.erabesa.co.in/backend/dist/datatables/js/buttons.colVis.min.js">
-    </script>
-    <script type="text/javascript" src="https://erp.erabesa.co.in/backend/dist/datatables/js/dataTables.responsive.min.js">
-    </script>
-    <script type="text/javascript" src="https://erp.erabesa.co.in/backend/dist/datatables/js/ss.custom.js"></script>
-    <!-- <script src="https://erp.erabesa.co.in/backend/dist/datatables/js/datetime-moment.js"></script>
--->
-
-
-
-
-    <script src="https://erp.erabesa.co.in/backend/fullcalendar/dist/fullcalendar.min.js"></script>
-    <script src="https://erp.erabesa.co.in/backend/fullcalendar/dist/locale-all.js"></script>
-    <script type="text/javascript">
-        $(document).ready(function() {
-
-        });
-
-
-        function complete_event(id, status) {
-            $.ajax({
-                url: "https://erp.erabesa.co.in/admin/calendar/markcomplete/" + id,
-                type: "POST",
-                data: {
-                    id: id,
-                    active: status
-                },
-                dataType: 'json',
-
-                success: function(res) {
-
-                    if (res.status == "fail") {
-                        var message = "";
-                        $.each(res.error, function(index, value) {
-
-                            message += value;
-                        });
-                        errorMsg(message);
-
-                    } else {
-                        successMsg(res.message);
-                        window.location.reload(true);
-                    }
-                }
-            });
-        }
-
-        function markc(id) {
-            $('#newcheck' + id).change(function() {
-                if (this.checked) {
-                    complete_event(id, 'yes');
-                } else {
-                    complete_event(id, 'no');
-                }
-            });
-        }
-    </script>
-
-
-    <!-- Button trigger modal -->
-    <!-- Modal -->
-    <div class="row">
-        <div class="modal fade" id="sessionModal" tabindex="-1" role="dialog"
-            aria-labelledby="sessionModalLabel">
-            <form action="https://erp.erabesa.co.in/admin/admin/activeSession" id="form_modal_session"
-                class="">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                                    aria-hidden="true">×</span></button>
-                            <h4 class="modal-title" id="sessionModalLabel">Session</h4>
-                        </div>
-                        <div class="modal-body sessionmodal_body pb0">
-                        </div>
-                        <div class="modal-footer">
-                            <div class="col-md-12">
-                                <button type="button" class="btn btn-primary submit_session"
-                                    data-loading-text="<i class='fa fa-spinner fa-spin '></i> Please wait">Save</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-
-
-    <div id="activelicmodal" class="modal fade">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                    <h4 class="modal-title">Register your purchase code</h4>
-                </div>
-                <form action="https://erp.erabesa.co.in/admin/admin/updatePurchaseCode" method="POST"
-                    id="purchase_code">
-                    <div class="modal-body lic_modal-body">
-                        <div class="form-group">
-                            <div class="req"><b>Important:</b> Smart School Regular License allows to use Smart
-                                School for single school/branch/end/client but for customer convenience registering
-                                Smart School allows to register Smart School licence purchase code on upto 3 urls e.g.
-                                1. For localhost 2. For testing environment and 3. For your production url (testing and
-                                production url should be on same domain).</div>
-                        </div>
-                        <div class="error_message">
-
-                        </div>
-                        <div class="form-group">
-                            <label class="ainline"><span>Envato Market Purchase Code for Smart School ( <a
-                                        target="_blank"
-                                        href="https://help.market.envato.com/hc/en-us/articles/202822600-Where-Is-My-Purchase-Code-">
-                                        How to find it?</a> )</span></label>
-                            <input type="text" class="form-control" id="input-envato_market_purchase_code"
-                                name="envato_market_purchase_code">
-                            <div id="error" class="text text-danger"></div>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="exampleInputEmail1">Your Email registered with Envato</label>
-                            <input type="text" class="form-control" id="input-email" name="email">
-                            <div id="error" class="text text-danger"></div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="submit" class="btn btn-success"
-                            data-loading-text="<i class='fa fa-spinner fa-spin '></i> Saving...">Save</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-    <div id="addonModal" class="modal fade">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                    <h4 class="modal-title">Register your Addon</h4>
-                </div>
-                <form action="https://erp.erabesa.co.in/admin/admin/updateaddon" method="POST" id="addon_verify">
-                    <div class="modal-body addon_modal-body">
-                        <div class="error_message">
-
-                        </div>
-                        <input type="hidden" name="addon" class="addon_type" value="">
-                        <input type="hidden" name="addon_version" class="addon_version" value="0">
-                        <div class="form-group">
-                            <label class="ainline"><span>Envato Market Purchase Code for Addon ( <a target="_blank"
-                                        href="https://help.market.envato.com/hc/en-us/articles/202822600-Where-Is-My-Purchase-Code-">
-                                        How to find it?</a> )</span></label>
-                            <input type="text" class="form-control" id="input-app-envato_market_purchase_code"
-                                name="app-envato_market_purchase_code">
-                            <div id="error" class="input-error text text-danger"></div>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="exampleInputEmail1">Your Email registered with Envato</label>
-                            <input type="text" class="form-control" id="input-app-email" name="app-email">
-                            <div id="error" class="input-error text text-danger"></div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="submit" class="btn btn-info"
-                            data-loading-text="<i class='fa fa-spinner fa-spin '></i> Saving...">Save</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- jQuery (if not already included) -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-
-    <!-- Toastr JS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-
-    <script>
-        @if (Session::has('error'))
-            toastr.error('{{ Session::get('error') }}', 'Error', {
-                closeButton: true,
-                progressBar: true,
-                timeOut: 5000,
-            });
-        @endif
-
-        @if (Session::has('success'))
-            toastr.success('{{ Session::get('success') }}', 'Success', {
-                closeButton: true,
-                progressBar: true,
-                timeOut: 5000,
-            });
-        @endif
-
-        @if (Session::has('info'))
-            toastr.info('{{ Session::get('info') }}', 'Info', {
-                closeButton: true,
-                progressBar: true,
-                timeOut: 5000,
-            });
-        @endif
-
-        @if (Session::has('warning'))
-            toastr.warning('{{ Session::get('warning') }}', 'Warning', {
-                closeButton: true,
-                progressBar: true,
-                timeOut: 5000,
-            });
-        @endif
-    </script>
-
-
-    <script type="text/javascript">
-        var calendar_date_time_format = 'DD-MM-YYYY';
-
-        var datetime_format = 'DD-MM-YYYY';
-
-        var date_format = 'dd-mm-yyyy';
-
-
-        function savedata(eventData) {
-            var base_url = 'https://erp.erabesa.co.in/';
-            $.ajax({
-                url: base_url + 'admin/calendar/saveevent',
-                type: 'POST',
-                data: eventData,
-                dataType: "json",
-                success: function(msg) {
-                    alert(msg);
-
-                }
-            });
-        }
-
-        $calendar = $('#calendar');
-        var base_url = 'https://erp.erabesa.co.in/';
-        today = new Date();
-        y = today.getFullYear();
-        m = today.getMonth();
-        d = today.getDate();
-        var viewtitle = 'month';
-        var pagetitle = "Dashboard";
-
-        if (pagetitle == "Dashboard") {
-
-            viewtitle = 'agendaWeek';
-        }
-
-        $calendar.fullCalendar({
-            viewRender: function(view, element) {
-
-            },
-
-            header: {
-                center: 'title',
-                right: 'month,agendaWeek,agendaDay',
-                left: 'prev,next,today'
-            },
-            firstDay: start_week,
-            defaultDate: today,
-            defaultView: viewtitle,
-            selectable: true,
-            selectHelper: true,
-            views: {
-                month: { // name of view
-                    titleFormat: 'MMMM YYYY'
-                    // other view-specific options here
-                },
-                week: {
-                    titleFormat: " MMMM D YYYY"
-                },
-                day: {
-                    titleFormat: 'D MMM, YYYY'
-                }
-            },
-            timezone: 'UTC',
-            draggable: false,
-            lang: 'en',
-            editable: false,
-            eventLimit: false, // allow "more" link when too many events
-
-            // color classes: [ event-blue | event-azure | event-green | event-orange | event-red ]
-            events: {
-                url: base_url + 'admin/calendar/getevents'
-
-            },
-
-            eventRender: function(event, element) {
-                element.attr('title', event.title);
-                element.attr('onclick', event.onclick);
-                element.attr('data-toggle', 'tooltip');
-                if ((!event.url) && (event.event_type != 'task')) {
-                    element.attr('title', event.title + '-' + event.description);
-                    element.click(function() {
-                        view_event(event.id);
-                    });
-                }
-            },
-            dayClick: function(date, jsEvent, view) {
-                console.log('Clicked on the entire day: ' + date.format());
-
-
-                var newEventModal = $('#newEventModal');
-                $("#input-field").val('');
-                $("#desc-field").text('');
-                var event_start_from = new Date(date);
-                console.log(event_start_from);
-                $('.event_from', newEventModal).data("DateTimePicker").date(event_start_from);
-                $('.event_to', newEventModal).data("DateTimePicker").date(event_start_from);
-                $('#newEventModal').modal('show');
-
-                return false;
-            }
-
-        });
-
-        function view_event(id) {
-
-            $('.selectevent').find('.cpicker-big').removeClass('cpicker-big').addClass('cpicker-small');
-            var base_url = 'https://erp.erabesa.co.in/';
-            if (typeof(id) == 'undefined') {
-                return;
-            }
-            $.ajax({
-                url: base_url + 'admin/calendar/view_event/' + id,
-                type: 'POST',
-                //data: '',
-                dataType: "json",
-                success: function(msg) {
-
-
-                    $("#event_title").val(msg.event_title);
-                    $("#event_desc").text(msg.event_description);
-
-                    $('#eventid').val(id);
-                    if (msg.event_type == 'public') {
-
-                        $('input:radio[name=eventtype]')[0].checked = true;
-
-                    } else if (msg.event_type == 'private') {
-                        $('input:radio[name=eventtype]')[1].checked = true;
-
-                    } else if (msg.event_type == 'sameforall') {
-                        $('input:radio[name=eventtype]')[2].checked = true;
-
-                    } else if (msg.event_type == 'protected') {
-                        $('input:radio[name=eventtype]')[3].checked = true;
-
-                    }
-                    //===========
-
-                    var __viewModal = $('#viewEventModal');
-                    var event_start_from = new Date(msg.start_date);
-                    $('.event_from', __viewModal).data("DateTimePicker").date(event_start_from);
-
-                    var event_end_to = new Date(msg.end_date);
-                    $('.event_to', __viewModal).data("DateTimePicker").date(event_end_to);
-                    //============
-
-                    $("#event_color").val(msg.event_color);
-                    $("#delete_event").attr("onclick", "deleteevent(" + id + ",'Event')");
-                    $("#" + msg.colorid).removeClass('cpicker-small').addClass('cpicker-big');
-                    $('#viewEventModal').modal('show');
-                }
-            });
-
-        }
-
-        $(document).ready(function(e) {
-            $("#addevent_form").on('submit', (function(e) {
-
-                e.preventDefault();
-                $.ajax({
-                    url: "https://erp.erabesa.co.in/admin/calendar/saveevent",
-                    type: "POST",
-                    data: new FormData(this),
-                    dataType: 'json',
-                    contentType: false,
-                    cache: false,
-                    processData: false,
-                    success: function(res) {
-
-                        if (res.status == "fail") {
-
-                            var message = "";
-                            $.each(res.error, function(index, value) {
-
-                                message += value;
-                            });
-                            errorMsg(message);
-
-                        } else {
-
-                            successMsg(res.message);
-
-                            window.location.reload(true);
-                        }
-                    }
-                });
-            }));
-
-
-        });
-
-
-        $(document).ready(function(e) {
-            $("#updateevent_form").on('submit', (function(e) {
-
-                e.preventDefault();
-                $.ajax({
-                    url: "https://erp.erabesa.co.in/admin/calendar/updateevent",
-                    type: "POST",
-                    data: new FormData(this),
-                    dataType: 'json',
-                    contentType: false,
-                    cache: false,
-                    processData: false,
-                    success: function(res) {
-
-                        if (res.status == "fail") {
-
-                            var message = "";
-                            $.each(res.error, function(index, value) {
-
-                                message += value;
-                            });
-                            errorMsg(message);
-
-                        } else {
-
-                            successMsg(res.message);
-                            window.location.reload(true);
-                        }
-                    }
-                });
-            }));
-
-        });
-
-        function deleteevent(id, msg) {
-            if (typeof(id) == 'undefined') {
-                return;
-            }
-            if (confirm("Are you sure to delete this ")) {
-                $.ajax({
-                    url: base_url + 'admin/calendar/delete_event/' + id,
-                    type: 'POST',
-                    dataType: "json",
-                    success: function(res) {
-                        if (res.status == "fail") {
-                            errorMsg(res.message);
-                        } else {
-                            successMsg(msg + " Record Delete Successfully");
-                            window.location.reload(true);
-                        }
-                    }
-                })
-            }
-        }
-
-        $("body").on('click', '.cpicker', function() {
-            var color = $(this).data('color');
-            // Clicked on the same selected color
-            if ($(this).hasClass('cpicker-big')) {
-                return false;
-            }
-
-            $(this).parents('.cpicker-wrapper').find('.cpicker-big').removeClass('cpicker-big').addClass(
-                'cpicker-small');
-            $(this).removeClass('cpicker-small', 'fast').addClass('cpicker-big', 'fast');
-            if ($(this).hasClass('kanban-cpicker')) {
-                $(this).parents('.panel-heading-bg').css('background', color);
-                $(this).parents('.panel-heading-bg').css('border', '1px solid ' + color);
-            } else if ($(this).hasClass('calendar-cpicker')) {
-                $("body").find('input[name="eventcolor"]').val(color);
-            }
-        });
-
-        $(document).ready(function() {
-            moment.lang('en', {
-                week: {
-                    dow: start_week
-                }
-            });
-
-            $("body").delegate(".date", "focusin", function() {
-                $(this).datepicker({
-                    todayHighlight: false,
-                    format: date_format,
-                    autoclose: true,
-                    weekStart: start_week,
-                    language: 'en'
-                });
-            });
-
-            $("body").delegate(".datetime", "focusin", function() {
-                $(this).datetimepicker({
-                    format: calendar_date_time_format + ' hh:mm a',
-                    locale: 'en',
-
-                });
-            });
-
-            $('body').on('focus', ".date_fee", function() {
-                $(this).datepicker({
-                    format: date_format,
-                    autoclose: true,
-                    language: 'en',
-                    endDate: '+0d',
-                    weekStart: start_week,
-                    todayHighlight: true
-                });
-            });
-
-            $('.datetime_twelve_hour').datetimepicker({
-                format: calendar_date_time_format + ' hh:mm a'
-            });
-
-
-            $("#event_date").daterangepicker({
-                timePickerIncrement: 5,
-                locale: {
-                    format: calendar_date_time_format
-                }
-            });
-
-
-            ///================
-
-            $('.event_from').datetimepicker({
-                format: calendar_date_time_format + ' hh:mm a'
-            });
-
-            $('.event_to').datetimepicker({
-                format: calendar_date_time_format + ' hh:mm a'
-            });
-            //==============
-
-
-        });
-
-        function loadDate() {
-
-            var date_format = 'dd-mm-yyyy';
-
-            $('.date').datetimepicker({
-                format: datetime_format,
-                locale: 'en',
-
-            });
-        }
-
-        // showdate('this_year');
-
-        function showdate(type) {
-
-            var date_from = '16-08-2024';
-            var date_to = '16-08-2024';
-
-            if (type == 'period') {
-
-                $.ajax({
-                    url: base_url + 'Report/get_betweendate/' + type,
-                    type: 'POST',
-                    data: {
-                        date_from: date_from,
-                        date_to: date_to
-                    },
-                    success: function(res) {
-
-                        $('#date_result').html(res);
-
-                        loadDate();
-                    }
-
-                });
-
-            } else {
-                $('#date_result').html('');
-            }
-
-        }
-    </script>
-</body>
-
-</html>
+@stop
