@@ -1,0 +1,4 @@
+
+//to fetch all student list
+admin/dtstudentlist
+
