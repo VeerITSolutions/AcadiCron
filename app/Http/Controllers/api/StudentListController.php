@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Students;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Response;
+
 class StudentListController extends Controller
 {
     public function searchdtByClassSection($class_id = 2, $section_id = 1)
@@ -33,10 +35,7 @@ class StudentListController extends Controller
     $field_variable = !empty($field_var_array) ? ',' . implode(',', $field_var_array) : '';
     $field_name = !empty($field_var_array_name) ? ',' . implode(',', $field_var_array_name) : '';
 
-    $query = DB::table('students')
-        ->select('*')->limit(10);
-
-        $data = $query->get();
+    $data = Students::select('*')->limit(10)->get();
         $message = '';
 
 
