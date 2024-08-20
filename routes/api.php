@@ -27,6 +27,8 @@ use App\Http\Controllers\StudentAttendencesController;
 use App\Http\Controllers\TimetablesController;
 use App\Models\FeeSessionGroups;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\api\StudentListController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -54,13 +56,17 @@ Route::post('/register', [SiteController::class, 'register'])->name('register');
 Route::get('/', [SiteController::class, 'showLoginForm'])->name('main');
 Route::post('/login', [SiteController::class, 'login'])->name('login');
 
-Route::middleware(['auth:staff', 'staff'])->group(function () {
+/* Route::middleware(['auth:staff', 'staff'])->group(function () { */
     Route::get('administrator/dashboard', [SiteController::class, 'dashboard'])->name('admin.dashboard');
     Route::get('/admin/income', [IncomeController::class, 'adminIncome']);
 
 
 
         Route::get('/admin/expense', [IncomeController::class, 'adminExpense']);
+
+
+
+        Route::get('/admin/dtstudentlist', [StudentListController::class, 'searchdtByClassSection']);
 
         Route::get('/admin/stuattendence', [StudentAttendencesController::class, 'adminStuAttendance']);
 
@@ -233,7 +239,7 @@ Route::middleware(['auth:staff', 'staff'])->group(function () {
         Route::get('/emailconfig', [SiteController::class, 'emailConfig']);
         Route::get('/student/profilesetting', [SiteController::class, 'studentProfileSetting']);
 
-});
+
 
 
 
