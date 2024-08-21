@@ -46,15 +46,16 @@ class CategoriesController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create(Request $request)
-{
+    public function create(Request $request){
+
+
         // Validate the incoming request
         $validatedData = $request->validate([
             'category' => 'required|string|max:255',
         ]);
 
         // Check if the category already exists in the Category model
-        $existingCategory = Categories::where('name', $validatedData['category'])->first();
+        $existingCategory = Categories::where('category', $validatedData['category'])->first();
 
         if ($existingCategory) {
             return response()->json([
@@ -65,7 +66,7 @@ class CategoriesController extends Controller
 
         // Create a new category
         $category = new Categories();
-        $category->name = $validatedData['category'];
+        $category->category = $validatedData['category'];
         $category->save();
 
         return response()->json([
@@ -73,7 +74,7 @@ class CategoriesController extends Controller
             'message' => 'Category saved successfully',
             'category' => $category,
         ], 201); // 201 Created status code
-}
+    }
 
 
     /**
