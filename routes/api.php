@@ -28,7 +28,7 @@ use App\Http\Controllers\TimetablesController;
 use App\Models\FeeSessionGroups;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\api\StudentListController;
-
+use App\Http\Controllers\CategoriesController;
 
 /*
 |--------------------------------------------------------------------------
@@ -220,7 +220,7 @@ Route::post('/login', [SiteController::class, 'login'])->name('login');
         Route::get('/student/disablestudentslist', [SiteController::class, 'studentDisableStudentsList']);
         Route::get('/student/multiclass', [SiteController::class, 'studentMultiClass']);
         Route::get('/student/bulkdelete', [SiteController::class, 'studentBulkDelete']);
-        Route::get('/category', [SiteController::class, 'category']);
+        Route::get('/category', [CategoriesController::class, 'index']);
         Route::get('/studentfee/searchpayment', [SiteController::class, 'studentFeeSearchPayment']);
         Route::get('/studentfee/feesearch', [SiteController::class, 'studentFeeSearch']);
         Route::get('/classes', [SiteController::class, 'classes']);
