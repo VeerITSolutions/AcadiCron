@@ -10,43 +10,31 @@ use Illuminate\Support\Facades\Response;
 
 class StudentListController extends Controller
 {
-    public function searchdtByClassSection($class_id = 2, $section_id = 1)
-{
+    public function searchdtByClassSection(Request $request)
+    {
+        // Retrieve the current page and records per page from the request, with default values
+        $page = $request->input('page', 1); // Default to page 1 if not provided
+        $perPage = $request->input('perPage', 10); // Default to 10 records per page if not provided
 
-    $i = 1;
-    $custom_fields = DB::table('custom_fields')->where('belong_to', 'students')->where('is_active', 1)->get();
-    $field_var_array = [];
-    $field_var_array_name = [];
+        // Validate the inputs (optional)
+        $page = (int) $page;
+        $perPage = (int) $perPage;
 
-    if (!empty($custom_fields)) {
-        foreach ($custom_fields as $custom_field) {
-            $tb_counter = "table_custom_" . $i;
-            $field_var_array[] = DB::raw($tb_counter . '.field_value as ' . $custom_field->name);
-            $field_var_array_name[] = $tb_counter . '.field_value';
+        // You can also validate $perPage to ensure it’s within a reasonable range
 
-            DB::table('custom_field_values as ' . $tb_counter)
-                ->leftJoin('students', 'students.id', '=', $tb_counter . '.belong_table_id')
-                ->where($tb_counter . '.custom_field_id', '=', $custom_field->id);
+        // Paginate the students data
+        $data = Students::paginate($perPage, ['*'], 'page', $page);
 
-            $i++;
-        }
-    }
-
-    $field_variable = !empty($field_var_array) ? ',' . implode(',', $field_var_array) : '';
-    $field_name = !empty($field_var_array_name) ? ',' . implode(',', $field_var_array_name) : '';
-
-    $data = Students::select('*')->limit(10)->get();
+        // Prepare the response message
         $message = '';
 
+        // Return the paginated data
+        return response()->json([
+            'success' => true,
+            'data' => $data,
+            'message' => $message,
+        ], 200);
+    }
 
-return Response::json([
-    'success' => true,
-    'data' => $data,
-    'message' => $message,
-], 200);
-
-
-
-}
 
 }
