@@ -46,10 +46,35 @@ class CategoriesController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
-    {
-        //
-    }
+    public function create(Request $request)
+{
+        // Validate the incoming request
+        $validatedData = $request->validate([
+            'category' => 'required|string|max:255',
+        ]);
+
+        // Check if the category already exists in the Category model
+        $existingCategory = Categories::where('name', $validatedData['category'])->first();
+
+        if ($existingCategory) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Category already exists',
+            ], 409); // 409 Conflict status code
+        }
+
+        // Create a new category
+        $category = new Categories();
+        $category->name = $validatedData['category'];
+        $category->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Category saved successfully',
+            'category' => $category,
+        ], 201); // 201 Created status code
+}
+
 
     /**
      * Store a newly created resource in storage.
