@@ -223,6 +223,7 @@ Route::post('/login', [SiteController::class, 'login'])->name('login');
         Route::get('/category', [CategoriesController::class, 'index']);
 
         Route::post('/category', [CategoriesController::class, 'create']);
+        Route::delete('/category/{id}', [CategoriesController::class, 'destroy']);
         Route::get('/studentfee/searchpayment', [SiteController::class, 'studentFeeSearchPayment']);
         Route::get('/studentfee/feesearch', [SiteController::class, 'studentFeeSearch']);
         Route::get('/classes', [SiteController::class, 'classes']);
