@@ -104,9 +104,31 @@ class CategoriesController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+
+
+    public function update(Request $request,string $id)
     {
-        //
+
+        // Find the category by id
+        $category = Categories::findOrFail($id);
+
+        // Validate the request data
+        $validatedData = $request->validate([
+            'category' => 'required',
+
+        ]);
+
+        // Update the category
+        $category->update($validatedData);
+
+
+
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Edit successfully',
+            'category' => $category,
+        ], 201); // 201 Created status code
     }
 
     /**

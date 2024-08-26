@@ -224,6 +224,7 @@ Route::post('/login', [SiteController::class, 'login'])->name('login');
 
         Route::post('/category', [CategoriesController::class, 'create']);
         Route::delete('/category/{id}', [CategoriesController::class, 'destroy']);
+        Route::put('/category/{id}', [CategoriesController::class, 'update']);
         Route::get('/studentfee/searchpayment', [SiteController::class, 'studentFeeSearchPayment']);
         Route::get('/studentfee/feesearch', [SiteController::class, 'studentFeeSearch']);
         Route::get('/classes', [SiteController::class, 'classes']);
