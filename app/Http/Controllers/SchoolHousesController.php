@@ -115,14 +115,21 @@ class SchoolHousesController extends Controller
         // Find the house_name by id
         $category = SchoolHouses::findOrFail($id);
 
-        // Validate the request data
-        $validatedData = $request->validate([
-            'house_name' => 'required',
+       // Validate only the fields you need to validate
+            $validatedData = $request->validate([
+                'house_name' => 'required',
+            ]);
 
-        ]);
+            // Get the description from the request without validation
+            $description = $request->input('description');
+
+            // Merge the validated data with the description
+            $updatedData = array_merge($validatedData, [
+                'description' => $description,
+            ]);
 
         // Update the category
-        $category->update($validatedData);
+        $category->update($updatedData);
 
 
 
