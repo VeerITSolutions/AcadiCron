@@ -220,11 +220,22 @@ Route::post('/login', [SiteController::class, 'login'])->name('login');
         Route::get('/student/disablestudentslist', [SiteController::class, 'studentDisableStudentsList']);
         Route::get('/student/multiclass', [SiteController::class, 'studentMultiClass']);
         Route::get('/student/bulkdelete', [SiteController::class, 'studentBulkDelete']);
-        Route::get('/category', [CategoriesController::class, 'index']);
 
+        Route::get('/category', [CategoriesController::class, 'index']);
         Route::post('/category', [CategoriesController::class, 'create']);
         Route::delete('/category/{id}', [CategoriesController::class, 'destroy']);
         Route::put('/category/{id}', [CategoriesController::class, 'update']);
+
+
+        Route::get('/schoolhouse', [SchoolHousesController::class, 'index']);
+        Route::post('/schoolhouse', [SchoolHousesController::class, 'create']);
+        Route::delete('/schoolhouse/{id}', [SchoolHousesController::class, 'destroy']);
+        Route::put('/schoolhouse/{id}', [SchoolHousesController::class, 'update']);
+
+
+
+
+
         Route::get('/studentfee/searchpayment', [SiteController::class, 'studentFeeSearchPayment']);
         Route::get('/studentfee/feesearch', [SiteController::class, 'studentFeeSearch']);
         Route::get('/classes', [SiteController::class, 'classes']);
