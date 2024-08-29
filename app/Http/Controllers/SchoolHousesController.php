@@ -67,7 +67,9 @@ class SchoolHousesController extends Controller
 
         // Create a new category
         $category = new SchoolHouses();
-        $category->category = $validatedData['house_name'];
+        $category->house_name = $validatedData['house_name'];
+        $category->description = $request->description;
+        $category->is_active = 0;
         $category->save();
 
         return response()->json([

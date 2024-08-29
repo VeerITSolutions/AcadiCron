@@ -8,4 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class SchoolHouses extends Model
 {
     use HasFactory;
+    public $timestamps = false;
+
+     // Specify the fillable fields
+     protected $fillable = ['house_name','description'];
+
+
 }
