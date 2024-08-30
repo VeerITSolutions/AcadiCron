@@ -233,6 +233,12 @@ Route::post('/login', [SiteController::class, 'login'])->name('login');
         Route::put('/schoolhouse/{id}', [SchoolHousesController::class, 'update']);
 
 
+        Route::get('/fees-master', [FeemastersController::class, 'index']);
+        Route::post('/fees-master', [FeemastersController::class, 'create']);
+        Route::delete('/fees-master/{id}', [FeemastersController::class, 'destroy']);
+        Route::put('/fees-master/{id}', [FeemastersController::class, 'update']);
+
+
 
 
 
