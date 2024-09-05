@@ -8,4 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class Feetype extends Model
 {
     use HasFactory;
+
+    protected $table = 'feetype';
 }
