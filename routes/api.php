@@ -239,7 +239,10 @@ Route::post('/login', [SiteController::class, 'login'])->name('login');
         Route::put('/fees-master/{id}', [FeemastersController::class, 'update']);
 
 
-
+        Route::get('/fees-group', [FeeGroupsController::class, 'index']);
+        Route::post('/fees-group', [FeeGroupsController::class, 'create']);
+        Route::delete('/fees-group/{id}', [FeeGroupsController::class, 'destroy']);
+        Route::put('/fees-group/{id}', [FeeGroupsController::class, 'update']);
 
 
         Route::get('/studentfee/searchpayment', [SiteController::class, 'studentFeeSearchPayment']);
