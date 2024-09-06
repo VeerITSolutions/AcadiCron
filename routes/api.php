@@ -29,6 +29,7 @@ use App\Models\FeeSessionGroups;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\api\StudentListController;
 use App\Http\Controllers\CategoriesController;
+use App\Http\Controllers\FeeSessionGroupsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -249,6 +250,13 @@ Route::post('/login', [SiteController::class, 'login'])->name('login');
         Route::post('/fees-type', [FeetypeController::class, 'create']);
         Route::delete('/fees-type/{id}', [FeetypeController::class, 'destroy']);
         Route::put('/fees-type/{id}', [FeetypeController::class, 'update']);
+
+        Route::get('/fees-session-group', [FeeSessionGroupsController::class, 'index']);
+        Route::post('/fees-session-group', [FeeSessionGroupsController::class, 'create']);
+        Route::delete('/fees-session-group/{id}', [FeeSessionGroupsController::class, 'destroy']);
+        Route::put('/fees-session-group/{id}', [FeeSessionGroupsController::class, 'update']);
+
+
 
 
         Route::get('/studentfee/searchpayment', [SiteController::class, 'studentFeeSearchPayment']);
