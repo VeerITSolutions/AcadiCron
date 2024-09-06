@@ -30,6 +30,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\api\StudentListController;
 use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\ClassSectionsController;
+use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\FeeSessionGroupsController;
 use App\Http\Controllers\SectionsController;
 use App\Http\Controllers\SubjectsController;
@@ -274,6 +275,13 @@ Route::post('/login', [SiteController::class, 'login'])->name('login');
         Route::post('/sections', [SectionsController::class, 'create']);
         Route::delete('/sections/{id}', [SectionsController::class, 'destroy']);
         Route::put('/sections/{id}', [SectionsController::class, 'update']);
+
+        Route::get('/department', [DepartmentController::class, 'index']);
+        Route::post('/department', [DepartmentController::class, 'create']);
+        Route::delete('/department/{id}', [DepartmentController::class, 'destroy']);
+        Route::put('/department/{id}', [DepartmentController::class, 'update']);
+
+
 
 
 
