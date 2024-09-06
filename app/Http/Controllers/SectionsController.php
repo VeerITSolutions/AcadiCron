@@ -116,15 +116,15 @@ class SectionsController extends Controller
 
        // Validate only the fields you need to validate
             $validatedData = $request->validate([
-                'name' => 'required',
+                'section' => 'required',
             ]);
 
             // Get the description from the request without validation
-            $name = $request->input('name');
+            $section = $request->input('section');
 
             // Merge the validated data with the description
             $updatedData = array_merge($validatedData, [
-                'name' => $name,
+                'section' => $section,
             ]);
 
         // Update the category
