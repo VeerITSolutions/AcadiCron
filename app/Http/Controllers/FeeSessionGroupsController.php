@@ -25,7 +25,9 @@ class FeeSessionGroupsController extends Controller
         }
 
         // Paginate the students data
-        $data = FeeSessionGroups::paginate($perPage, ['*'], 'page', $page);
+        $data = FeeSessionGroups::join('fee_groups', 'fee_session_groups.fee_groups_id', '=', 'fee_groups.id')
+    ->select('fee_session_groups.*', 'fee_groups.name as fees_group_name') // Specify the columns you need from fee_groups
+    ->paginate($perPage, ['*'], 'page', $page);
 
         // Prepare the response message
         $message = '';
