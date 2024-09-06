@@ -31,6 +31,7 @@ use App\Http\Controllers\api\StudentListController;
 use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\ClassSectionsController;
 use App\Http\Controllers\FeeSessionGroupsController;
+use App\Http\Controllers\SectionsController;
 use App\Http\Controllers\SubjectsController;
 
 /*
@@ -269,13 +270,19 @@ Route::post('/login', [SiteController::class, 'login'])->name('login');
         Route::put('/class-sections/{id}', [ClassSectionsController::class, 'update']);
 
 
+        Route::get('/sections', [SectionsController::class, 'index']);
+        Route::post('/sections', [SectionsController::class, 'create']);
+        Route::delete('/sections/{id}', [SectionsController::class, 'destroy']);
+        Route::put('/sections/{id}', [SectionsController::class, 'update']);
+
+
 
 
 
         Route::get('/studentfee/searchpayment', [SiteController::class, 'studentFeeSearchPayment']);
         Route::get('/studentfee/feesearch', [SiteController::class, 'studentFeeSearch']);
         Route::get('/classes', [SiteController::class, 'classes']);
-        Route::get('/sections', [SiteController::class, 'sections']);
+       /*  Route::get('/sections', [SiteController::class, 'sections']); */
         Route::get('/student/bulkmail', [SiteController::class, 'studentBulkMail']);
         Route::get('/homework', [SiteController::class, 'homework']);
         Route::get('/report/studentinformation', [SiteController::class, 'reportStudentInformation']);

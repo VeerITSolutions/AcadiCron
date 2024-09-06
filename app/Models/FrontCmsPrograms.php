@@ -8,4 +8,5 @@ use Illuminate\Database\Eloquent\Model;
 class FrontCmsPrograms extends Model
 {
     use HasFactory;
+    protected $table = 'sections';
 }
