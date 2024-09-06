@@ -29,6 +29,7 @@ use App\Models\FeeSessionGroups;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\api\StudentListController;
 use App\Http\Controllers\CategoriesController;
+use App\Http\Controllers\ClassSectionsController;
 use App\Http\Controllers\FeeSessionGroupsController;
 use App\Http\Controllers\SubjectsController;
 
@@ -261,6 +262,14 @@ Route::post('/login', [SiteController::class, 'login'])->name('login');
         Route::post('/subjects', [SubjectsController::class, 'create']);
         Route::delete('/subjects/{id}', [SubjectsController::class, 'destroy']);
         Route::put('/subjects/{id}', [SubjectsController::class, 'update']);
+
+        Route::get('/class-sections', [ClassSectionsController::class, 'index']);
+        Route::post('/class-sections', [ClassSectionsController::class, 'create']);
+        Route::delete('/class-sections/{id}', [ClassSectionsController::class, 'destroy']);
+        Route::put('/class-sections/{id}', [ClassSectionsController::class, 'update']);
+
+
+
 
 
         Route::get('/studentfee/searchpayment', [SiteController::class, 'studentFeeSearchPayment']);
