@@ -55,7 +55,7 @@ class SectionsController extends Controller
         ]);
 
         // Check if the category already exists in the Category model
-        $existingCategory = Sections::where('name', $validatedData['name'])->first();
+        $existingCategory = Sections::where('section', $validatedData['name'])->first();
 
         if ($existingCategory) {
             return response()->json([
@@ -66,9 +66,8 @@ class SectionsController extends Controller
 
         // Create a new category
         $category = new Sections();
-        $category->name = $validatedData['name'];
-        $category->code = $request->code;
-        $category->type = $request->type;
+        $category->section = $validatedData['name'];
+
         $category->is_active =  $request->is_active ? $request->is_active : 0;
         $category->save();
 
