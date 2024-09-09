@@ -8,4 +8,5 @@ use Illuminate\Database\Eloquent\Model;
 class SubjectTimetable extends Model
 {
     use HasFactory;
+    protected $table = 'subject_timetable';
 }
