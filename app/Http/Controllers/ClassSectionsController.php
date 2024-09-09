@@ -25,7 +25,12 @@ class ClassSectionsController extends Controller
         }
 
         // Paginate the students data
-        $data = ClassSections::paginate($perPage, ['*'], 'page', $page);
+
+        $data = ClassSections::join('classes', 'class_sections.class_id', '=', 'classes.id')
+        ->join('sections', 'class_sections.section_id', '=', 'sections.id')
+
+        ->select('class_sections.*', 'classes.class as class_name', 'sections.section as section_name') // Specify the columns you need from fee_groups
+        ->paginate($perPage, ['*'], 'page', $page);
 
         // Prepare the response message
         $message = '';
