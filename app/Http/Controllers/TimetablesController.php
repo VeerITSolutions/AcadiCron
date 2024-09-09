@@ -18,6 +18,7 @@ class TimetablesController extends Controller
         $days = getDayList();
         $days_record = [];
 
+
         foreach ($days as $day_key => $day_value) {
             /* subject_timetable */
             $days_record[$day_key] = SubjectTimetable::where('class_id', $class_id)
@@ -25,7 +26,19 @@ class TimetablesController extends Controller
                                                     ->where('day', $day_key)
                                                     ->get();
         }
-       print_r($days_record);die;
+
+
+        // Prepare the response message
+        $message = '';
+
+        // Return the paginated data with total count and pagination details
+        return response()->json([
+            'success' => true,
+            'data' => $days_record, // Only return the current page data
+
+            'message' => $message,
+        ], 200);
+
         /* $data['timetable'] = $days_record; */
         /* return view('your_view', compact('data')); */
     }
