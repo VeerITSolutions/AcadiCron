@@ -283,15 +283,14 @@ Route::post('/login', [SiteController::class, 'login'])->name('login');
         Route::delete('/department/{id}', [DepartmentController::class, 'destroy']);
         Route::put('/department/{id}', [DepartmentController::class, 'update']);
 
+
         Route::get('/timetable', [TimetablesController::class, 'index']);
+
 
         Route::get('/staff-payroll', [StaffPayrollController::class, 'index']);
 
 
-
-
         Route::get('/leave-request', [StaffLeaveRequestController::class, 'index']);
-
 
 
 
