@@ -291,6 +291,9 @@ Route::post('/login', [SiteController::class, 'login'])->name('login');
 
 
         Route::get('/leave-request', [StaffLeaveRequestController::class, 'index']);
+        Route::post('/leave-request', [StaffLeaveRequestController::class, 'create']);
+        Route::delete('/leave-request/{id}', [StaffLeaveRequestController::class, 'destroy']);
+        Route::put('/leave-request/{id}', [StaffLeaveRequestController::class, 'update']);
 
 
 
