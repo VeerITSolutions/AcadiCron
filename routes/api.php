@@ -33,6 +33,7 @@ use App\Http\Controllers\ClassSectionsController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\FeeSessionGroupsController;
 use App\Http\Controllers\SectionsController;
+use App\Http\Controllers\StaffPayrollController;
 use App\Http\Controllers\SubjectsController;
 
 /*
@@ -282,6 +283,10 @@ Route::post('/login', [SiteController::class, 'login'])->name('login');
         Route::put('/department/{id}', [DepartmentController::class, 'update']);
 
         Route::get('/timetable', [TimetablesController::class, 'index']);
+
+        Route::get('/staff-payroll', [StaffPayrollController::class, 'index']);
+
+       
 
 
 
