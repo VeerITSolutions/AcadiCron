@@ -32,6 +32,7 @@ use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\ClassSectionsController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\FeeSessionGroupsController;
+use App\Http\Controllers\LeaveTypesController;
 use App\Http\Controllers\SectionsController;
 use App\Http\Controllers\StaffLeaveRequestController;
 use App\Http\Controllers\StaffPayrollController;
@@ -294,6 +295,11 @@ Route::post('/login', [SiteController::class, 'login'])->name('login');
         Route::post('/leave-request', [StaffLeaveRequestController::class, 'create']);
         Route::delete('/leave-request/{id}', [StaffLeaveRequestController::class, 'destroy']);
         Route::put('/leave-request/{id}', [StaffLeaveRequestController::class, 'update']);
+
+        Route::get('/leave-type', [LeaveTypesController::class, 'index']);
+        Route::post('/leave-type', [LeaveTypesController::class, 'create']);
+        Route::delete('/leave-type/{id}', [LeaveTypesController::class, 'destroy']);
+        Route::put('/leave-type/{id}', [LeaveTypesController::class, 'update']);
 
 
 
