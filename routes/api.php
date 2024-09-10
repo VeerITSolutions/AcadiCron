@@ -30,6 +30,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\api\StudentListController;
 use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\ClassSectionsController;
+use App\Http\Controllers\ContentForController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\FeeSessionGroupsController;
 use App\Http\Controllers\LeaveTypesController;
@@ -302,6 +303,11 @@ Route::post('/login', [SiteController::class, 'login'])->name('login');
         Route::put('/leave-type/{id}', [LeaveTypesController::class, 'update']);
 
 
+
+        Route::get('/content-for-upload', [ContentForController::class, 'index']);
+        Route::post('/content-for-upload', [ContentForController::class, 'create']);
+        Route::delete('/content-for-upload/{id}', [ContentForController::class, 'destroy']);
+        Route::put('/content-for-upload/{id}', [ContentForController::class, 'update']);
 
 
         Route::get('/studentfee/searchpayment', [SiteController::class, 'studentFeeSearchPayment']);
