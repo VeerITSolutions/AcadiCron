@@ -51,11 +51,11 @@ class DepartmentController extends Controller
 
         // Validate the incoming request
         $validatedData = $request->validate([
-            'name' => 'required|string|max:255',
+            'department_name' => 'required|string|max:255',
         ]);
 
         // Check if the category already exists in the Category model
-        $existingCategory = Department::where('section', $validatedData['name'])->first();
+        $existingCategory = Department::where('department_name', $validatedData['department_name'])->first();
 
         if ($existingCategory) {
             return response()->json([
@@ -66,7 +66,7 @@ class DepartmentController extends Controller
 
         // Create a new category
         $category = new Department();
-        $category->section = $validatedData['name'];
+        $category->department_name = $validatedData['department_name'];
 
         $category->is_active =  $request->is_active ? $request->is_active : 0;
         $category->save();
@@ -116,15 +116,15 @@ class DepartmentController extends Controller
 
        // Validate only the fields you need to validate
             $validatedData = $request->validate([
-                'section' => 'required',
+                'department_name' => 'required',
             ]);
 
             // Get the description from the request without validation
-            $section = $request->input('section');
+            $department_name = $request->input('department_name');
 
             // Merge the validated data with the description
             $updatedData = array_merge($validatedData, [
-                'section' => $section,
+                'department_name' => $department_name,
             ]);
 
         // Update the category
