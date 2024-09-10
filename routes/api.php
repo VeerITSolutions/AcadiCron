@@ -33,6 +33,7 @@ use App\Http\Controllers\ClassSectionsController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\FeeSessionGroupsController;
 use App\Http\Controllers\SectionsController;
+use App\Http\Controllers\StaffLeaveRequestController;
 use App\Http\Controllers\StaffPayrollController;
 use App\Http\Controllers\SubjectsController;
 
@@ -286,10 +287,10 @@ Route::post('/login', [SiteController::class, 'login'])->name('login');
 
         Route::get('/staff-payroll', [StaffPayrollController::class, 'index']);
 
-       
 
 
 
+        Route::get('/leave-request', [StaffLeaveRequestController::class, 'index']);
 
 
 
