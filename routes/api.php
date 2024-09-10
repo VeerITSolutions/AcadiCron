@@ -34,6 +34,7 @@ use App\Http\Controllers\ContentForController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\FeeSessionGroupsController;
 use App\Http\Controllers\LeaveTypesController;
+use App\Http\Controllers\NotificationSettingController;
 use App\Http\Controllers\SectionsController;
 use App\Http\Controllers\StaffLeaveRequestController;
 use App\Http\Controllers\StaffPayrollController;
@@ -308,6 +309,11 @@ Route::post('/login', [SiteController::class, 'login'])->name('login');
         Route::post('/content-for-upload', [ContentForController::class, 'create']);
         Route::delete('/content-for-upload/{id}', [ContentForController::class, 'destroy']);
         Route::put('/content-for-upload/{id}', [ContentForController::class, 'update']);
+
+        Route::get('/notification', [NotificationSettingController::class, 'index']);
+        Route::post('/notification', [NotificationSettingController::class, 'create']);
+        Route::delete('/notification/{id}', [NotificationSettingController::class, 'destroy']);
+        Route::put('/notification/{id}', [NotificationSettingController::class, 'update']);
 
 
         Route::get('/studentfee/searchpayment', [SiteController::class, 'studentFeeSearchPayment']);
