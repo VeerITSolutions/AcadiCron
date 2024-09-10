@@ -8,4 +8,5 @@ use Illuminate\Database\Eloquent\Model;
 class LeaveTypes extends Model
 {
     use HasFactory;
+    protected $fillable = ['type','is_active'];
 }
