@@ -52,12 +52,8 @@ $paginatedData = $query->paginate($perPage, ['*'], 'page', $page);
 
      public function getStaffbyrole(Request $request, $id = null, $role = null)
      {
-         // Get pagination inputs, default to page 1 and 10 records per page if not provided
-         $page = (int) $request->input('page', 1);
-         $perPage = (int) $request->input('perPage', 10);
-
          // Role ID (use the provided role ID or default to 1)
-         $role_id = $id ?: $role ?: 1;
+         $role_id = $id ?: $role ?: 2;
 
          // Build the query
          $query = DB::table('staff')
@@ -73,19 +69,16 @@ $paginatedData = $query->paginate($perPage, ['*'], 'page', $page);
              ->where('staff_roles.role_id', $role_id)
              ->where('staff.is_active', '1');
 
-         // Apply pagination
-         $paginatedData = $query->paginate($perPage, ['*'], 'page', $page);
+         // Get all results
+         $results = $query->get();
 
-         // Return paginated data with total count and pagination details
+         // Return the data
          return response()->json([
              'success' => true,
-             'data' => $paginatedData->items(),
-             'current_page' => $paginatedData->currentPage(),
-             'per_page' => $paginatedData->perPage(),
-             'total' => $paginatedData->total(),
-             'last_page' => $paginatedData->lastPage(),
+             'data' => $results,
          ], 200);
      }
+
 
 
 
