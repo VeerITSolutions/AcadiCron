@@ -29,6 +29,7 @@ use App\Models\FeeSessionGroups;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\api\StudentListController;
 use App\Http\Controllers\CategoriesController;
+use App\Http\Controllers\CertificatesController;
 use App\Http\Controllers\ClassSectionsController;
 use App\Http\Controllers\ContentForController;
 use App\Http\Controllers\DepartmentController;
@@ -323,6 +324,13 @@ Route::post('/login', [SiteController::class, 'login'])->name('login');
         Route::post('/homework', [HomeworkController::class, 'create']);
         Route::delete('/homework/{id}', [HomeworkController::class, 'destroy']);
         Route::put('/homework/{id}', [HomeworkController::class, 'update']);
+
+        Route::get('/certificate', [CertificatesController::class, 'index']);
+        Route::post('/certificate', [CertificatesController::class, 'create']);
+        Route::delete('/certificate/{id}', [CertificatesController::class, 'destroy']);
+        Route::put('/certificate/{id}', [CertificatesController::class, 'update']);
+
+
 
 
 
