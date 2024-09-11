@@ -31,6 +31,7 @@ use App\Http\Controllers\api\StudentListController;
 use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\CertificatesController;
 use App\Http\Controllers\ClassSectionsController;
+use App\Http\Controllers\ClassTeacherController;
 use App\Http\Controllers\ContentForController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\FeeSessionGroupsController;
@@ -338,6 +339,11 @@ Route::post('/login', [SiteController::class, 'login'])->name('login');
 
         Route::get('/student-none-promoted', [StudentsController::class, 'searchNonPromotedStudents']);
 
+
+        Route::get('/class-teacher', [ClassTeacherController::class, 'index']);
+        Route::post('/class-teacher', [ClassTeacherController::class, 'create']);
+        Route::delete('/class-teacher/{id}', [ClassTeacherController::class, 'destroy']);
+        Route::put('/class-teacher/{id}', [ClassTeacherController::class, 'update']);
 
 
 
