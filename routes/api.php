@@ -336,6 +336,9 @@ Route::post('/login', [SiteController::class, 'login'])->name('login');
         Route::delete('/student/{id}', [StudentsController::class, 'destroy']);
         Route::put('/student/{id}', [StudentsController::class, 'update']);
 
+        Route::get('/student-none-promoted', [StudentsController::class, 'searchNonPromotedStudents']);
+
+
 
 
 
