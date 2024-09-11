@@ -27,12 +27,15 @@ class ClassTeacherController extends Controller
     $query = DB::table('class_teacher')
     ->join('classes', 'classes.id', '=', 'class_teacher.class_id')
     ->join('sections', 'sections.id', '=', 'class_teacher.section_id')
+    ->join('staff', 'staff.id', '=', 'class_teacher.staff_id')
     ->groupBy('class_teacher.class_id', 'class_teacher.section_id')
     ->orderByRaw('LENGTH(classes.class), classes.class')
     ->select(
         DB::raw('MAX(class_teacher.id) as id'),
         'classes.class',
-        'sections.section'
+        'sections.section',
+        DB::raw('MAX(staff.name) as name'),  // Apply aggregate function
+        DB::raw('MAX(staff.surname) as surname')  // Apply aggregate function
     );
 
 
