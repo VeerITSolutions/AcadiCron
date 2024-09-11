@@ -345,6 +345,15 @@ Route::post('/login', [SiteController::class, 'login'])->name('login');
         Route::delete('/class-teacher/{id}', [ClassTeacherController::class, 'destroy']);
         Route::put('/class-teacher/{id}', [ClassTeacherController::class, 'update']);
 
+        Route::get('/staff', [StaffController::class, 'index']);
+        Route::post('/staff', [StaffController::class, 'create']);
+        Route::delete('/staff/{id}', [StaffController::class, 'destroy']);
+        Route::put('/staff/{id}', [StaffController::class, 'update']);
+
+        Route::get('/staff-by-role', [StaffController::class, 'getStaffbyrole']);
+
+
+
 
 
 
