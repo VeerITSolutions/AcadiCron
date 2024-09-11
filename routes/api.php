@@ -30,6 +30,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\api\StudentListController;
 use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\CertificatesController;
+use App\Http\Controllers\ClassesController;
 use App\Http\Controllers\ClassSectionsController;
 use App\Http\Controllers\ClassTeacherController;
 use App\Http\Controllers\ContentForController;
@@ -352,6 +353,14 @@ Route::post('/login', [SiteController::class, 'login'])->name('login');
 
         Route::get('/staff-by-role', [StaffController::class, 'getStaffbyrole']);
 
+        Route::get('/classes', [ClassesController::class, 'index']);
+        Route::post('/classes', [classesController::class, 'create']);
+        Route::delete('/classes/{id}', [classesController::class, 'destroy']);
+        Route::put('/classes/{id}', [classesController::class, 'update']);
+        Route::get('/get-classes', [ClassesController::class, 'getClasses']);
+
+
+
 
 
 
@@ -362,7 +371,7 @@ Route::post('/login', [SiteController::class, 'login'])->name('login');
 
         Route::get('/studentfee/searchpayment', [SiteController::class, 'studentFeeSearchPayment']);
         Route::get('/studentfee/feesearch', [SiteController::class, 'studentFeeSearch']);
-        Route::get('/classes', [SiteController::class, 'classes']);
+      /*   Route::get('/classes', [SiteController::class, 'classes']); */
        /*  Route::get('/sections', [SiteController::class, 'sections']); */
         Route::get('/student/bulkmail', [SiteController::class, 'studentBulkMail']);
 
