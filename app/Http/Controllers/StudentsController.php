@@ -40,7 +40,7 @@ $paginatedData = $query->paginate($perPage, ['*'], 'page', $page);
      }
 
 
-     public function searchNonPromotedStudents(Request $request, $id = null, $role = null)
+     public function searchNonPromotedStudents(Request $request,$promoted_session_id , $promoted_class_id, $promoted_section_id, $class_id, $section_id, $current_session)
      {
           // Get pagination inputs, default to page 1 and 10 records per page if not provided
     $page = (int) $request->input('page', 1);
@@ -50,8 +50,62 @@ $paginatedData = $query->paginate($perPage, ['*'], 'page', $page);
     $role_id = 1;
 
     // Build the query
+
+
     $query = DB::table('students')
-    ->select('students.*');
+    ->join('student_session', 'student_session.student_id', '=', 'students.id')
+    ->join('classes', 'student_session.class_id', '=', 'classes.id')
+    ->join('sections', 'student_session.section_id', '=', 'sections.id')
+    ->leftJoin('categories', 'students.category_id', '=', 'categories.id')
+    ->leftJoin(DB::raw("(SELECT * FROM student_session WHERE session_id = {$promoted_session_id} AND class_id = {$promoted_class_id} AND section_id = {$promoted_section_id}) AS promoted_students"), 'promoted_students.student_id', '=', 'students.id')
+    ->where('student_session.session_id', '=', $current_session)
+    ->where('students.is_active', '=', 'yes')
+    ->where('student_session.class_id', '=', $class_id)
+    ->where('student_session.section_id', '=', $section_id)
+    ->whereNull('promoted_students.id')
+    ->orderBy('students.id')
+    ->select(
+        'promoted_students.id as promoted_student_id',
+        'classes.id as class_id',
+        'student_session.id as student_session_id',
+        'students.id',
+        'classes.class',
+        'sections.id as section_id',
+        'sections.section',
+        'students.admission_no',
+        'students.roll_no',
+        'students.admission_date',
+        'students.firstname',
+        'students.middlename',
+        'students.lastname',
+        'students.image',
+        'students.mobileno',
+        'students.email',
+        'students.state',
+        'students.city',
+        'students.pincode',
+        'students.religion',
+        'students.dob',
+        'students.current_address',
+        'students.permanent_address',
+        DB::raw("IFNULL(students.category_id, 0) as category_id"),
+        DB::raw("IFNULL(categories.category, '') as category"),
+        'students.adhar_no',
+        'students.samagra_id',
+        'students.bank_account_no',
+        'students.bank_name',
+        'students.ifsc_code',
+        'students.guardian_name',
+        'students.guardian_relation',
+        'students.guardian_phone',
+        'students.guardian_address',
+        'students.is_active',
+        'students.created_at',
+        'students.updated_at',
+        'students.father_name',
+        'students.rte',
+        'students.gender'
+    );
 
 
 // Apply pagination
