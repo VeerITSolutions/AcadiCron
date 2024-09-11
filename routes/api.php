@@ -40,6 +40,7 @@ use App\Http\Controllers\NotificationSettingController;
 use App\Http\Controllers\SectionsController;
 use App\Http\Controllers\StaffLeaveRequestController;
 use App\Http\Controllers\StaffPayrollController;
+use App\Http\Controllers\StudentsController;
 use App\Http\Controllers\SubjectsController;
 
 /*
@@ -329,6 +330,11 @@ Route::post('/login', [SiteController::class, 'login'])->name('login');
         Route::post('/certificate', [CertificatesController::class, 'create']);
         Route::delete('/certificate/{id}', [CertificatesController::class, 'destroy']);
         Route::put('/certificate/{id}', [CertificatesController::class, 'update']);
+
+        Route::get('/student', [StudentsController::class, 'index']);
+        Route::post('/student', [StudentsController::class, 'create']);
+        Route::delete('/student/{id}', [StudentsController::class, 'destroy']);
+        Route::put('/student/{id}', [StudentsController::class, 'update']);
 
 
 
