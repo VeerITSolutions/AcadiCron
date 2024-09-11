@@ -22,6 +22,8 @@ class ClassTeacherController extends Controller
     $role_id = 1;
 
     // Build the query
+
+
     $query = DB::table('class_teacher')
     ->join('classes', 'classes.id', '=', 'class_teacher.class_id')
     ->join('sections', 'sections.id', '=', 'class_teacher.section_id')
