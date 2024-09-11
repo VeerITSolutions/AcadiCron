@@ -33,6 +33,7 @@ use App\Http\Controllers\ClassSectionsController;
 use App\Http\Controllers\ContentForController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\FeeSessionGroupsController;
+use App\Http\Controllers\HomeworkController;
 use App\Http\Controllers\LeaveTypesController;
 use App\Http\Controllers\NotificationSettingController;
 use App\Http\Controllers\SectionsController;
@@ -222,6 +223,8 @@ Route::post('/login', [SiteController::class, 'login'])->name('login');
 
         Route::get('/admin/updater', [SiteController::class, 'adminUpdater']);
 
+        /* api logic start  */
+
 
 
         Route::get('/student/search', [SiteController::class, 'studentSearch']);
@@ -316,12 +319,21 @@ Route::post('/login', [SiteController::class, 'login'])->name('login');
         Route::put('/notification/{id}', [NotificationSettingController::class, 'update']);
 
 
+        Route::get('/homework', [HomeworkController::class, 'index']);
+        Route::post('/homework', [HomeworkController::class, 'create']);
+        Route::delete('/homework/{id}', [HomeworkController::class, 'destroy']);
+        Route::put('/homework/{id}', [HomeworkController::class, 'update']);
+
+
+
+/* api logic end  */
+
         Route::get('/studentfee/searchpayment', [SiteController::class, 'studentFeeSearchPayment']);
         Route::get('/studentfee/feesearch', [SiteController::class, 'studentFeeSearch']);
         Route::get('/classes', [SiteController::class, 'classes']);
        /*  Route::get('/sections', [SiteController::class, 'sections']); */
         Route::get('/student/bulkmail', [SiteController::class, 'studentBulkMail']);
-        Route::get('/homework', [SiteController::class, 'homework']);
+
         Route::get('/report/studentinformation', [SiteController::class, 'reportStudentInformation']);
         Route::get('/report/finance', [SiteController::class, 'reportFinance']);
         Route::get('/report/attendance', [SiteController::class, 'reportAttendance']);
