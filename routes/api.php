@@ -287,6 +287,9 @@ Route::post('/login', [SiteController::class, 'login'])->name('login');
         Route::post('/sections', [SectionsController::class, 'create']);
         Route::delete('/sections/{id}', [SectionsController::class, 'destroy']);
         Route::put('/sections/{id}', [SectionsController::class, 'update']);
+        Route::get('/sections-by-class', [SectionsController::class, 'sectionByClass']);
+
+
 
         Route::get('/department', [DepartmentController::class, 'index']);
         Route::post('/department', [DepartmentController::class, 'create']);

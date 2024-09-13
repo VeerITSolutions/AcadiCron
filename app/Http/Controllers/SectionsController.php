@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ClassSections;
 use App\Models\Sections;
 use Illuminate\Http\Request;
 
@@ -40,6 +41,31 @@ class SectionsController extends Controller
             'message' => $message,
         ], 200);
     }
+
+    public function sectionByClass(Request $request)
+    {
+        $selectedClass = $request->input('selectedClass'); // Default to page 1 if not provided
+
+        $data = ClassSections::join('classes', 'class_sections.class_id', '=', 'classes.id')
+        ->join('sections', 'class_sections.section_id', '=', 'sections.id')
+
+        ->select('class_sections.*', 'classes.class as class_name', 'sections.section as section_name') // Specify the columns you
+
+       ->where('class_id', $selectedClass)->get();
+
+        // Prepare the response message
+        $message = '';
+
+        // Return the paginated data with total count and pagination details
+        return response()->json([
+            'success' => true,
+            'data' => $data, // Only return the current page data
+
+            'message' => $message,
+        ], 200);
+    }
+
+
 
 
 
