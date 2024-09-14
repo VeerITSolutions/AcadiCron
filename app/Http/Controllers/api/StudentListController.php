@@ -29,7 +29,13 @@ class StudentListController extends Controller
 
         // Build the query for students
         $query = Students::join('student_session', 'student_session.student_id', '=', 'students.id')
-            ->select('students.*', 'student_session.class_id as class_id', 'student_session.section_id as section_id');
+
+
+            ->join('classes', 'classes.id', '=', 'student_session.class_id')
+        ->join('sections', 'sections.id', '=', 'student_session.section_id')
+
+
+        ->select('students.*', 'student_session.class_id as class_id', 'student_session.section_id as section_id','classes.class as class_name', 'sections.section as section_name');
 
         // Apply filtering based on selectedClass
         if (!empty($selectedClass)) {
