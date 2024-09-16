@@ -72,18 +72,20 @@ class StaffLeaveRequestController extends Controller
 
         // Create a new category
         $category = new StaffLeaveRequest();
-        $category->staff_id  = $validatedData['staff_id '];
-        $category->leave_type_id   = $validatedData['leave_type_id  '];
-        $category->leave_from  = $validatedData['leave_from '];
+        $category->leave_type_id   = $validatedData['leave_type_id'];
+        $category->leave_from  = $validatedData['leave_from'];
         $category->leave_to  = $validatedData['leave_to'];
-        $category->leave_days  = $validatedData['leave_days'];
-        $category->employee_remark  = $validatedData['employee_remark'];
-        $category->admin_remark  = $validatedData['admin_remark'];
-        $category->status  = $validatedData['status'];
-        $category->applied_by  = $validatedData['applied_by'];
-        $category->document_file  = $validatedData['document_file'];
+        // $category->document_file  = $validatedData['document_file'];
         $category->date  = $validatedData['date'];
+        $category->leave_days  = 1;
+        $category->employee_remark  = 1;
+        $category->admin_remark  = 1;
+        $category->status  = 0;
+        $category->staff_id  = 1;
+        $category->applied_by  = 1;
+        $category->document_file  = 1;
         $category->save();
+
 
         return response()->json([
             'success' => true,
