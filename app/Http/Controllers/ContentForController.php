@@ -13,60 +13,69 @@ class ContentForController extends Controller
      */
 
      public function index(Request $request, $id = null, $role = null)
-     {
-         $page = $request->input('page', 1); // Default to page 1 if not provided
-         $perPage = $request->input('perPage', 10); // Default to 10 records per page if not provided
+{
+    $page = (int) $request->input('page', 1); // Default to page 1 if not provided
+    $perPage = (int) $request->input('perPage', 10); // Default to 10 records per page if not provided
 
-         // Validate the inputs (optional)
-         $page = (int) $page;
-         $perPage = (int) $perPage;
+    // Ensure $perPage is a positive integer and set a reasonable maximum value if needed
+    if ($perPage <= 0 || $perPage > 100) {
+        $perPage = 10; // Default value if invalid
+    }
 
-         // Ensure $perPage is a positive integer and set a reasonable maximum value if needed
-         if ($perPage <= 0 || $perPage > 100) {
-             $perPage = 10; // Default value if invalid
-         }
+    // Initialize the query
+    $query = DB::table('content_for')
+        ->join('contents', 'contents.id', '=', 'content_for.content_id')
+        ->leftJoin('class_sections', 'class_sections.id', '=', 'contents.cls_sec_id')
+        ->leftJoin('classes', 'classes.id', '=', 'class_sections.class_id')
+        ->leftJoin('sections', 'sections.id', '=', 'class_sections.section_id')
+        ->select([
+            'contents.*',
+            DB::raw("(SELECT GROUP_CONCAT(role) FROM content_for WHERE content_id = contents.id) as role"),
+            'class_sections.id as class_section_id',
+            'classes.class',
+            'sections.section'
+        ]);
 
-         // Initialize inner SQL condition based on the role
-         $innerQueryCondition = "";
+    // Apply the role-based condition
+    if ($role === "student") {
+        $query->where(function($query) use ($id) {
+            $query->where('content_for.role',
+            'student')
+            ->where(function ($query) use ($id) {
+                $query->where('content_for.created_by', $id)
+                      ->orWhere('content_for.created_by', 0);
+            });
+    });
+} elseif ($role === "Teacher") {
+    $query->where(function($query) use ($id) {
+        $query->where('content_for.role', 'Teacher')
+            ->where(function ($query) use ($id) {
+                $query->where('content_for.created_by', $id)
+                      ->orWhere('content_for.created_by', 0);
+            });
+    });
+}
 
-         if ($role == "student") {
-             $innerQueryCondition = " WHERE (role = 'student' and created_by = '" . $id . "') OR (created_by = 0 and role = 'student')";
-         } elseif ($role == "Teacher") {
-             $innerQueryCondition = " WHERE (role = 'Teacher' and created_by = '" . $id . "') OR (created_by = 0 and role = 'Teacher')";
-         }
+// Group by content ID
+$query->groupBy('contents.id');
 
-         // Main query with conditional inner SQL
-         $query = DB::table('content_for')
-             ->join('contents', 'contents.id', '=', 'content_for.content_id')
-             ->leftJoin('class_sections', 'class_sections.id', '=', 'contents.cls_sec_id')
-             ->leftJoin('classes', 'classes.id', '=', 'class_sections.class_id')
-             ->leftJoin('sections', 'sections.id', '=', 'class_sections.section_id')
-             ->select([
-                 'contents.*',
-                 DB::raw("(SELECT GROUP_CONCAT(role) FROM content_for WHERE content_id = contents.id) as role"),
-                 'class_sections.id as class_section_id',
-                 'classes.class',
-                 'sections.section'
-             ])
-             ->whereRaw(DB::raw($innerQueryCondition))
-             ->groupBy('contents.id');
+// Count the total number of records before applying pagination
+$total = $query->count();
 
-         // Count the total number of records before applying pagination
-         $total = $query->count();
+// Apply pagination
+$paginatedQuery = $query->forPage($page, $perPage)->get();
 
-         // Apply manual pagination
-         $paginatedQuery = $query->forPage($page, $perPage)->get();
+// Return paginated data with total count and pagination details
+return response()->json([
+    'success' => true,
+    'data' => $paginatedQuery, // Only return the current page data
+    'totalCount' => $total,    // Total number of records
+    'rowsPerPage' => $perPage, // Number of rows per page
+    'currentPage' => $page,    // Current page
+    'lastPage' => ceil($total / $perPage), // Total number of pages
+], 200);
+}
 
-         // Return paginated data with total count and pagination details
-         return response()->json([
-             'success' => true,
-             'data' => $paginatedQuery, // Only return the current page data
-             'totalCount' => $total, // Total number of records
-             'rowsPerPage' => $perPage, // Number of rows per page
-             'currentPage' => $page, // Current page
-             'lastPage' => ceil($total / $perPage), // Total number of pages
-         ], 200);
-     }
 
 
 
