@@ -24,6 +24,7 @@ class HomeworkController extends Controller
     // Build the query
     $query = DB::table('homework')
         ->select(
+           'classes.class as class_name', 'sections.section as section_name',
             'homework.*',
             'subject_group_subjects.subject_id',
             'subject_group_subjects.id as subject_group_subject_id',
