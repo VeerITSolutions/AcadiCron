@@ -86,7 +86,7 @@ class StudentListController extends Controller
         // Build the query for students
         $query = DB::table('students')
         ->select(
-            'classes.id as class_id',
+            'classes.id',
             'students.id',
             'classes.class',
             'sections.id as section_id',
@@ -124,7 +124,8 @@ class StudentListController extends Controller
             'students.updated_at',
             'students.gender',
             'students.rte',
-            'student_session.session_id',
+            'student_session.class_id as class_id',
+            'student_session.session_id as session_id',
             'students.dis_reason',
             'students.dis_note'
         )
@@ -138,6 +139,21 @@ class StudentListController extends Controller
 
         // Paginate the filtered students data
         $data = $query->paginate($perPage, ['*'], 'page', $page);
+
+         // Apply filtering based on selectedClass
+         if (!empty($selectedClass)) {
+            $query->where('student_session.class_id', $selectedClass);
+        }
+
+        // Apply filtering based on selectedSection
+        if (!empty($selectedSection)) {
+            $query->where('student_session.section_id', $selectedSection);
+        }
+
+        // Apply filtering based on keyword (searching in the 'firstname' field)
+        if (!empty($keyword)) {
+            $query->where('students.firstname', 'like', '%' . $keyword . '%');
+        }
 
         // Return the paginated data with total count and pagination details
         return response()->json([
