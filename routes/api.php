@@ -83,6 +83,8 @@ Route::post('/login', [SiteController::class, 'login'])->name('login');
 
         Route::get('/admin/dtstudentlist', [StudentListController::class, 'searchdtByClassSection']);
 
+        Route::get('/admin/dtstudentlist/disabled', [StudentListController::class, 'getdisableStudent']);
+
         Route::get('/admin/stuattendence', [StudentAttendencesController::class, 'adminStuAttendance']);
 
         Route::get('/admin/staffattendance', [StaffAttendanceController::class, 'adminStaffAttendance']);
