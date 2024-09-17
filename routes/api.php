@@ -36,6 +36,7 @@ use App\Http\Controllers\ClassTeacherController;
 use App\Http\Controllers\ContentForController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\FeeSessionGroupsController;
+use App\Http\Controllers\FeesReminderController;
 use App\Http\Controllers\HomeworkController;
 use App\Http\Controllers\LeaveTypesController;
 use App\Http\Controllers\NotificationSettingController;
@@ -363,6 +364,11 @@ Route::post('/login', [SiteController::class, 'login'])->name('login');
         Route::delete('/classes/{id}', [classesController::class, 'destroy']);
         Route::put('/classes/{id}', [classesController::class, 'update']);
         Route::get('/get-classes', [ClassesController::class, 'getClasses']);
+
+        Route::get('/fees-remainder', [FeesReminderController::class, 'index']);
+        Route::post('/fees-remainder', [FeesReminderController::class, 'create']);
+        Route::delete('/fees-remainder/{id}', [FeesReminderController::class, 'destroy']);
+        Route::put('/fees-remainder/{id}', [FeesReminderController::class, 'update']);
 
 
 
