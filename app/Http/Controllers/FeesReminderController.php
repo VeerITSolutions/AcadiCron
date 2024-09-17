@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\FeesReminder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -42,34 +43,6 @@ $paginatedData = $query->paginate($perPage, ['*'], 'page', $page);
     }
 
 
-    public function getStaffbyrole(Request $request, $id = null, $role = null)
-    {
-        // Role ID (use the provided role ID or default to 1)
-        $role_id = $id ?: $role ?: 2;
-
-        // Build the query
-        $query = DB::table('staff')
-            ->select('staff.*',
-                     'staff_designation.designation as designation',
-                     'staff_roles.role_id',
-                     'department.department_name as department',
-                     'roles.name as user_type')
-            ->leftJoin('staff_designation', 'staff_designation.id', '=', 'staff.designation')
-            ->leftJoin('department', 'department.id', '=', 'staff.department')
-            ->leftJoin('staff_roles', 'staff_roles.staff_id', '=', 'staff.id')
-            ->leftJoin('roles', 'staff_roles.role_id', '=', 'roles.id')
-            ->where('staff_roles.role_id', $role_id)
-            ->where('staff.is_active', '1');
-
-        // Get all results
-        $results = $query->get();
-
-        // Return the data
-        return response()->json([
-            'success' => true,
-            'data' => $results,
-        ], 200);
-    }
 
 
 
@@ -87,31 +60,17 @@ $paginatedData = $query->paginate($perPage, ['*'], 'page', $page);
 
 
        // Create a new category
-       $category = new Staff();
-       $category->class_id = $validatedData['class_id'];
-       $category->section_id = $validatedData['section_id'];
-       $category->session_id = $validatedData['session_id'];
-       $category->Staff_date = $validatedData['Staff_date'];
-       $category->submit_date = $validatedData['submit_date'];
-       $category->staff_id = $validatedData['staff_id'];
-       $category->subject_group_subject_id = $validatedData['subject_group_subject_id'];
-       $category->subject_id = $validatedData['subject_id'];
-       $category->description = $validatedData['description'];
-       $category->create_date = $validatedData['create_date'];
-       $category->evaluation_date = $validatedData['evaluation_date'];
-       $category->document = $validatedData['document'];
-       $category->created_by = $validatedData['created_by'];
-       $category->evaluated_by = $validatedData['evaluated_by'];
-       $category->subject_name = $validatedData['subject_name'];
-       $category->subject_groups_id = $validatedData['subject_groups_id'];
-       $category->name = $validatedData['name'];
-       $category->assignments = $validatedData['assignments'];
+       $category = new FeesReminder();
+       $category->reminder_type = $validatedData['reminder_type'];
+       $category->day = $validatedData['day'];
+
+       $category->is_active = 1;
 
        $category->save();
 
        return response()->json([
            'success' => true,
-           'message' => 'Staff saved successfully',
+           'message' => 'Fees Reminder saved successfully',
            'category' => $category,
        ], 201); // 201 Created status code
    }
@@ -181,10 +140,10 @@ $paginatedData = $query->paginate($perPage, ['*'], 'page', $page);
            $category->delete();
 
            // Return success response
-           return response()->json(['success' => true, 'message' => 'Staff  deleted successfully']);
+           return response()->json(['success' => true, 'message' => 'Fees Reminder deleted successfully']);
        } catch (\Exception $e) {
            // Handle failure (e.g. if the category was not found)
-           return response()->json(['success' => false, 'message' => 'Staff  deletion failed: ' . $e->getMessage()], 500);
+           return response()->json(['success' => false, 'message' => 'Fees Reminder  deletion failed: ' . $e->getMessage()], 500);
        }
    }
 }
