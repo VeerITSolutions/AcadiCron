@@ -45,19 +45,39 @@ class TimetablesController extends Controller
     }
 
     public function getBySubjectGroupDayClassSection($group_id = null, $day_id = null, $class_id = null, $section_id = null)
-    {
-    return DB::table('subject_timetable')
+{
+    $query = DB::table('subject_timetable')
         ->select('subject_timetable.*')
         ->join('subject_group_subjects', 'subject_timetable.subject_group_subject_id', '=', 'subject_group_subjects.id')
         ->join('staff', 'subject_timetable.staff_id', '=', 'staff.id')
-        ->where('subject_timetable.class_id', $class_id)
-        ->where('subject_timetable.section_id', $section_id)
-        ->where('subject_timetable.day', $day)
-        ->where('subject_timetable.subject_group_id', $subject_group_id)
-        ->where('staff.is_active', 1)
-        ->orderBy('subject_timetable.start_time', 'asc')
-        ->get();
+        ->where('staff.is_active', 1);
+
+    // Apply group_id filter only if provided
+    if ($group_id) {
+        $query->where('subject_timetable.subject_group_id', $group_id);
+    }
+
+    // Apply day_id filter only if provided
+    if ($day_id) {
+        $query->where('subject_timetable.day', $day_id);
+    }
+
+    // Apply class_id filter only if provided
+    if ($class_id) {
+        $query->where('subject_timetable.class_id', $class_id);
+    }
+
+    // Apply section_id filter only if provided
+    if ($section_id) {
+        $query->where('subject_timetable.section_id', $section_id);
+    }
+
+    // Order by start time
+    $query->orderBy('subject_timetable.start_time', 'asc');
+
+    return $query->get();
 }
+
 
     /**
      * Show the form for creating a new resource.
