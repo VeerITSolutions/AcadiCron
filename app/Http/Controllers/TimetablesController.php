@@ -44,7 +44,7 @@ class TimetablesController extends Controller
         /* return view('your_view', compact('data')); */
     }
 
-    public function getBySubjectGroupDayClassSection($subject_group_id, $day, $class_id, $section_id)
+    public function getBySubjectGroupDayClassSection($day, $class_id, $section_id,$subject_group_id)
 {
     return DB::table('subject_timetable')
         ->select('subject_timetable.*')
