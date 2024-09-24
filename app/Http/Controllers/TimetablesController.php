@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\SubjectTimetable;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class TimetablesController extends Controller
 {
@@ -42,6 +43,21 @@ class TimetablesController extends Controller
         /* $data['timetable'] = $days_record; */
         /* return view('your_view', compact('data')); */
     }
+
+    public function getBySubjectGroupDayClassSection($subject_group_id, $day, $class_id, $section_id)
+{
+    return DB::table('subject_timetable')
+        ->select('subject_timetable.*')
+        ->join('subject_group_subjects', 'subject_timetable.subject_group_subject_id', '=', 'subject_group_subjects.id')
+        ->join('staff', 'subject_timetable.staff_id', '=', 'staff.id')
+        ->where('subject_timetable.class_id', $class_id)
+        ->where('subject_timetable.section_id', $section_id)
+        ->where('subject_timetable.day', $day)
+        ->where('subject_timetable.subject_group_id', $subject_group_id)
+        ->where('staff.is_active', 1)
+        ->orderBy('subject_timetable.start_time', 'asc')
+        ->get();
+}
 
     /**
      * Show the form for creating a new resource.

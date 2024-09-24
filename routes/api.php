@@ -303,6 +303,8 @@ Route::post('/login', [SiteController::class, 'login'])->name('login');
         Route::get('/timetable', [TimetablesController::class, 'index']);
 
 
+        Route::get('/timetable-by/{class_id}/{section_id}/{group_id}/{day_id}', [TimetablesController::class, 'getBySubjectGroupDayClassSection']);
+
         Route::get('/staff-payroll', [StaffPayrollController::class, 'index']);
 
 
@@ -369,6 +371,9 @@ Route::post('/login', [SiteController::class, 'login'])->name('login');
         Route::post('/fees-remainder', [FeesReminderController::class, 'create']);
         Route::delete('/fees-remainder/{id}', [FeesReminderController::class, 'destroy']);
         Route::put('/fees-remainder/{id}', [FeesReminderController::class, 'update']);
+
+
+
 
 
 
