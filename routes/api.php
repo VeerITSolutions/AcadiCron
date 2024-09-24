@@ -303,7 +303,7 @@ Route::post('/login', [SiteController::class, 'login'])->name('login');
         Route::get('/timetable', [TimetablesController::class, 'index']);
 
 
-        Route::get('/timetable-by/{class_id}/{section_id}/{group_id}/{day_id}', [TimetablesController::class, 'getBySubjectGroupDayClassSection']);
+        Route::get('/timetable-by/{class_id?}/{section_id?}/{group_id?}/{day_id?}', [TimetablesController::class, 'getBySubjectGroupDayClassSection']);
 
         Route::get('/staff-payroll', [StaffPayrollController::class, 'index']);
 
