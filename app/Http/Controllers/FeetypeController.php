@@ -37,11 +37,11 @@ class FeetypeController extends Controller
 
         // Validate the incoming request
         $validatedData = $request->validate([
-            'house_name' => 'required|string|max:255',
+            'name' => 'required|string|max:255',
         ]);
 
         // Check if the category already exists in the Category model
-        $existingCategory = Feetype::where('house_name', $validatedData['house_name'])->first();
+        $existingCategory = Feetype::where('name', $validatedData['name'])->first();
 
         if ($existingCategory) {
             return response()->json([
@@ -52,7 +52,7 @@ class FeetypeController extends Controller
 
         // Create a new category
         $category = new Feetype();
-        $category->house_name = $validatedData['house_name'];
+        $category->name = $validatedData['name'];
         $category->description = $request->description;
         $category->is_active = 0;
         $category->save();
@@ -102,7 +102,7 @@ class FeetypeController extends Controller
 
        // Validate only the fields you need to validate
             $validatedData = $request->validate([
-                'house_name' => 'required',
+                'name' => 'required',
             ]);
 
             // Get the description from the request without validation
