@@ -12,7 +12,8 @@ class FeeGroupsController extends Controller
      */
     public function index(Request $request)
     {
-        $data = FeeGroups::all();
+        $data = Feegroups::latest()->get();
+        
 
     // Prepare the response message (optional)
     $message = '';

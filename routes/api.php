@@ -272,6 +272,12 @@ Route::post('/login', [SiteController::class, 'login'])->name('login');
         Route::delete('/fees-type/{id}', [FeetypeController::class, 'destroy']);
         Route::put('/fees-type/{id}', [FeetypeController::class, 'update']);
 
+        Route::get('/fees-discount', [FeesDiscountsController::class, 'index']);
+        Route::post('/fees-discount', [FeesDiscountsController::class, 'create']);
+        Route::delete('/fees-discount/{id}', [FeesDiscountsController::class, 'destroy']);
+        Route::put('/fees-discount/{id}', [FeesDiscountsController::class, 'update']);
+
+
         Route::get('/fees-session-group', [FeeSessionGroupsController::class, 'index']);
         Route::post('/fees-session-group', [FeeSessionGroupsController::class, 'create']);
         Route::delete('/fees-session-group/{id}', [FeeSessionGroupsController::class, 'destroy']);
