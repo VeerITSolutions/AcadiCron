@@ -45,6 +45,8 @@ use App\Http\Controllers\StaffLeaveRequestController;
 use App\Http\Controllers\StaffPayrollController;
 use App\Http\Controllers\StudentsController;
 use App\Http\Controllers\SubjectsController;
+use App\Http\Controllers\SearchPaymentController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -374,7 +376,10 @@ Route::post('/login', [SiteController::class, 'login'])->name('login');
 
 
 
-
+        Route::get('/searchpayment', [SearchPaymentController::class, 'index']);
+        Route::post('/searchpayment', [SearchPaymentController::class, 'create']);
+        Route::delete('/searchpayment/{id}', [SearchPaymentController::class, 'destroy']);
+        Route::put('/searchpayment/{id}', [SearchPaymentController::class, 'update']);
 
 
 
