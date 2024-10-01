@@ -61,7 +61,6 @@ class FeetypeController extends Controller
         $category->is_system= 0;
         $category->type= $request->type;
         $category->feecategory_id= $request->feecategory_id ? $request->feecategory_id : null ;
-        $category->type= $request->type;
 
         $category->code= $request->code;
         $category->is_active = $request->is_active ?  $request->is_active  : 'no';
@@ -112,7 +111,7 @@ class FeetypeController extends Controller
         $category->is_system= 0;
         $category->type= $request->type;
         $category->feecategory_id= $request->feecategory_id ? $request->feecategory_id : null ;
-        $category->type= $request->type;
+       
 
         $category->code= $request->code;
         $category->is_active = $request->is_active ?  $request->is_active  : 'no';
