@@ -13,7 +13,7 @@ class FeetypeController extends Controller
     public function index(Request $request)
     {
          // Fetch all Feetype records
-    $data = Feetype::all();
+    $data = Feetype::latest()->get();
 
     // Prepare the response message (optional)
     $message = '';
@@ -23,7 +23,7 @@ class FeetypeController extends Controller
         'success' => true,
         'data' => $data, // Return all the data
         'totalCount' => $data->count(), // Total number of records
-        'message' => $message,
+         'message' => $message,
     ], 200);
     }
 
@@ -34,32 +34,49 @@ class FeetypeController extends Controller
      */
     public function create(Request $request){
 
+        
+        
+        $type = $request->type;
 
-        // Validate the incoming request
         $validatedData = $request->validate([
-            'house_name' => 'required|string|max:255',
+            'type' => 'required',
         ]);
 
         // Check if the category already exists in the Category model
-        $existingCategory = Feetype::where('house_name', $validatedData['house_name'])->first();
+        $existingCategory = Feetype::where('type', $type)->first();
+
+        
+
+        
 
         if ($existingCategory) {
             return response()->json([
                 'success' => false,
-                'message' => 'house name already exists',
+                'message' => 'fees name already exists',
             ], 409); // 409 Conflict status code
         }
 
         // Create a new category
         $category = new Feetype();
-        $category->house_name = $validatedData['house_name'];
-        $category->description = $request->description;
-        $category->is_active = 0;
+        $category->is_system= 0;
+        $category->type= $request->type;
+        $category->feecategory_id= $request->feecategory_id ? $request->feecategory_id : null ;
+        $category->type= $request->type;
+
+        $category->code= $request->code;
+        $category->is_active = $request->is_active ?  $request->is_active  : 'no';
+        $category->description= $request->description;
+      
+
+       
         $category->save();
+
+
+       
 
         return response()->json([
             'success' => true,
-            'message' => 'house name saved successfully',
+            'message' => 'fees name saved successfully',
             'category' => $category,
         ], 201); // 201 Created status code
     }
@@ -70,7 +87,49 @@ class FeetypeController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $type = $request->type;
+
+        $validatedData = $request->validate([
+            'type' => 'required',
+        ]);
+
+        // Check if the category already exists in the Category model
+        $existingCategory = Feetype::where('type', $type)->first();
+
+        
+
+        
+
+        if ($existingCategory) {
+            return response()->json([
+                'success' => false,
+                'message' => 'fees name already exists',
+            ], 409); // 409 Conflict status code
+        }
+
+        // Create a new category
+        $category = new Feetype();
+        $category->is_system= 0;
+        $category->type= $request->type;
+        $category->feecategory_id= $request->feecategory_id ? $request->feecategory_id : null ;
+        $category->type= $request->type;
+
+        $category->code= $request->code;
+        $category->is_active = $request->is_active ?  $request->is_active  : 'no';
+        $category->description= $request->description;
+      
+
+       
+        $category->save();
+
+
+       
+
+        return response()->json([
+            'success' => true,
+            'message' => 'fees name saved successfully',
+            'category' => $category,
+        ], 201); // 201 Created status code
     }
 
     /**
@@ -98,23 +157,31 @@ class FeetypeController extends Controller
     {
 
         // Find the house_name by id
-        $category = Feetype::findOrFail($id);
+        $feetype = Feetype::findOrFail($id);
 
        // Validate only the fields you need to validate
             $validatedData = $request->validate([
-                'house_name' => 'required',
+                'type' => 'required',
             ]);
 
             // Get the description from the request without validation
+            $code = $request->input('code');
             $description = $request->input('description');
+            $is_active = $request->input('is_active');
+            $type = $request->input('type');
+
+            
 
             // Merge the validated data with the description
             $updatedData = array_merge($validatedData, [
+                'code' => $code,
                 'description' => $description,
+                'is_active' => $is_active,
+                'type' => $type,
             ]);
 
         // Update the category
-        $category->update($updatedData);
+        $feetype->update($updatedData);
 
 
 
@@ -122,7 +189,7 @@ class FeetypeController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Edit successfully',
-            'category' => $category,
+            'category' => $feetype,
         ], 201); // 201 Created status code
     }
 
