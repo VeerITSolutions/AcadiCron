@@ -46,6 +46,7 @@ use App\Http\Controllers\StaffPayrollController;
 use App\Http\Controllers\StudentsController;
 use App\Http\Controllers\SubjectsController;
 use App\Http\Controllers\SearchPaymentController;
+use App\Http\Controllers\LessonplanLessonController;
 
 
 /*
@@ -386,6 +387,11 @@ Route::post('/login', [SiteController::class, 'login'])->name('login');
         Route::post('/searchpayment', [SearchPaymentController::class, 'create']);
         Route::delete('/searchpayment/{id}', [SearchPaymentController::class, 'destroy']);
         Route::put('/searchpayment/{id}', [SearchPaymentController::class, 'update']);
+
+        Route::get('/lessonplan-lesson', [LessonplanLessonController::class, 'getLessonList']);
+        Route::post('/lessonplan-lesson', [LessonplanLessonController::class, 'create']);
+        Route::delete('/lessonplan-lesson/{id}', [LessonplanLessonController::class, 'destroy']);
+        Route::put('/lessonplan-lesson/{id}', [LessonplanLessonController::class, 'update']);
 
 
 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\FeesDiscounts;
 use Illuminate\Support\Facades\DB;
 
 class FeesDiscountsController extends Controller
@@ -61,14 +62,14 @@ class FeesDiscountsController extends Controller
     public function create(Request $request){
 
   
-        $type = $request->type;
+        $name = $request->name;
 
         $validatedData = $request->validate([
-            'type' => 'required',
+            'name' => 'required',
         ]);
 
         // Check if the category already exists in the Category model
-        $existingCategory = Feetype::where('type', $type)->first();
+        $existingCategory = FeesDiscounts::where('name', $name)->first();
 
     
         if ($existingCategory) {
@@ -79,17 +80,14 @@ class FeesDiscountsController extends Controller
         }
 
         // Create a new category
-        $category = new Feetype();
-        $category->is_system= 0;
-        $category->type= $request->type;
-        $category->feecategory_id= $request->feecategory_id ? $request->feecategory_id : null ;
+        $category = new FeesDiscounts();
 
+        $category->name= $request->name;
         $category->code= $request->code;
+        $category->amount= $request->amount;
         $category->is_active = $request->is_active ?  $request->is_active  : 'no';
         $category->description= $request->description;
       
-
-       
         $category->save();
 
         return response()->json([
@@ -126,9 +124,46 @@ class FeesDiscountsController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request,string $id)
     {
-        //
+
+        // Find the house_name by id
+        $feetype = FeesDiscounts::findOrFail($id);
+
+       // Validate only the fields you need to validate
+            $validatedData = $request->validate([
+                'name' => 'required',
+            ]);
+
+            // Get the description from the request without validation
+            $code = $request->input('code');
+            $amount = $request->input('amount');
+            $description = $request->input('description');
+            $is_active = $request->input('is_active');
+            $name = $request->input('name');
+
+            
+
+            // Merge the validated data with the description
+            $updatedData = array_merge($validatedData, [
+                'code' => $code,
+                'amount' => $amount,
+                'description' => $description,
+                'is_active' => $is_active,
+                'name' => $name,
+            ]);
+
+        // Update the category
+        $feetype->update($updatedData);
+
+
+
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Edit successfully',
+            'category' => $feetype,
+        ], 201); // 201 Created status code
     }
 
     /**

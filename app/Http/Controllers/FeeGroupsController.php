@@ -31,13 +31,13 @@ class FeeGroupsController extends Controller
      * Show the form for creating a new resource.
      */
     public function create(Request $request){
-        $type = $request->type;
+        $name = $request->name;
         $validatedData = $request->validate([
-            'type' => 'required',
+            'name' => 'required',
         ]);
 
         // Check if the category already exists in the Category model
-        $existingCategory = FeeGroups::where('type', $type)->first();
+        $existingCategory = FeeGroups::where('name', $name)->first();
 
         if ($existingCategory) {
             return response()->json([
@@ -48,7 +48,7 @@ class FeeGroupsController extends Controller
 
         // Create a new category
         $category = new FeeGroups();
-        $category->type= $request->type;
+        $category->name= $request->name;
         $category->is_system= 0;
         $category->description= $request->description;
         $category->feecategory_id= $request->feecategory_id ? $request->feecategory_id : null ;
