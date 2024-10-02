@@ -46,6 +46,7 @@ use App\Http\Controllers\StaffPayrollController;
 use App\Http\Controllers\StudentsController;
 use App\Http\Controllers\SubjectsController;
 use App\Http\Controllers\SearchPaymentController;
+use App\Http\Controllers\SearchDueFeesController;
 use App\Http\Controllers\LessonplanLessonController;
 
 
@@ -387,6 +388,14 @@ Route::post('/login', [SiteController::class, 'login'])->name('login');
         Route::post('/searchpayment', [SearchPaymentController::class, 'create']);
         Route::delete('/searchpayment/{id}', [SearchPaymentController::class, 'destroy']);
         Route::put('/searchpayment/{id}', [SearchPaymentController::class, 'update']);
+
+
+        
+        Route::get('/search-duefees', [SearchDueFeesController::class, 'getDueStudentFeesDefault']);
+        Route::post('/search-duefees', [SearchDueFeesController::class, 'create']);
+        Route::delete('/search-duefees/{id}', [SearchDueFeesController::class, 'destroy']);
+        Route::put('/search-duefees/{id}', [SearchDueFeesController::class, 'update']);
+        
 
         Route::get('/lessonplan-lesson', [LessonplanLessonController::class, 'getLessonList']);
         Route::post('/lessonplan-lesson', [LessonplanLessonController::class, 'create']);
