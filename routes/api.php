@@ -392,6 +392,11 @@ Route::post('/login', [SiteController::class, 'login'])->name('login');
         Route::delete('/searchpayment/{id}', [SearchPaymentController::class, 'destroy']);
         Route::put('/searchpayment/{id}', [SearchPaymentController::class, 'update']);
 
+        Route::get('/student-attendance', [StudentAttendencesController::class, 'index']);
+        Route::post('/student-attendance', [StudentAttendencesController::class, 'create']);
+        Route::delete('/student-attendance/{id}', [StudentAttendencesController::class, 'destroy']);
+        Route::put('/student-attendance/{id}', [StudentAttendencesController::class, 'update']);
+
 
         
         Route::get('/search-duefees', [SearchDueFeesController::class, 'getDueStudentFeesDefault']);
