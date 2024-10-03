@@ -35,6 +35,7 @@ use App\Http\Controllers\ClassSectionsController;
 use App\Http\Controllers\ClassTeacherController;
 use App\Http\Controllers\ContentForController;
 use App\Http\Controllers\DepartmentController;
+use App\Http\Controllers\StaffDesignationController;
 use App\Http\Controllers\FeeSessionGroupsController;
 use App\Http\Controllers\FeesReminderController;
 use App\Http\Controllers\HomeworkController;
@@ -309,15 +310,17 @@ Route::post('/login', [SiteController::class, 'login'])->name('login');
         Route::delete('/department/{id}', [DepartmentController::class, 'destroy']);
         Route::put('/department/{id}', [DepartmentController::class, 'update']);
 
+        Route::get('/designation', [StaffDesignationController::class, 'index']);
+        Route::post('/designation', [StaffDesignationController::class, 'create']);
+        Route::delete('/designation/{id}', [StaffDesignationController::class, 'destroy']);
+        Route::put('/designation/{id}', [StaffDesignationController::class, 'update']);
+
 
         Route::get('/timetable', [TimetablesController::class, 'index']);
-
-
         Route::get('/timetable-by/{class_id?}/{section_id?}/{group_id?}/{day_id?}', [TimetablesController::class, 'getBySubjectGroupDayClassSection']);
 
+
         Route::get('/staff-payroll', [StaffPayrollController::class, 'index']);
-
-
         Route::get('/leave-request', [StaffLeaveRequestController::class, 'index']);
         Route::post('/leave-request', [StaffLeaveRequestController::class, 'create']);
         Route::delete('/leave-request/{id}', [StaffLeaveRequestController::class, 'destroy']);
