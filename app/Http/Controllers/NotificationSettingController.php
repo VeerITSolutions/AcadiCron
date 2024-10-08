@@ -60,39 +60,26 @@ class NotificationSettingController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create(Request $request){
-
-
+    public function create(Request $request)
+    {
         // Validate the incoming request
-        $validatedData = $request->all();
-
-
-        // Create a new category
-        $category = new SendNotification();
-        $category->title = $validatedData['title'];
-        $category->publish_date = $validatedData['publish_date'];
-        $category->date = $validatedData['date'];
-        $category->message = $validatedData['message'];
-        $category->visible_student = $validatedData['visible_student'];
-        $category->visible_staff = $validatedData['visible_staff'];
-        $category->visible_parent = $validatedData['visible_parent'];
-        $category->created_by = $validatedData['created_by'];
-        $category->created_id = $validatedData['created_id'];
-        $category->is_active = $validatedData['is_active'];
-        $category->path = $validatedData['path'];
-        $category->class_id = $validatedData['class_id'];
-        $category->secid = $validatedData['secid'];
-        $category->send_notification_id = $validatedData['send_notification_id'];
-        $category->roles = $validatedData['roles'];
-
-        $category->save();
-
+        $validatedData = $request->validate([
+            'title' => 'required|string|max:255',
+            
+        ]);
+    
+        // Create a new SendNotification
+        $notification = new SendNotification();
+        $notification->fill($validatedData);
+        $notification->save();
+    
         return response()->json([
             'success' => true,
-            'message' => 'Leave Type saved successfully',
-            'category' => $category,
+            'message' => 'Notification saved successfully',
+            'notification' => $notification,
         ], 201); // 201 Created status code
     }
+    
 
 
     /**

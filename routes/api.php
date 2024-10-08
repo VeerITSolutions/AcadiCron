@@ -49,6 +49,7 @@ use App\Http\Controllers\SubjectsController;
 use App\Http\Controllers\SearchPaymentController;
 use App\Http\Controllers\SearchDueFeesController;
 use App\Http\Controllers\LessonplanLessonController;
+use App\Http\Controllers\SubjectSyllabusController;
 
 
 /*
@@ -397,6 +398,11 @@ Route::post('/login', [SiteController::class, 'login'])->name('login');
         Route::delete('/student-attendance/{id}', [StudentAttendencesController::class, 'destroy']);
         Route::put('/student-attendance/{id}', [StudentAttendencesController::class, 'update']);
 
+        Route::get('/syllabus', [SubjectSyllabusController::class, 'index']);
+        Route::post('/syllabus', [SubjectSyllabusController::class, 'create']);
+        Route::delete('/syllabus/{id}', [SubjectSyllabusController::class, 'destroy']);
+        Route::put('/syllabus/{id}', [SubjectSyllabusController::class, 'update']);
+
 
         
         Route::get('/search-duefees', [SearchDueFeesController::class, 'getDueStudentFeesDefault']);
@@ -409,6 +415,10 @@ Route::post('/login', [SiteController::class, 'login'])->name('login');
         Route::post('/lessonplan-lesson', [LessonplanLessonController::class, 'create']);
         Route::delete('/lessonplan-lesson/{id}', [LessonplanLessonController::class, 'destroy']);
         Route::put('/lessonplan-lesson/{id}', [LessonplanLessonController::class, 'update']);
+
+
+
+
 
 
 
