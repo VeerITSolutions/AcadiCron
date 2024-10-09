@@ -48,20 +48,22 @@ class SiteController extends Controller
 
             // Check if the password matches using CodeIgniter's hashing method
             if (password_verify($request->password, $user->password)) {
+                // Log the user in
+                Auth::login($user);
 
+                // Generate a token for the user
+                $token = $user->createToken('YourAppToken')->plainTextToken;
 
                 return response()->json([
                     'success' => true,
-                    'message' => 'successfully',
-                    'data' => $user
-                ], 200); // 201 Created status code
+                    'message' => 'Successfully authenticated',
+                    'token' => $token
+                ], 200);
             } else {
-
-
                 return response()->json([
                     'success' => false,
-                    'message' => 'Error !',
-                ], 500); // 201 Created status code
+                    'message' => 'Error!',
+                ], 500);
             }
 
 
