@@ -46,21 +46,23 @@ class SiteController extends Controller
 
 
 
-
             // Check if the password matches using CodeIgniter's hashing method
             if (password_verify($request->password, $user->password)) {
 
 
-                Auth::guard('staff')->login($user);
+                return response()->json([
+                    'success' => true,
+                    'message' => 'successfully',
+                    'data' => $user
+                ], 200); // 201 Created status code
+            } else {
 
 
-
-            return redirect()->route('admin.dashboard');  // Redirect after login
-    } else {
-
-
-        return redirect()->back()->with('error', 'Invalid credentials');
-    }
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Error !',
+                ], 500); // 201 Created status code
+            }
 
 
     }
