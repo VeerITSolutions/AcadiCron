@@ -42,7 +42,8 @@ class SiteController extends Controller
         $credentials = $request->only('username', 'password');
 
 
-        $user = Staff::where('email', $request->username)->first();
+        $user = Staff::with('roles')->where('email', $request->username)->first();
+
 
 
 
@@ -54,16 +55,29 @@ class SiteController extends Controller
                 // Generate a token for the user
                 $token = $user->createToken('YourAppToken')->plainTextToken;
 
+
+
                 return response()->json([
                     'success' => true,
                     'message' => 'Successfully authenticated',
-                    'token' => $token
-                ], 200);
+                    'token' => $token, // Make sure you have the token available here
+                    'users' => [
+                        'name' => $user->name,
+                        'surname' => $user->surname,
+                        'roles' => $user->roles->map(function ($role) {
+                            return [
+                                'id' => $role->id,
+                                'is_superadmin' => $role->is_superadmin,
+                                'name' => $role->name,
+                            ];
+                        }),
+                    ]
+                ]);
             } else {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Error!',
-                ], 500);
+                    'message' => 'Authentication failed',
+                ], 401);
             }
 
 
