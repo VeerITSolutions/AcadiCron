@@ -37,82 +37,100 @@ class SiteController extends Controller
         ]);
     }
 
-    public function login(Request $request)
-    {
-        $credentials = $request->only('username', 'password');
 
 
-        $user = Staff::with('roles')->where('email', $request->username)->first();
-
-
-
-
-            // Check if the password matches using CodeIgniter's hashing method
-            if (password_verify($request->password, $user->password)) {
-                // Log the user in
-                Auth::login($user);
-
-                // Generate a token for the user
-                $token = $user->createToken('YourAppToken')->plainTextToken;
-
-
-
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Successfully authenticated',
-                    'token' => $token, // Make sure you have the token available here
-                    'users' => [
-                        'name' => $user->name,
-                        'surname' => $user->surname,
-                        'roles' => $user->roles->map(function ($role) {
-                            return [
-                                'id' => $role->id,
-                                'is_superadmin' => $role->is_superadmin,
-                                'name' => $role->name,
-                            ];
-                        }),
-                    ]
-                ]);
-            } else {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Authentication failed',
-                ], 401);
-            }
-
-
-    }
 
     public function dashboard(Request $request){
         return view('admin.dashboard');
     }
 
-    public function logout(Request $request)
+    public function login(Request $request)
 {
-    // Log out the user
-    Auth::guard('staff')->logout();
+    $credentials = $request->only('username', 'password');
 
-    // Invalidate the session
-    $request->session()->invalidate();
+    // First, try to find the user with the email
+    $user = Staff::with('roles')->where('email', $request->username)->first();
 
-    // Regenerate the session token to prevent session fixation attacks
-    $request->session()->regenerateToken();
+    // If no staff user found, look for a general user
+    if (!$user) {
+        $user = User::where('username', $request->username)->first();
+    }
 
-    // Redirect the user to the login page (or wherever you want)
+    // If user is found, check the password
+    if ($user) {
+        if (($user instanceof Staff && password_verify($request->password, $user->password)) ||
+            ($user instanceof User && $request->password === $user->password)) {
+            // Log the user in
+            Auth::login($user);
 
-    /* // Error message
-return redirect()->back()->with('error', 'Your custom error message here');
+            // Generate a token for the user
+            $token = $user->createToken('YourAppToken')->plainTextToken;
 
-// Success message
-return redirect()->back()->with('success', 'Your custom success message here');
+            // Prepare user data
+            $userData = [
+                'name' => $user->name,
+                'surname' => $user->surname,
+                'roles' => []
+            ];
 
-// Info message
-return redirect()->back()->with('info', 'Your custom info message here');
+            // Handle roles based on user type
+            if ($user instanceof Staff) {
+                $userData['roles'] = $user->roles->map(function ($role) {
+                    return [
+                        'id' => $role->id,
+                        'is_superadmin' => $role->is_superadmin,
+                        'name' => $role->name,
 
-// Warning message
-return redirect()->back()->with('warning', 'Your custom warning message here'); */
-    return redirect('/')->with('success', 'Logout Successfully!');
+                    ];
+                });
+            } elseif ($user instanceof User) {
+                // Implement your logic for User roles here
+                $userData['roles'] = [
+                    [
+                        'id' => $user->id, // Assuming User has a role_id field
+                        'is_superadmin' => 0, // Assuming User has this field
+                        'name' => $user->role, // Assuming User has this field
+                    ]
+                ];
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Successfully authenticated',
+                'token' => $token,
+                'users' => $userData,
+            ]);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'Authentication failed',
+            ], 401);
+        }
+    }
+
+    // If no user is found
+    return response()->json([
+        'success' => false,
+        'message' => 'User not found',
+    ], 404);
 }
+
+
+
+    public function logout(Request $request)
+    {
+        // Log out the user
+        Auth::guard('staff')->logout();
+
+        // Invalidate the session
+        $request->session()->invalidate();
+
+        // Regenerate the session token to prevent session fixation attacks
+        $request->session()->regenerateToken();
+
+
+        return redirect('/')->with('success', 'Logout Successfully!');
+    }
 
     protected function generateCaptcha()
     {
