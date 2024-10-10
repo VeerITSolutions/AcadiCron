@@ -10,6 +10,7 @@ use App\Models\SchSettings;
 use App\Models\CmsProgram;
 use App\Models\FrontCmsPrograms;
 use App\Models\Staff;
+use App\Models\Students;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
@@ -54,6 +55,7 @@ class SiteController extends Controller
     // If no staff user found, look for a general user
     if (!$user) {
         $user = User::where('username', $request->username)->first();
+
     }
 
     // If user is found, check the password
@@ -67,11 +69,46 @@ class SiteController extends Controller
             $token = $user->createToken('YourAppToken')->plainTextToken;
 
             // Prepare user data
-            $userData = [
-                'name' => $user->name,
-                'surname' => $user->surname,
-                'roles' => []
-            ];
+
+            if ($user instanceof Staff) {
+                $userData = [
+                    'name' => $user->name,
+                    'surname' => $user->surname,
+                    'roles' => []
+                ];
+
+            } elseif ($user instanceof User) {
+
+                if($user->role == 'student')
+                {
+                   $get_student =  Students::where('id', $user->id)->first();
+                    $user_username = $get_student->firstname;
+
+
+                    $userData = [
+                        'name' => $user_username,
+                        'surname' => $get_student->lastname,
+
+                        'roles' => []
+                    ];
+                }
+
+                if($user->role == 'parent')
+                {
+
+
+                    $userData = [
+                        'name' => $user_username,
+                       /*  'surname' => $user->surname, */
+
+                        'roles' => []
+                    ];
+                }
+
+
+
+            }
+
 
             // Handle roles based on user type
             if ($user instanceof Staff) {
