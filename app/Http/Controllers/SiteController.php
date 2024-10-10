@@ -126,13 +126,33 @@ class SiteController extends Controller
                 });
             } elseif ($user instanceof User) {
                 // Implement your logic for User roles here
-                $userData['roles'] = [
-                    [
-                        'id' => $user->id, // Assuming User has a role_id field
-                        'is_superadmin' => 0, // Assuming User has this field
-                        'name' => $user->role, // Assuming User has this field
-                    ]
-                ];
+
+
+                if($user->role == 'student')
+                {
+                    $userData['roles'] = [
+                        [
+                            'id' => '10', // Assuming User has a role_id field
+                            'is_superadmin' => 0, // Assuming User has this field
+                            'name' => $user->role, // Assuming User has this field
+                        ]
+                    ];
+
+                }
+
+                if($user->role == 'parent')
+                {
+
+                    $userData['roles'] = [
+                        [
+                            'id' => '11', // Assuming User has a role_id field
+                            'is_superadmin' => 0, // Assuming User has this field
+                            'name' => $user->role, // Assuming User has this field
+                        ]
+                    ];
+
+
+                }
             }
 
             return response()->json([
