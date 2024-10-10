@@ -96,10 +96,14 @@ class SiteController extends Controller
                 if($user->role == 'parent')
                 {
 
+                    $get_student =  Students::where('id', $user->user_id)->first();
+                    $guardian_name = $get_student->guardian_name;
+
+
 
                     $userData = [
-                        'name' => $user_username,
-                       /*  'surname' => $user->surname, */
+                        'name' => $guardian_name,
+                        'surname' => '',
 
                         'roles' => []
                     ];
