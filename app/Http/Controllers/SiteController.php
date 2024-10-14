@@ -10,6 +10,7 @@ use App\Models\SchSettings;
 use App\Models\CmsProgram;
 use App\Models\FrontCmsPrograms;
 use App\Models\Staff;
+use App\Models\Students;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
@@ -37,64 +38,160 @@ class SiteController extends Controller
         ]);
     }
 
-    public function login(Request $request)
-    {
-        $credentials = $request->only('username', 'password');
 
 
-        $user = Staff::where('email', $request->username)->first();
-
-
-
-
-            // Check if the password matches using CodeIgniter's hashing method
-            if (password_verify($request->password, $user->password)) {
-
-
-                Auth::guard('staff')->login($user);
-
-
-
-            return redirect()->route('admin.dashboard');  // Redirect after login
-    } else {
-
-
-        return redirect()->back()->with('error', 'Invalid credentials');
-    }
-
-
-    }
 
     public function dashboard(Request $request){
         return view('admin.dashboard');
     }
 
-    public function logout(Request $request)
+    public function login(Request $request)
 {
-    // Log out the user
-    Auth::guard('staff')->logout();
+    $credentials = $request->only('username', 'password');
 
-    // Invalidate the session
-    $request->session()->invalidate();
+    // First, try to find the user with the email
+    $user = Staff::with('roles')->where('email', $request->username)->first();
 
-    // Regenerate the session token to prevent session fixation attacks
-    $request->session()->regenerateToken();
+    // If no staff user found, look for a general user
+    if (!$user) {
+        $user = User::where('username', $request->username)->first();
 
-    // Redirect the user to the login page (or wherever you want)
+    }
 
-    /* // Error message
-return redirect()->back()->with('error', 'Your custom error message here');
+    // If user is found, check the password
+    if ($user) {
+        if (($user instanceof Staff && password_verify($request->password, $user->password)) ||
+            ($user instanceof User && $request->password === $user->password)) {
+            // Log the user in
+            Auth::login($user);
 
-// Success message
-return redirect()->back()->with('success', 'Your custom success message here');
+            // Generate a token for the user
+            $token = $user->createToken('YourAppToken')->plainTextToken;
 
-// Info message
-return redirect()->back()->with('info', 'Your custom info message here');
+            // Prepare user data
 
-// Warning message
-return redirect()->back()->with('warning', 'Your custom warning message here'); */
-    return redirect('/')->with('success', 'Logout Successfully!');
+            if ($user instanceof Staff) {
+                $userData = [
+                    'name' => $user->name,
+                    'surname' => $user->surname,
+                    'roles' => []
+                ];
+
+            } elseif ($user instanceof User) {
+
+                if($user->role == 'student')
+                {
+                   $get_student =  Students::where('id', $user->id)->first();
+                    $user_username = $get_student->firstname;
+
+
+                    $userData = [
+                        'name' => $user_username,
+                        'surname' => $get_student->lastname,
+
+                        'roles' => []
+                    ];
+                }
+
+                if($user->role == 'parent')
+                {
+
+                    $get_student =  Students::where('id', $user->user_id)->first();
+                    $guardian_name = $get_student->guardian_name;
+
+
+
+                    $userData = [
+                        'name' => $guardian_name,
+                        'surname' => '',
+
+                        'roles' => []
+                    ];
+                }
+
+
+
+            }
+
+
+            // Handle roles based on user type
+            if ($user instanceof Staff) {
+                $userData['roles'] = $user->roles->map(function ($role) {
+                    return [
+                        'id' => $role->id,
+                        'is_superadmin' => $role->is_superadmin,
+                        'name' => $role->name,
+
+                    ];
+                });
+            } elseif ($user instanceof User) {
+                // Implement your logic for User roles here
+
+
+                if($user->role == 'student')
+                {
+                    $userData['roles'] = [
+                        [
+                            'id' => '10', // Assuming User has a role_id field
+                            'is_superadmin' => 0, // Assuming User has this field
+                            'name' => $user->role, // Assuming User has this field
+                        ]
+                    ];
+
+                }
+
+                if($user->role == 'parent')
+                {
+
+                    $userData['roles'] = [
+                        [
+                            'id' => '11', // Assuming User has a role_id field
+                            'is_superadmin' => 0, // Assuming User has this field
+                            'name' => $user->role, // Assuming User has this field
+                        ]
+                    ];
+
+
+                }
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Successfully authenticated',
+                'token' => $token,
+                'users' => $userData,
+            ]);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'Authentication failed',
+            ], 401);
+        }
+    }
+
+    // If no user is found
+    return response()->json([
+        'success' => false,
+        'message' => 'User not found',
+    ], 404);
 }
+
+
+
+    public function logout(Request $request)
+    {
+        // Log out the user
+        Auth::guard('staff')->logout();
+
+        // Invalidate the session
+        $request->session()->invalidate();
+
+        // Regenerate the session token to prevent session fixation attacks
+        $request->session()->regenerateToken();
+
+
+        return redirect('/')->with('success', 'Logout Successfully!');
+    }
 
     protected function generateCaptcha()
     {
