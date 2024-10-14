@@ -41,6 +41,7 @@ use App\Http\Controllers\FeesReminderController;
 use App\Http\Controllers\HomeworkController;
 use App\Http\Controllers\LeaveTypesController;
 use App\Http\Controllers\NotificationSettingController;
+use App\Http\Controllers\ContentSectionController;
 use App\Http\Controllers\SectionsController;
 use App\Http\Controllers\StaffLeaveRequestController;
 use App\Http\Controllers\StaffPayrollController;
@@ -343,6 +344,11 @@ Route::post('/login', [SiteController::class, 'login'])->name('login');
         Route::post('/notification', [NotificationSettingController::class, 'create']);
         Route::delete('/notification/{id}', [NotificationSettingController::class, 'destroy']);
         Route::put('/notification/{id}', [NotificationSettingController::class, 'update']);
+
+        Route::get('/content-section', [ContentSectionController::class, 'index']);
+        Route::post('/content-section', [ContentSectionController::class, 'create']);
+        Route::delete('/content-section/{id}', [ContentSectionController::class, 'destroy']);
+        Route::put('/content-section/{id}', [ContentSectionController::class, 'update']);
 
 
         Route::get('/homework', [HomeworkController::class, 'index']);
