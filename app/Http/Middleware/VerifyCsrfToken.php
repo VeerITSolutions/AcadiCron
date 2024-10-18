@@ -22,6 +22,7 @@ class VerifyCsrfToken extends Middleware
 
         'api/register',
         'api/login',
+        '/admin/dtstudentlist',
         // Exclude login submission from CSRF verification
     ];
 }
