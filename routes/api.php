@@ -89,7 +89,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
 
 
-        Route::get('/admin/dtstudentlist', [StudentListController::class, 'searchdtByClassSection']);
+        Route::match(['get', 'post'],'/admin/dtstudentlist', [StudentListController::class, 'searchdtByClassSection']);
 
         Route::get('/admin/dtstudentlist/disabled', [StudentListController::class, 'getdisableStudent']);
 
