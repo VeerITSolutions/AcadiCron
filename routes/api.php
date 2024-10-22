@@ -79,6 +79,7 @@ Route::get('/', [SiteController::class, 'showLoginForm'])->name('main');
 Route::post('/login', [SiteController::class, 'login'])->name('login');
 
 Route::middleware(['auth:sanctum'])->group(function () {
+    /* test */
     Route::get('administrator/dashboard', [SiteController::class, 'dashboard'])->name('admin.dashboard');
     Route::get('/admin/income', [IncomeController::class, 'adminIncome']);
 
