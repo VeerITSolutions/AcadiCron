@@ -78,7 +78,7 @@ Route::post('/register', [SiteController::class, 'register'])->name('register');
 Route::get('/', [SiteController::class, 'showLoginForm'])->name('main');
 Route::post('/login', [SiteController::class, 'login'])->name('login');
 
-Route::middleware(['auth:sanctum'])->group(function () {
+/* Route::middleware(['auth:sanctum'])->group(function () { */
     /* test */
     Route::get('administrator/dashboard', [SiteController::class, 'dashboard'])->name('admin.dashboard');
     Route::get('/admin/income', [IncomeController::class, 'adminIncome']);
@@ -449,7 +449,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/student/profilesetting', [SiteController::class, 'studentProfileSetting']);
 
 
-});
+/* }); */
 
 
 Route::get('site/logout', [SiteController::class, 'logout'])->name('admin.logout');
