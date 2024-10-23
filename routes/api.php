@@ -50,6 +50,7 @@ use App\Http\Controllers\SearchPaymentController;
 use App\Http\Controllers\SearchDueFeesController;
 use App\Http\Controllers\LessonplanLessonController;
 use App\Http\Controllers\SchSettingsController;
+use App\Http\Controllers\SessionsController;
 use App\Http\Controllers\SubjectSyllabusController;
 
 
@@ -86,6 +87,9 @@ Route::post('/login', [SiteController::class, 'login'])->name('login');
 
 
     Route::get('/schsetting', [SchSettingsController::class, 'index']);
+
+    Route::get('/session', [SessionsController::class, 'index']);
+
 
 
 
