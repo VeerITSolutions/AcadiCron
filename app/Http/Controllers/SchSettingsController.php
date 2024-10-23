@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\SchSettings;
 use Illuminate\Http\Request;
 
 class SchSettingsController extends Controller
@@ -11,7 +12,14 @@ class SchSettingsController extends Controller
      */
     public function index()
     {
-        //
+       $data = SchSettings::first();
+
+            return response()->json([
+                'success' => true,
+                'data' => $data, // Only return the current page data
+
+            ], 200);
+
     }
 
     /**

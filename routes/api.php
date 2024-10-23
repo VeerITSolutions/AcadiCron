@@ -49,6 +49,7 @@ use App\Http\Controllers\SubjectsController;
 use App\Http\Controllers\SearchPaymentController;
 use App\Http\Controllers\SearchDueFeesController;
 use App\Http\Controllers\LessonplanLessonController;
+use App\Http\Controllers\SchSettingsController;
 use App\Http\Controllers\SubjectSyllabusController;
 
 
@@ -82,6 +83,11 @@ Route::post('/login', [SiteController::class, 'login'])->name('login');
     /* test */
     Route::get('administrator/dashboard', [SiteController::class, 'dashboard'])->name('admin.dashboard');
     Route::get('/admin/income', [IncomeController::class, 'adminIncome']);
+
+
+    Route::get('/schsetting', [SchSettingsController::class, 'index']);
+
+
 
 
 
