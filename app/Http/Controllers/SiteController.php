@@ -82,12 +82,20 @@ class SiteController extends Controller
                 if($user->role == 'student')
                 {
                    $get_student =  Students::where('id', $user->id)->first();
+                   if($get_student){
+
                     $user_username = $get_student->firstname;
+                    $user_last_name = $get_student->lastname;
+                   }else{
+                    $user_username = 'N/A';
+                    $user_last_name = 'N/A';
+                   }
+
 
 
                     $userData = [
                         'name' => $user_username,
-                        'surname' => $get_student->lastname,
+                        'surname' => $user_last_name,
 
                         'roles' => []
                     ];
