@@ -10,6 +10,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Auth;
 class AdminMiddleware
 {
+
+    /* test */
     /**
      * Handle an incoming request.
      *

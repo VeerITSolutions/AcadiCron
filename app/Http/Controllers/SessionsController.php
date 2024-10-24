@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
+use App\Models\Sessions;
 class SessionsController extends Controller
 {
     /**
@@ -11,7 +11,13 @@ class SessionsController extends Controller
      */
     public function index()
     {
-        //
+        $data = Sessions::get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $data, // Only return the current page data
+
+        ], 200);
     }
 
     /**

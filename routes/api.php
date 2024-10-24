@@ -50,6 +50,8 @@ use App\Http\Controllers\SubjectsController;
 use App\Http\Controllers\SearchPaymentController;
 use App\Http\Controllers\SearchDueFeesController;
 use App\Http\Controllers\LessonplanLessonController;
+use App\Http\Controllers\SchSettingsController;
+use App\Http\Controllers\SessionsController;
 use App\Http\Controllers\SubjectSyllabusController;
 
 
@@ -79,9 +81,18 @@ Route::post('/register', [SiteController::class, 'register'])->name('register');
 Route::get('/', [SiteController::class, 'showLoginForm'])->name('main');
 Route::post('/login', [SiteController::class, 'login'])->name('login');
 
-Route::middleware(['auth:sanctum'])->group(function () {
+/* Route::middleware(['auth:sanctum'])->group(function () { */
+    /* test */
     Route::get('administrator/dashboard', [SiteController::class, 'dashboard'])->name('admin.dashboard');
     Route::get('/admin/income', [IncomeController::class, 'adminIncome']);
+
+
+    Route::get('/schsetting', [SchSettingsController::class, 'index']);
+
+    Route::get('/session', [SessionsController::class, 'index']);
+
+
+
 
 
 
@@ -454,7 +465,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/student/profilesetting', [SiteController::class, 'studentProfileSetting']);
 
 
-});
+/* }); */
 
 
 Route::get('site/logout', [SiteController::class, 'logout'])->name('admin.logout');
