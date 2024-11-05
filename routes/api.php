@@ -53,6 +53,7 @@ use App\Http\Controllers\LessonplanLessonController;
 use App\Http\Controllers\SchSettingsController;
 use App\Http\Controllers\SessionsController;
 use App\Http\Controllers\SubjectSyllabusController;
+use App\Http\Controllers\SubjectGroupsController;
 
 
 /*
@@ -432,6 +433,13 @@ Route::post('/login', [SiteController::class, 'login'])->name('login');
         Route::post('/lessonplan-lesson', [LessonplanLessonController::class, 'create']);
         Route::delete('/lessonplan-lesson/{id}', [LessonplanLessonController::class, 'destroy']);
         Route::put('/lessonplan-lesson/{id}', [LessonplanLessonController::class, 'update']);
+
+
+
+        Route::get('/subject-groups', [SubjectGroupsController::class, 'index']);
+        Route::post('/subject-groups', [SubjectGroupsController::class, 'create']);
+        Route::delete('/subject-groups/{id}', [SubjectGroupsController::class, 'destroy']);
+        Route::put('/subject-groups/{id}', [SubjectGroupsController::class, 'update']);
 
 
 

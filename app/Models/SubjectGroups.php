@@ -8,4 +8,5 @@ use Illuminate\Database\Eloquent\Model;
 class SubjectGroups extends Model
 {
     use HasFactory;
+    protected $fillable = ['name','description'];
 }
