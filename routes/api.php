@@ -54,6 +54,7 @@ use App\Http\Controllers\SchSettingsController;
 use App\Http\Controllers\SessionsController;
 use App\Http\Controllers\SubjectSyllabusController;
 use App\Http\Controllers\SubjectGroupsController;
+use App\Http\Controllers\StudentFeesController;
 
 
 /*
@@ -440,6 +441,14 @@ Route::post('/login', [SiteController::class, 'login'])->name('login');
         Route::post('/subject-groups', [SubjectGroupsController::class, 'create']);
         Route::delete('/subject-groups/{id}', [SubjectGroupsController::class, 'destroy']);
         Route::put('/subject-groups/{id}', [SubjectGroupsController::class, 'update']);
+
+
+        Route::get('/studentfees', [StudentFeesController::class, 'index']);
+        Route::post('/studentfees', [StudentFeesController::class, 'create']);
+        Route::delete('/studentfees/{id}', [StudentFeesController::class, 'destroy']);
+        Route::put('/studentfees/{id}', [StudentFeesController::class, 'update']);
+
+
 
 
 
