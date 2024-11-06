@@ -41,6 +41,7 @@ use App\Http\Controllers\FeesReminderController;
 use App\Http\Controllers\HomeworkController;
 use App\Http\Controllers\LeaveTypesController;
 use App\Http\Controllers\NotificationSettingController;
+use App\Http\Controllers\ContentSectionController;
 use App\Http\Controllers\SectionsController;
 use App\Http\Controllers\StaffLeaveRequestController;
 use App\Http\Controllers\StaffPayrollController;
@@ -52,6 +53,7 @@ use App\Http\Controllers\LessonplanLessonController;
 use App\Http\Controllers\SchSettingsController;
 use App\Http\Controllers\SessionsController;
 use App\Http\Controllers\SubjectSyllabusController;
+use App\Http\Controllers\SubjectGroupsController;
 
 
 /*
@@ -99,7 +101,7 @@ Route::post('/login', [SiteController::class, 'login'])->name('login');
 
 
 
-        Route::get('/admin/dtstudentlist', [StudentListController::class, 'searchdtByClassSection']);
+        Route::match(['get', 'post'],'/admin/dtstudentlist', [StudentListController::class, 'searchdtByClassSection']);
 
         Route::get('/admin/dtstudentlist/disabled', [StudentListController::class, 'getdisableStudent']);
 
@@ -355,6 +357,11 @@ Route::post('/login', [SiteController::class, 'login'])->name('login');
         Route::delete('/notification/{id}', [NotificationSettingController::class, 'destroy']);
         Route::put('/notification/{id}', [NotificationSettingController::class, 'update']);
 
+        Route::get('/content-section', [ContentSectionController::class, 'index']);
+        Route::post('/content-section', [ContentSectionController::class, 'create']);
+        Route::delete('/content-section/{id}', [ContentSectionController::class, 'destroy']);
+        Route::put('/content-section/{id}', [ContentSectionController::class, 'update']);
+
 
         Route::get('/homework', [HomeworkController::class, 'index']);
         Route::post('/homework', [HomeworkController::class, 'create']);
@@ -426,6 +433,13 @@ Route::post('/login', [SiteController::class, 'login'])->name('login');
         Route::post('/lessonplan-lesson', [LessonplanLessonController::class, 'create']);
         Route::delete('/lessonplan-lesson/{id}', [LessonplanLessonController::class, 'destroy']);
         Route::put('/lessonplan-lesson/{id}', [LessonplanLessonController::class, 'update']);
+
+
+
+        Route::get('/subject-groups', [SubjectGroupsController::class, 'index']);
+        Route::post('/subject-groups', [SubjectGroupsController::class, 'create']);
+        Route::delete('/subject-groups/{id}', [SubjectGroupsController::class, 'destroy']);
+        Route::put('/subject-groups/{id}', [SubjectGroupsController::class, 'update']);
 
 
 
