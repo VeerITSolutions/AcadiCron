@@ -12,30 +12,40 @@ class StudentListController extends Controller
 {
     public function searchdtByClassSection(Request $request)
     {
-        $page = $request->input('page', 1); // Default to page 1 if not provided
-        $perPage = $request->input('perPage', 10); // Default to 10 records per page if not provided
+        $id = $request->input('id');
+        $page = (int) $request->input('page', 1); // Default to page 1 if not provided
+        $perPage = (int) $request->input('perPage', 10); // Default to 10 records per page if not provided
         $selectedClass = $request->input('selectedClass');
         $selectedSection = $request->input('selectedSection');
         $keyword = $request->input('keyword');
 
-        // Validate inputs
-        $page = (int) $page;
-        $perPage = (int) $perPage;
-
-        // Ensure $perPage is a positive integer and set a reasonable maximum value if needed
+        // Ensure $perPage is a positive integer and set a maximum limit
         if ($perPage <= 0 || $perPage > 100) {
-            $perPage = 10; // Default value if invalid
+            $perPage = 10;
         }
 
         // Build the query for students
         $query = Students::join('student_session', 'student_session.student_id', '=', 'students.id')
-
-
             ->join('classes', 'classes.id', '=', 'student_session.class_id')
-        ->join('sections', 'sections.id', '=', 'student_session.section_id')
+            ->join('sections', 'sections.id', '=', 'student_session.section_id')
+            ->select(
+                'students.*',
+                'student_session.class_id as class_id',
+                'student_session.section_id as section_id',
+                'classes.class as class_name',
+                'sections.section as section_name'
+            );
 
+        // Apply filtering based on student ID
+        if (!empty($id)) {
+            $query->where('students.id', $id);
+            $student = $query->first(); // Fetch a single result without pagination
 
-        ->select('students.*', 'student_session.class_id as class_id', 'student_session.section_id as section_id','classes.class as class_name', 'sections.section as section_name');
+            return response()->json([
+                'success' => true,
+                'data' => $student,
+            ], 200);
+        }
 
         // Apply filtering based on selectedClass
         if (!empty($selectedClass)) {
@@ -52,7 +62,7 @@ class StudentListController extends Controller
             $query->where('students.firstname', 'like', '%' . $keyword . '%');
         }
 
-        // Paginate the filtered students data
+        // Paginate the filtered students data if id is not present
         $data = $query->paginate($perPage, ['*'], 'page', $page);
 
         // Return the paginated data with total count and pagination details
@@ -64,6 +74,8 @@ class StudentListController extends Controller
             'currentPage' => $data->currentPage(), // Current page
         ], 200);
     }
+
+
 
 
     public function getdisableStudent(Request $request)
