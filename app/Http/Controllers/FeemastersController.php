@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Feemasters;
+use App\Models\FeeGroups;
+use App\Models\Feetype;
+use App\Models\FeeSessionGroups;
 use Illuminate\Http\Request;
 
 class FeemastersController extends Controller
@@ -12,34 +15,31 @@ class FeemastersController extends Controller
      */
     public function index(Request $request)
     {
-        $page = $request->input('page', 1); // Default to page 1 if not provided
-        $perPage = $request->input('perPage', 10); // Default to 10 records per page if not provided
-
-        // Validate the inputs (optional)
-        $page = (int) $page;
-        $perPage = (int) $perPage;
-
-        // Ensure $perPage is a positive integer and set a reasonable maximum value if needed
-        if ($perPage <= 0 || $perPage > 100) {
-            $perPage = 10; // Default value if invalid
-        }
-
-        // Paginate the students data
-        $data = Feemasters::paginate($perPage, ['*'], 'page', $page);
-
-        // Prepare the response message
-        $message = '';
-
-        // Return the paginated data with total count and pagination details
+        // Fetch the data
+        $feegroupList = FeeGroups::latest()->get();
+        $feetypeList = Feetype::latest()->get();
+        $feemasterList = FeeSessionGroups::all(); // Use ::all() if no custom method is needed
+    
+        // Prepare the response data
+        $data = [
+            'feegroupList' => $feegroupList,
+            'feetypeList' => $feetypeList,
+            'feemasterList' => $feemasterList,
+        ];
+    
+        // Return JSON response with data and total counts
         return response()->json([
             'success' => true,
-            'data' => $data->items(), // Only return the current page data
-            'totalCount' => $data->total(), // Total number of records
-            'rowsPerPage' => $data->lastPage(), // Total number of pages
-            'currentPage' => $data->currentPage(), // Current page
-            'message' => $message,
+            'data' => $data,
+            'totalCounts' => [
+                'feegroupCount' => $feegroupList->count(),
+                'feetypeCount' => $feetypeList->count(),
+                'feemasterCount' => $feemasterList->count(),
+            ],
+            'message' => 'Data retrieved successfully',
         ], 200);
     }
+    
 
 
 
@@ -48,14 +48,13 @@ class FeemastersController extends Controller
      */
     public function create(Request $request){
 
-
         // Validate the incoming request
         $validatedData = $request->validate([
-            'house_name' => 'required|string|max:255',
+            'fees_group' => 'required|string|max:255',
         ]);
 
         // Check if the category already exists in the Category model
-        $existingCategory = Feemasters::where('house_name', $validatedData['house_name'])->first();
+        $existingCategory = Feemasters::where('fees_group', $validatedData['fees_group'])->first();
 
         if ($existingCategory) {
             return response()->json([
@@ -66,10 +65,17 @@ class FeemastersController extends Controller
 
         // Create a new category
         $category = new Feemasters();
-        $category->house_name = $validatedData['house_name'];
-        $category->description = $request->description;
+        $category->fees_group = $validatedData['fees_group'];
+        $category->fees_type = $request->fees_type;
+        $category->due_date = $request->due_date;
+        $category->amount = $request->amount;
+        $category->fine_type = $request->fine_type;
+        $category->percentage = $request->percentage;
+        $category->fine_amount = $request->fine_amount;
         $category->is_active = 0;
         $category->save();
+
+       
 
         return response()->json([
             'success' => true,
