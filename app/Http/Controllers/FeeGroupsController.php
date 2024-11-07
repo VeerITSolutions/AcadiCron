@@ -31,13 +31,13 @@ class FeeGroupsController extends Controller
      * Show the form for creating a new resource.
      */
     public function create(Request $request){
-        $type = $request->type;
+        $name = $request->name;
         $validatedData = $request->validate([
-            'type' => 'required',
+            'name' => 'required',
         ]);
 
         // Check if the category already exists in the Category model
-        $existingCategory = FeeGroups::where('type', $type)->first();
+        $existingCategory = FeeGroups::where('name', $name)->first();
 
         if ($existingCategory) {
             return response()->json([
@@ -48,12 +48,16 @@ class FeeGroupsController extends Controller
 
         // Create a new category
         $category = new FeeGroups();
-        $category->type= $request->type;
+        $category->name= $request->name;
         $category->is_system= 0;
-        $category->code= $request->code;
+        $category->description= $request->description;
         $category->feecategory_id= $request->feecategory_id ? $request->feecategory_id : null ;
+        $category->code= $request->code;
         $category->is_active = $request->is_active ?  $request->is_active  : 'no';
         $category->save();
+
+
+       
 
         return response()->json([
             'success' => true,
@@ -102,7 +106,7 @@ class FeeGroupsController extends Controller
             ]);
 
             // Get the description from the request without validation
-            $code = $request->input('code');
+            $description = $request->input('description');
             $is_active = $request->input('is_active');
             $type = $request->input('type');
 
@@ -111,7 +115,7 @@ class FeeGroupsController extends Controller
             // Merge the validated data with the description
             $updatedData = array_merge($validatedData, [
            
-                'code' => $code,
+                'description' => $description,
                 'is_active' => $is_active,
                 'type' => $type,
             ]);
