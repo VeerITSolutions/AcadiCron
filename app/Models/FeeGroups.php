@@ -11,5 +11,5 @@ class FeeGroups extends Model
 
     protected $table = 'feetype';
 
-    protected $fillable = ['name','is_active','description'];
+    protected $fillable = ['type','is_active','description'];
 }
