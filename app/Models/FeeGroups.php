@@ -9,7 +9,9 @@ class FeeGroups extends Model
 {
     use HasFactory;
 
-    protected $table = 'feetype';
+    public $timestamps = false;
 
-    protected $fillable = ['type','is_active','description'];
+    protected $table = 'fee_groups';
+
+    protected $fillable = ['name','is_active','description'];
 }

@@ -13,24 +13,25 @@ class FeeGroupsController extends Controller
      */
     public function index(Request $request)
 {
-    // Get pagination inputs, default to page 1 and 10 records per page if not provided
     $page = (int) $request->input('page', 1);
-    $perPage = (int) $request->input('perPage', 10);
+$perPage = (int) $request->input('perPage', 10);
 
-    // Build the query for FeeGroups
-    $query = DB::table('fee_groups')->select('fee_groups.*');
+// Build the query for FeeGroups and order by created_at in descending order
+$query = DB::table('fee_groups')->select('fee_groups.*')
+            ->orderBy('created_at', 'desc'); // Adjust column name if needed
 
-    // Apply pagination
-    $paginatedData = $query->paginate($perPage, ['*'], 'page', $page);
+// Apply pagination
+$paginatedData = $query->paginate($perPage, ['*'], 'page', $page);
 
-    // Return paginated data with pagination details
-    return response()->json([
-        'success' => true,
-        'data' => $paginatedData->items(), // Current page data
-        'current_page' => $paginatedData->currentPage(),
-        'per_page' => $paginatedData->perPage(),
-        'total' => $paginatedData->total(),
-    ], 200);
+// Return paginated data with pagination details
+return response()->json([
+    'success' => true,
+    'data' => $paginatedData->items(), // Current page data
+    'current_page' => $paginatedData->currentPage(),
+    'per_page' => $paginatedData->perPage(),
+    'total' => $paginatedData->total(),
+], 200);
+
 }
 
 
@@ -124,7 +125,9 @@ class FeeGroupsController extends Controller
             ]);
             // Get the description from the request without validation
             $description = $request->input('description');
-            $is_active = $request->input('is_active');
+           
+
+            $is_active = $request->input('is_active') ?  $request->input('is_active')  : 'no';
             $name = $request->input('name');
             // Merge the validated data with the description
             $updatedData = array_merge($validatedData, [
