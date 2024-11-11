@@ -55,6 +55,7 @@ use App\Http\Controllers\SessionsController;
 use App\Http\Controllers\SubjectSyllabusController;
 use App\Http\Controllers\SubjectGroupsController;
 use App\Http\Controllers\StudentFeesController;
+use App\Http\Controllers\StudentApplyleaveController;
 
 
 /*
@@ -318,8 +319,6 @@ Route::post('/login', [SiteController::class, 'login'])->name('login');
         Route::put('/sections/{id}', [SectionsController::class, 'update']);
         Route::get('/sections-by-class', [SectionsController::class, 'sectionByClass']);
 
-
-
         Route::get('/department', [DepartmentController::class, 'index']);
         Route::post('/department', [DepartmentController::class, 'create']);
         Route::delete('/department/{id}', [DepartmentController::class, 'destroy']);
@@ -330,12 +329,11 @@ Route::post('/login', [SiteController::class, 'login'])->name('login');
         Route::delete('/designation/{id}', [StaffDesignationController::class, 'destroy']);
         Route::put('/designation/{id}', [StaffDesignationController::class, 'update']);
 
-
         Route::get('/timetable', [TimetablesController::class, 'index']);
         Route::get('/timetable-by/{class_id?}/{section_id?}/{group_id?}/{day_id?}', [TimetablesController::class, 'getBySubjectGroupDayClassSection']);
 
-
         Route::get('/staff-payroll', [StaffPayrollController::class, 'index']);
+
         Route::get('/leave-request', [StaffLeaveRequestController::class, 'index']);
         Route::post('/leave-request', [StaffLeaveRequestController::class, 'create']);
         Route::delete('/leave-request/{id}', [StaffLeaveRequestController::class, 'destroy']);
@@ -345,8 +343,6 @@ Route::post('/login', [SiteController::class, 'login'])->name('login');
         Route::post('/leave-type', [LeaveTypesController::class, 'create']);
         Route::delete('/leave-type/{id}', [LeaveTypesController::class, 'destroy']);
         Route::put('/leave-type/{id}', [LeaveTypesController::class, 'update']);
-
-
 
         Route::get('/content-for-upload', [ContentForController::class, 'index']);
         Route::post('/content-for-upload', [ContentForController::class, 'create']);
@@ -358,6 +354,7 @@ Route::post('/login', [SiteController::class, 'login'])->name('login');
         Route::delete('/notification/{id}', [NotificationSettingController::class, 'destroy']);
         Route::put('/notification/{id}', [NotificationSettingController::class, 'update']);
 
+        
         Route::get('/content-section', [ContentSectionController::class, 'index']);
         Route::post('/content-section', [ContentSectionController::class, 'create']);
         Route::delete('/content-section/{id}', [ContentSectionController::class, 'destroy']);
@@ -447,6 +444,12 @@ Route::post('/login', [SiteController::class, 'login'])->name('login');
         Route::post('/studentfees', [StudentFeesController::class, 'create']);
         Route::delete('/studentfees/{id}', [StudentFeesController::class, 'destroy']);
         Route::put('/studentfees/{id}', [StudentFeesController::class, 'update']);
+
+
+        Route::get('/approve-leave', [StudentApplyleaveController::class, 'index']);
+        Route::post('/approve-leave', [StudentApplyleaveController::class, 'create']);
+        Route::delete('/approve-leave/{id}', [StudentApplyleaveController::class, 'destroy']);
+        Route::put('/approve-leave/{id}', [StudentApplyleaveController::class, 'update']);
 
 
 
