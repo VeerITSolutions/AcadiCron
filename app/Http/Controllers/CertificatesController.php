@@ -12,24 +12,25 @@ class CertificatesController extends Controller
      * Display a listing of the resource.
      */
 
-     public function index(Request $request, $id = null, $role = null)
-     {
-          // Get pagination inputs, default to page 1 and 10 records per page if not provided
+   
+public function index(Request $request, $id = null, $role = null)
+{
+    // Get pagination inputs, default to page 1 and 10 records per page if not provided
     $page = (int) $request->input('page', 1);
     $perPage = (int) $request->input('perPage', 10);
 
-    // Role ID (replace or customize as per your logic)
+    // Role ID (set this based on your application's needs)
     $role_id = 1;
 
-    // Build the query
+    // Build the query to retrieve active certificates
     $query = DB::table('certificates')
-    ->select('certificates.*')
-    ->where('certificates.status', '=', 1); // Corrected where clause
+        ->select('certificates.*')
+        ->where('certificates.status', '=', 1);
 
-// Apply pagination
-$paginatedData = $query->paginate($perPage, ['*'], 'page', $page);
+    // Apply pagination to the query
+    $paginatedData = $query->paginate($perPage, ['*'], 'page', $page);
 
-    // Return paginated data with total count and pagination details
+    // Return the response with paginated data
     return response()->json([
         'success' => true,
         'data' => $paginatedData->items(), // Only return the current page data
@@ -37,8 +38,7 @@ $paginatedData = $query->paginate($perPage, ['*'], 'page', $page);
         'per_page' => $paginatedData->perPage(),
         'total' => $paginatedData->total(),
     ], 200);
-     }
-
+}
 
 
 
@@ -47,40 +47,45 @@ $paginatedData = $query->paginate($perPage, ['*'], 'page', $page);
      */
     public function create(Request $request){
 
+        $certificate_name = $request->certificate_name;
 
-        // Validate the incoming request
-        $validatedData = $request->all();
+        $validatedData = $request->validate([
+            'certificate_name' => 'required',
+        ]);
 
+        // Check if the category already exists in the Category model
+        $existingCategory = Certificates::where('certificate_name', $certificate_name)->first();
+
+    
+        if ($existingCategory) {
+            return response()->json([
+                'success' => false,
+                'message' => 'fees name already exists',
+            ], 409); // 409 Conflict status code
+        }
 
         // Create a new category
         $category = new Certificates();
-        $category->class_id = $validatedData['class_id'];
-        $category->section_id = $validatedData['section_id'];
-        $category->session_id = $validatedData['session_id'];
-        $category->Certificates_date = $validatedData['Certificates_date'];
-        $category->submit_date = $validatedData['submit_date'];
-        $category->staff_id = $validatedData['staff_id'];
-        $category->subject_group_subject_id = $validatedData['subject_group_subject_id'];
-        $category->subject_id = $validatedData['subject_id'];
-        $category->description = $validatedData['description'];
-        $category->create_date = $validatedData['create_date'];
-        $category->evaluation_date = $validatedData['evaluation_date'];
-        $category->document = $validatedData['document'];
-        $category->created_by = $validatedData['created_by'];
-        $category->evaluated_by = $validatedData['evaluated_by'];
-        $category->subject_name = $validatedData['subject_name'];
-        $category->subject_groups_id = $validatedData['subject_groups_id'];
-        $category->name = $validatedData['name'];
-        $category->assignments = $validatedData['assignments'];
 
+        $category->certificate_name= $request->certificate_name;
+        $category->certificate_text= $request->certificate_text;
+        $category->left_header= $request->left_header;
+        $category->center_header= $request->center_header;
+        $category->right_header= $request->right_header;
+        $category->left_footer= $request->left_footer;
+        $category->right_footer= $request->right_footer;
+        $category->center_footer= $request->center_footer;
+        $category->background_image= $request->background_image;
+      
         $category->save();
 
         return response()->json([
             'success' => true,
-            'message' => 'Certificate saved successfully',
+            'message' => 'fees name saved successfully',
             'category' => $category,
         ], 201); // 201 Created status code
     }
+
 
 
     /**
