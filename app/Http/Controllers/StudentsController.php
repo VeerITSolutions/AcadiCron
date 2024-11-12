@@ -134,33 +134,75 @@ $paginatedData = $query->paginate($perPage, ['*'], 'page', $page);
         $validatedData = $request->all();
 
 
-        // Create a new category
-        $category = new Students();
-        $category->class_id = $validatedData['class_id'];
-        $category->section_id = $validatedData['section_id'];
-        $category->session_id = $validatedData['session_id'];
-        $category->Students_date = $validatedData['Students_date'];
-        $category->submit_date = $validatedData['submit_date'];
-        $category->staff_id = $validatedData['staff_id'];
-        $category->subject_group_subject_id = $validatedData['subject_group_subject_id'];
-        $category->subject_id = $validatedData['subject_id'];
-        $category->description = $validatedData['description'];
-        $category->create_date = $validatedData['create_date'];
-        $category->evaluation_date = $validatedData['evaluation_date'];
-        $category->document = $validatedData['document'];
-        $category->created_by = $validatedData['created_by'];
-        $category->evaluated_by = $validatedData['evaluated_by'];
-        $category->subject_name = $validatedData['subject_name'];
-        $category->subject_groups_id = $validatedData['subject_groups_id'];
-        $category->name = $validatedData['name'];
-        $category->assignments = $validatedData['assignments'];
 
-        $category->save();
+        // Create a new category
+        $student = new Students();
+        $student->parent_id = $validatedData['parent_id'];
+        $student->admission_no = $validatedData['admission_no'];
+        $student->roll_no = $validatedData['roll_no'];
+        $student->admission_date = $validatedData['admission_date'];
+        $student->firstname = $validatedData['firstname'];
+        $student->middlename = $validatedData['middlename'];
+        $student->lastname = $validatedData['lastname'];
+        $student->rte = $validatedData['rte'];
+        $student->image = $validatedData['image'];
+        $student->mobileno = $validatedData['mobileno'];
+        $student->email = $validatedData['email'];
+        $student->state = $validatedData['state'];
+        $student->city = $validatedData['city'];
+        $student->pincode = $validatedData['pincode'];
+        $student->religion = $validatedData['religion'];
+        $student->cast = $validatedData['cast'];
+        $student->dob = $validatedData['dob'];
+        $student->gender = $validatedData['gender'];
+        $student->current_address = $validatedData['current_address'];
+        $student->permanent_address = $validatedData['permanent_address'];
+        $student->category_id = $validatedData['category_id'];
+        $student->route_id = $validatedData['route_id'];
+        $student->school_house_id = $validatedData['school_house_id'];
+        $student->blood_group = $validatedData['blood_group'];
+        $student->vehroute_id = $validatedData['vehroute_id'];
+        $student->hostel_room_id = $validatedData['hostel_room_id'];
+        $student->adhar_no = $validatedData['adhar_no'];
+        $student->samagra_id = $validatedData['samagra_id'];
+        $student->bank_account_no = $validatedData['bank_account_no'];
+        $student->bank_name = $validatedData['bank_name'];
+        $student->ifsc_code = $validatedData['ifsc_code'];
+        $student->guardian_is = $validatedData['guardian_is'];
+        $student->father_name = $validatedData['father_name'];
+        $student->father_phone = $validatedData['father_phone'];
+        $student->father_occupation = $validatedData['father_occupation'];
+        $student->mother_name = $validatedData['mother_name'];
+        $student->mother_phone = $validatedData['mother_phone'];
+        $student->mother_occupation = $validatedData['mother_occupation'];
+        $student->guardian_name = $validatedData['guardian_name'];
+        $student->guardian_relation = $validatedData['guardian_relation'];
+        $student->guardian_phone = $validatedData['guardian_phone'];
+        $student->guardian_occupation = $validatedData['guardian_occupation'];
+        $student->guardian_address = $validatedData['guardian_address'];
+        $student->guardian_email = $validatedData['guardian_email'];
+        $student->father_pic = $validatedData['father_pic'];
+        $student->mother_pic = $validatedData['mother_pic'];
+        $student->guardian_pic = $validatedData['guardian_pic'];
+        $student->is_active = $validatedData['is_active'];
+        $student->previous_school = $validatedData['previous_school'];
+        $student->height = $validatedData['height'];
+        $student->weight = $validatedData['weight'];
+        $student->measurement_date = $validatedData['measurement_date'];
+        $student->dis_reason = $validatedData['dis_reason'];
+        $student->note = $validatedData['note'];
+        $student->dis_note = $validatedData['dis_note'];
+        $student->app_key = $validatedData['app_key'];
+        $student->parent_app_key = $validatedData['parent_app_key'];
+        $student->disable_at = $validatedData['disable_at'];
+
+
+        $student->save();
 
         return response()->json([
             'success' => true,
-            'message' => 'Certificate saved successfully',
-            'category' => $category,
+            'message' => 'Student Added successfully',
+            'student' => $student,
         ], 201); // 201 Created status code
     }
 
@@ -170,7 +212,7 @@ $paginatedData = $query->paginate($perPage, ['*'], 'page', $page);
      */
     public function store(Request $request)
     {
-        //
+
     }
 
     /**
