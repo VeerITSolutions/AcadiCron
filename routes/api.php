@@ -444,6 +444,7 @@ Route::post('/login', [SiteController::class, 'login'])->name('login');
 
 
         Route::get('/studentfees', [StudentFeesController::class, 'index']);
+        Route::post('/student-fees', [StudentFeesController::class, 'getStudentFees']);
         Route::post('/studentfees', [StudentFeesController::class, 'create']);
         Route::delete('/studentfees/{id}', [StudentFeesController::class, 'destroy']);
         Route::put('/studentfees/{id}', [StudentFeesController::class, 'update']);

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\StudentFeesMaster;
 use Illuminate\Http\Request; // Add this line
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\View;
@@ -13,56 +14,69 @@ class StudentFeesController extends Controller
      */
     public function index(Request $request, $id = null, $role = null)
     {
-        // Check if a user is authenticated and has privilege
-        $user = auth()->user();
-        if (!$user || !$user->hasPrivilege('collect_fees', 'can_view')) {
-            // Return a generic response without indicating access denial
-            return response()->json([
-                'success' => true,
-                'data' => [
-                    'students' => [],
-                    'sch_setting' => null,
-                    'classlist' => [],
-                ],
-                'current_page' => 1,
-                'per_page' => 10,
-                'total' => 0,
-            ], 200);
+        $student_session_id = $request->student_session_id;
+
+        // Fetching the student's fees along with fee group details
+            $result = StudentFeesMaster::where('student_session_id', $student_session_id)
+            ->join('fee_session_groups', 'student_fees_master.fee_session_group_id', '=', 'fee_session_groups.id')
+            ->join('fee_groups', 'fee_groups.id', '=', 'fee_session_groups.fee_groups_id')
+            ->select('student_fees_master.*', 'fee_groups.name')
+            ->orderBy('student_fees_master.id')
+            ->get();
+
+        // Adding additional data by iterating over each result
+        foreach ($result as $result_key => $result_value) {
+            $fee_session_group_id = $result_value->fee_session_group_id;
+            $student_fees_master_id = $result_value->id;
+
+            // Assuming getDueFeeByFeeSessionGroup is a method to fetch due fees
+            $result_value->fees = $this->getDueFeeByFeeSessionGroup($fee_session_group_id, $student_fees_master_id);
+
+            // Adjusting the amount if 'is_system' is not zero
+            if ($result_value->is_system != 0 && isset($result_value->fees[0])) {
+                $result_value->fees[0]->amount = $result_value->amount;
+            }
         }
-    
-        // Set session data for menus
-        Session::put('top_menu', __('fees_collection'));
-        Session::put('sub_menu', 'studentfee/index');
-    
-        // Pagination inputs with defaults
-        $page = (int) $request->input('page', 1);
-        $perPage = (int) $request->input('perPage', 10);
-    
-        // Fetch school settings and classes
-        $sch_setting = $this->sch_setting_detail;
-        $classlist = $this->class_model->get();
-    
-        // Build the query
-        $query = DB::table('students')
-            ->select('students.*');
-    
-        // Apply pagination
-        $paginatedData = $query->paginate($perPage, ['*'], 'page', $page);
-    
-        // Return JSON response with paginated data and additional information
+
         return response()->json([
             'success' => true,
-            'data' => [
-                'students' => $paginatedData->items(),
-                'sch_setting' => $sch_setting,
-                'classlist' => $classlist,
-            ],
-            'current_page' => $paginatedData->currentPage(),
-            'per_page' => $paginatedData->perPage(),
-            'total' => $paginatedData->total(),
+            'data' => $result,
         ], 200);
     }
-    
+
+    public function getStudentFees(Request $request, $id = null, $role = null)
+    {
+        $student_session_id = $request->student_session_id;
+
+        // Fetching the student's fees along with fee group details
+            $result = StudentFeesMaster::where('student_session_id', $student_session_id)
+            ->join('fee_session_groups', 'student_fees_master.fee_session_group_id', '=', 'fee_session_groups.id')
+            ->join('fee_groups', 'fee_groups.id', '=', 'fee_session_groups.fee_groups_id')
+            ->select('student_fees_master.*', 'fee_groups.name')
+            ->orderBy('student_fees_master.id')
+            ->get();
+
+        // Adding additional data by iterating over each result
+        foreach ($result as $result_key => $result_value) {
+            $fee_session_group_id = $result_value->fee_session_group_id;
+            $student_fees_master_id = $result_value->id;
+
+            // Assuming getDueFeeByFeeSessionGroup is a method to fetch due fees
+            $result_value->fees = $this->getDueFeeByFeeSessionGroup($fee_session_group_id, $student_fees_master_id);
+
+            // Adjusting the amount if 'is_system' is not zero
+            if ($result_value->is_system != 0 && isset($result_value->fees[0])) {
+                $result_value->fees[0]->amount = $result_value->amount;
+            }
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => $result,
+        ], 200);
+    }
+
+
 
     /**
      * Show the form for creating a new resource.
