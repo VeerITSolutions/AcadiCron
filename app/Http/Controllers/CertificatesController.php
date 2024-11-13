@@ -75,6 +75,10 @@ public function index(Request $request, $id = null, $role = null)
         $category->left_footer= $request->left_footer;
         $category->right_footer= $request->right_footer;
         $category->center_footer= $request->center_footer;
+        $category->header_height= $request->header_height;
+        $category->content_height= $request->content_height;
+        $category->footer_height= $request->footer_height;
+        $category->content_width= $request->content_width;
         $category->background_image= $request->background_image;
       
         $category->save();
@@ -128,10 +132,6 @@ public function index(Request $request, $id = null, $role = null)
 
         // Update the category
         $category->update($validatedData);
-
-
-
-
         return response()->json([
             'success' => true,
             'message' => 'Edit successfully',
