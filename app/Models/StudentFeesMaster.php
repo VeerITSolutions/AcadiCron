@@ -8,4 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class StudentFeesMaster extends Model
 {
     use HasFactory;
+
+
+
+    protected $table = 'student_fees_master';
+    public $timestamps = false;
 }
