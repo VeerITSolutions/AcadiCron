@@ -155,10 +155,6 @@ class FeesDiscountsController extends Controller
 
         // Update the category
         $feetype->update($updatedData);
-
-
-
-
         return response()->json([
             'success' => true,
             'message' => 'Edit successfully',
