@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\StudentFeesMaster;
+use App\Models\StudentSession;
 use Illuminate\Http\Request; // Add this line
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
@@ -51,10 +52,14 @@ class StudentFeesController extends Controller
 
     public function getStudentFees(Request $request, $id = null, $role = null)
     {
-        $student_session_id = $request->student_session_id;
+
+
+
+        $student_session_id = StudentSession::where('student_id', $request->id)->where('session_id', 20)->first();
+
 
         // Fetching the student's fees along with fee group details
-        $result = StudentFeesMaster::where('student_session_id', $student_session_id)
+        $result = StudentFeesMaster::where('student_session_id', $student_session_id->id)
             ->join('fee_session_groups', 'student_fees_master.fee_session_group_id', '=', 'fee_session_groups.id')
             ->join('fee_groups', 'fee_groups.id', '=', 'fee_session_groups.fee_groups_id')
             ->select('student_fees_master.*', 'fee_groups.name')
