@@ -354,7 +354,7 @@ Route::post('/login', [SiteController::class, 'login'])->name('login');
         Route::delete('/notification/{id}', [NotificationSettingController::class, 'destroy']);
         Route::put('/notification/{id}', [NotificationSettingController::class, 'update']);
 
-        
+
         Route::get('/content-section', [ContentSectionController::class, 'index']);
         Route::post('/content-section', [ContentSectionController::class, 'create']);
         Route::delete('/content-section/{id}', [ContentSectionController::class, 'destroy']);
