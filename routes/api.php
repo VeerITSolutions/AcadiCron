@@ -452,6 +452,11 @@ Route::post('/login', [SiteController::class, 'login'])->name('login');
         Route::delete('/approve-leave/{id}', [StudentApplyleaveController::class, 'destroy']);
         Route::put('/approve-leave/{id}', [StudentApplyleaveController::class, 'update']);
 
+        Route::get('/staff-attendance', [StaffAttendanceController::class, 'index']);
+        Route::post('/staff-attendance', [StaffAttendanceController::class, 'create']);
+        Route::delete('/staff-attendance/{id}', [StaffAttendanceController::class, 'destroy']);
+        Route::put('/staff-attendance/{id}', [StaffAttendanceController::class, 'update']);
+
 
 
 
