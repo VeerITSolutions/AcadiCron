@@ -236,17 +236,18 @@ $paginatedData = $query->paginate($perPage, ['*'], 'page', $page);
      */
 
 
-    public function update(Request $request,string $id)
+    public function update(Request $request)
     {
+        $id = $request->id;
 
         // Find the category by id
-        $category = Students::findOrFail($id);
+        $student = Students::findOrFail($id);
 
         // Validate the request data
-        $validatedData = $request->all();
+        /* $validatedData = $request->all(); */
 
         // Update the category
-        $category->update($validatedData);
+        $student->update($request->all());
 
 
 
@@ -254,7 +255,7 @@ $paginatedData = $query->paginate($perPage, ['*'], 'page', $page);
         return response()->json([
             'success' => true,
             'message' => 'Edit successfully',
-            'category' => $category,
+            'category' => $student,
         ], 201); // 201 Created status code
     }
 
