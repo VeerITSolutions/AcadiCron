@@ -10,4 +10,14 @@ class StudentSession extends Model
     use HasFactory;
 
     protected $table = 'student_session';
+
+    protected $fillable = [
+        'student_id',
+'section_id',
+'class_id',
+'route_id',
+'hostel_room_id',
+'vehroute_id',
+'is_alumni'
+    ];
 }

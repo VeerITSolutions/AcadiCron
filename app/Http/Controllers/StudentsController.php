@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Students;
+use App\Models\StudentSession;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -199,8 +200,21 @@ $paginatedData = $query->paginate($perPage, ['*'], 'page', $page);
 
         $student->save();
 
+        $newdata = array(
+            'student_id' => $student->id,
+            'section_id' => $validatedData['section_id'],
+            'session_id' => $validatedData['session_id'],
+            'class_id' => $validatedData['class_id'],
+            'route_id' => $validatedData['route_id'] ?? 0,
+            'hostel_room_id' => $validatedData['hostel_room_id'] ?? 0,
+            'vehroute_id' => $validatedData['vehroute_id'] ?? 0,
+            'is_alumni' => 0,
+        );
+
+        StudentSession::create($newdata);
+
         return response()->json([
-            'success' => true,
+            'status' => 200,
             'message' => 'Student Added successfully',
             'student' => $student,
         ], 201); // 201 Created status code
