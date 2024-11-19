@@ -13,6 +13,7 @@ class StudentListController extends Controller
     public function searchdtByClassSection(Request $request)
     {
         $id = $request->input('id');
+        $selectedSessionId = $request->input('selectedSessionId');
         $page = (int) $request->input('page', 1); // Default to page 1 if not provided
         $perPage = (int) $request->input('perPage', 10); // Default to 10 records per page if not provided
         $selectedClass = $request->input('selectedClass');
@@ -61,6 +62,11 @@ class StudentListController extends Controller
         if (!empty($keyword)) {
             $query->where('students.firstname', 'like', '%' . $keyword . '%');
         }
+
+        if (!empty($selectedSessionId)) {
+            $query->where('student_session.session_id', $selectedSessionId);
+        }
+
 
         // Paginate the filtered students data if id is not present
         $data = $query->paginate($perPage, ['*'], 'page', $page);
