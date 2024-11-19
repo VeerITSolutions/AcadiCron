@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\SchSettings;
+use App\Models\Sessions;
 use Illuminate\Http\Request;
 
 class SchSettingsController extends Controller
@@ -12,13 +13,18 @@ class SchSettingsController extends Controller
      */
     public function index()
     {
-       $data = SchSettings::first();
+        $data = SchSettings::first();
 
-            return response()->json([
-                'success' => true,
-                'data' => $data, // Only return the current page data
+        $get_session_data = Sessions::where('id', $data->session_id)->first();
 
-            ], 200);
+        $data = $data->toArray(); // Convert the Eloquent model to an array
+        $data['session_year'] = $get_session_data->session; // Add the key-value pair
+
+        return response()->json([
+            'success' => true,
+            'data' => $data, // Return the updated array
+        ], 200);
+
 
     }
 
