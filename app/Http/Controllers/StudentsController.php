@@ -249,6 +249,33 @@ $paginatedData = $query->paginate($perPage, ['*'], 'page', $page);
      * Update the specified resource in storage.
      */
 
+    public function showForm()
+    {
+        return view('upload-image');
+    }
+    public function storeImage(Request $request)
+    {
+        $request->validate([
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        $file = $request->file('image');
+        $imageName = 'profile_picture_' . time(); // Custom name
+        $imageSubfolder = 'profile_pictures';    // Optional subfolder
+
+        // Use the helper to upload the file
+        $imagePath = uploadImage($file, $imageName, $imageSubfolder);
+
+        if ($imagePath) {
+            return response()->json([
+                'message' => 'Image uploaded successfully!',
+                'path' => $imagePath,
+                'url' => asset("uploads/{$imagePath}"),
+            ]);
+        }
+
+        return response()->json(['error' => 'Failed to upload image'], 500);
+    }
 
     public function update(Request $request)
     {

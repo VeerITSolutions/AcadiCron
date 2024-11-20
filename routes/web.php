@@ -10,6 +10,7 @@ use App\Http\Controllers\FeeGroupsController;
 use App\Http\Controllers\FeemastersController;
 use App\Http\Controllers\FeesDiscountsController;
 use App\Http\Controllers\FeetypeController;
+use App\Http\Controllers\ImageUploadController;
 use App\Http\Controllers\IncomeController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\NotificationRolesController;
@@ -19,6 +20,7 @@ use App\Http\Controllers\SiteController;
 use App\Http\Controllers\StaffAttendanceController;
 use App\Http\Controllers\StaffController;
 use App\Http\Controllers\StudentAttendencesController;
+use App\Http\Controllers\StudentsController;
 use App\Http\Controllers\TimetablesController;
 use App\Models\FeeSessionGroups;
 use Illuminate\Support\Facades\Route;
@@ -37,7 +39,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/welcome', function () {
     return view('welcome');
 });
-
+Route::get('/upload-image', [StudentsController::class, 'showForm'])->name('upload.form');
+Route::post('/upload-image', [StudentsController::class, 'storeImage'])->name('upload.image');
 
 /* Route::get('/', [SiteController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [SiteController::class, 'login']); */
