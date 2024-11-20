@@ -290,9 +290,10 @@ $paginatedData = $query->paginate($perPage, ['*'], 'page', $page);
         $imageSubfolder = 'profile_pictures';    // Example subfolder
 
         $imagePath = uploadImage($file, $imageName, $imageSubfolder);
+        $data = $request->all();
+        $data['image'] = $imagePath;
 
-        /*  */
-        $student->update($request->all());
+        $student->update($data);
 
 
 

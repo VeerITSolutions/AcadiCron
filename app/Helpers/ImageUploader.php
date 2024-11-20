@@ -28,7 +28,7 @@ if (!function_exists('uploadImage')) {
             // Store the file in the 'uploads' disk
             Storage::disk('uploads')->put($path, file_get_contents($file));
 
-            return $path;
+            return $fileName;
         } catch (\Exception $e) {
             // Log the error or handle it as necessary
             \Log::error('Image upload failed: ' . $e->getMessage());
