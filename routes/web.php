@@ -232,7 +232,19 @@ Route::middleware(['auth:staff', 'staff'])->group(function () {
         Route::get('/student/profilesetting', [SiteController::class, 'studentProfileSetting']);
 
 });
+Route::get('get-image/{pdf_name}', function (Request $request) {
 
+
+    $pdf_name = $request->pdf_name;
+
+    if (file_exists(public_path('uploads/' . $pdf_name ))) {
+
+        $pdfPath =  public_path('uploads/' . $pdf_name ) ;
+
+            return $pdfPath;
+
+    }
+});
 
 
 Route::get('site/logout', [SiteController::class, 'logout'])->name('admin.logout');
