@@ -23,6 +23,7 @@ use App\Http\Controllers\StudentAttendencesController;
 use App\Http\Controllers\StudentsController;
 use App\Http\Controllers\TimetablesController;
 use App\Models\FeeSessionGroups;
+use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -232,18 +233,21 @@ Route::middleware(['auth:staff', 'staff'])->group(function () {
         Route::get('/student/profilesetting', [SiteController::class, 'studentProfileSetting']);
 
 });
-Route::get('get-image/{pdf_name}', function (Request $request) {
+Route::get('get-image/{image_name}', function (Request $request) {
 
+    if(isset($request->image_name))
+    {
+        $image_name = $request->image_name;
 
-    $pdf_name = $request->pdf_name;
+        if (file_exists(public_path('uploads/' . $image_name ))) {
 
-    if (file_exists(public_path('uploads/' . $pdf_name ))) {
+            $pdfPath =  public_path('uploads/' . $image_name ) ;
 
-        $pdfPath =  public_path('uploads/' . $pdf_name ) ;
+                return $pdfPath;
 
-            return $pdfPath;
-
+        }
     }
+
 });
 
 
