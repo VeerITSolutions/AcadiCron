@@ -265,69 +265,69 @@ Route::post('/login', [SiteController::class, 'login'])->name('login');
         Route::get('/category', [CategoriesController::class, 'index']);
         Route::post('/category', [CategoriesController::class, 'create']);
         Route::delete('/category/{id}', [CategoriesController::class, 'destroy']);
-        Route::put('/category/{id}', [CategoriesController::class, 'update']);
+        Route::post('/category/{id}', [CategoriesController::class, 'update']);
 
 
         Route::get('/schoolhouse', [SchoolHousesController::class, 'index']);
         Route::post('/schoolhouse', [SchoolHousesController::class, 'create']);
         Route::delete('/schoolhouse/{id}', [SchoolHousesController::class, 'destroy']);
-        Route::put('/schoolhouse/{id}', [SchoolHousesController::class, 'update']);
+        Route::post('/schoolhouse/{id}', [SchoolHousesController::class, 'update']);
 
 
         Route::get('/fees-master', [FeemastersController::class, 'index']);
         Route::post('/fees-master', [FeemastersController::class, 'create']);
         Route::delete('/fees-master/{id}', [FeemastersController::class, 'destroy']);
-        Route::put('/fees-master/{id}', [FeemastersController::class, 'update']);
+        Route::post('/fees-master/{id}', [FeemastersController::class, 'update']);
 
 
         Route::get('/fees-group', [FeeGroupsController::class, 'index']);
         Route::post('/fees-group', [FeeGroupsController::class, 'create']);
         Route::delete('/fees-group/{id}', [FeeGroupsController::class, 'destroy']);
-        Route::put('/fees-group/{id}', [FeeGroupsController::class, 'update']);
+        Route::post('/fees-group/{id}', [FeeGroupsController::class, 'update']);
 
 
         Route::get('/fees-type', [FeetypeController::class, 'index']);
         Route::post('/fees-type', [FeetypeController::class, 'create']);
         Route::delete('/fees-type/{id}', [FeetypeController::class, 'destroy']);
-        Route::put('/fees-type/{id}', [FeetypeController::class, 'update']);
+        Route::post('/fees-type/{id}', [FeetypeController::class, 'update']);
 
         Route::get('/fees-discount', [FeesDiscountsController::class, 'index']);
         Route::post('/fees-discount', [FeesDiscountsController::class, 'create']);
         Route::delete('/fees-discount/{id}', [FeesDiscountsController::class, 'destroy']);
-        Route::put('/fees-discount/{id}', [FeesDiscountsController::class, 'update']);
+        Route::post('/fees-discount/{id}', [FeesDiscountsController::class, 'update']);
 
 
         Route::get('/fees-session-group', [FeeSessionGroupsController::class, 'index']);
         Route::post('/fees-session-group', [FeeSessionGroupsController::class, 'create']);
         Route::delete('/fees-session-group/{id}', [FeeSessionGroupsController::class, 'destroy']);
-        Route::put('/fees-session-group/{id}', [FeeSessionGroupsController::class, 'update']);
+        Route::post('/fees-session-group/{id}', [FeeSessionGroupsController::class, 'update']);
 
         Route::get('/subjects', [SubjectsController::class, 'index']);
         Route::post('/subjects', [SubjectsController::class, 'create']);
         Route::delete('/subjects/{id}', [SubjectsController::class, 'destroy']);
-        Route::put('/subjects/{id}', [SubjectsController::class, 'update']);
+        Route::post('/subjects/{id}', [SubjectsController::class, 'update']);
 
         Route::get('/class-sections', [ClassSectionsController::class, 'index']);
         Route::post('/class-sections', [ClassSectionsController::class, 'create']);
         Route::delete('/class-sections/{id}', [ClassSectionsController::class, 'destroy']);
-        Route::put('/class-sections/{id}', [ClassSectionsController::class, 'update']);
+        Route::post('/class-sections/{id}', [ClassSectionsController::class, 'update']);
 
 
         Route::get('/sections', [SectionsController::class, 'index']);
         Route::post('/sections', [SectionsController::class, 'create']);
         Route::delete('/sections/{id}', [SectionsController::class, 'destroy']);
-        Route::put('/sections/{id}', [SectionsController::class, 'update']);
+        Route::post('/sections/{id}', [SectionsController::class, 'update']);
         Route::get('/sections-by-class', [SectionsController::class, 'sectionByClass']);
 
         Route::get('/department', [DepartmentController::class, 'index']);
         Route::post('/department', [DepartmentController::class, 'create']);
         Route::delete('/department/{id}', [DepartmentController::class, 'destroy']);
-        Route::put('/department/{id}', [DepartmentController::class, 'update']);
+        Route::post('/department/{id}', [DepartmentController::class, 'update']);
 
         Route::get('/designation', [StaffDesignationController::class, 'index']);
         Route::post('/designation', [StaffDesignationController::class, 'create']);
         Route::delete('/designation/{id}', [StaffDesignationController::class, 'destroy']);
-        Route::put('/designation/{id}', [StaffDesignationController::class, 'update']);
+        Route::post('/designation/{id}', [StaffDesignationController::class, 'update']);
 
         Route::get('/timetable', [TimetablesController::class, 'index']);
         Route::get('/timetable-by/{class_id?}/{section_id?}/{group_id?}/{day_id?}', [TimetablesController::class, 'getBySubjectGroupDayClassSection']);
@@ -337,44 +337,44 @@ Route::post('/login', [SiteController::class, 'login'])->name('login');
         Route::get('/leave-request', [StaffLeaveRequestController::class, 'index']);
         Route::post('/leave-request', [StaffLeaveRequestController::class, 'create']);
         Route::delete('/leave-request/{id}', [StaffLeaveRequestController::class, 'destroy']);
-        Route::put('/leave-request/{id}', [StaffLeaveRequestController::class, 'update']);
+        Route::post('/leave-request/{id}', [StaffLeaveRequestController::class, 'update']);
 
         Route::get('/leave-type', [LeaveTypesController::class, 'index']);
         Route::post('/leave-type', [LeaveTypesController::class, 'create']);
         Route::delete('/leave-type/{id}', [LeaveTypesController::class, 'destroy']);
-        Route::put('/leave-type/{id}', [LeaveTypesController::class, 'update']);
+        Route::post('/leave-type/{id}', [LeaveTypesController::class, 'update']);
 
         Route::get('/content-for-upload', [ContentForController::class, 'index']);
         Route::post('/content-for-upload', [ContentForController::class, 'create']);
         Route::delete('/content-for-upload/{id}', [ContentForController::class, 'destroy']);
-        Route::put('/content-for-upload/{id}', [ContentForController::class, 'update']);
+        Route::post('/content-for-upload/{id}', [ContentForController::class, 'update']);
 
         Route::get('/notification', [NotificationSettingController::class, 'index']);
         Route::post('/notification', [NotificationSettingController::class, 'create']);
         Route::delete('/notification/{id}', [NotificationSettingController::class, 'destroy']);
-        Route::put('/notification/{id}', [NotificationSettingController::class, 'update']);
+        Route::post('/notification/{id}', [NotificationSettingController::class, 'update']);
 
 
         Route::get('/content-section', [ContentSectionController::class, 'index']);
         Route::post('/content-section', [ContentSectionController::class, 'create']);
         Route::delete('/content-section/{id}', [ContentSectionController::class, 'destroy']);
-        Route::put('/content-section/{id}', [ContentSectionController::class, 'update']);
+        Route::post('/content-section/{id}', [ContentSectionController::class, 'update']);
 
 
         Route::get('/homework', [HomeworkController::class, 'index']);
         Route::post('/homework', [HomeworkController::class, 'create']);
         Route::delete('/homework/{id}', [HomeworkController::class, 'destroy']);
-        Route::put('/homework/{id}', [HomeworkController::class, 'update']);
+        Route::post('/homework/{id}', [HomeworkController::class, 'update']);
 
         Route::get('/certificate', [CertificatesController::class, 'index']);
         Route::post('/certificate', [CertificatesController::class, 'create']);
         Route::delete('/certificate/{id}', [CertificatesController::class, 'destroy']);
-        Route::put('/certificate/{id}', [CertificatesController::class, 'update']);
+        Route::post('/certificate/{id}', [CertificatesController::class, 'update']);
 
         Route::get('/student', [StudentsController::class, 'index']);
         Route::post('/student', [StudentsController::class, 'create']);
         Route::delete('/student/{id}', [StudentsController::class, 'destroy']);
-        Route::put('/student/{id}', [StudentsController::class, 'update']);
+        Route::post('/student/{id}', [StudentsController::class, 'update']);
 
         Route::get('/student-none-promoted', [StudentsController::class, 'searchNonPromotedStudents']);
 
@@ -382,80 +382,80 @@ Route::post('/login', [SiteController::class, 'login'])->name('login');
         Route::get('/class-teacher', [ClassTeacherController::class, 'index']);
         Route::post('/class-teacher', [ClassTeacherController::class, 'create']);
         Route::delete('/class-teacher/{id}', [ClassTeacherController::class, 'destroy']);
-        Route::put('/class-teacher/{id}', [ClassTeacherController::class, 'update']);
+        Route::post('/class-teacher/{id}', [ClassTeacherController::class, 'update']);
 
         Route::get('/staff', [StaffController::class, 'index']);
         Route::post('/staff', [StaffController::class, 'create']);
         Route::delete('/staff/{id}', [StaffController::class, 'destroy']);
-        Route::put('/staff/{id}', [StaffController::class, 'update']);
+        Route::post('/staff/{id}', [StaffController::class, 'update']);
 
         Route::get('/staff-by-role', [StaffController::class, 'getStaffbyrole']);
 
         Route::get('/classes', [ClassesController::class, 'index']);
         Route::post('/classes', [classesController::class, 'create']);
         Route::delete('/classes/{id}', [classesController::class, 'destroy']);
-        Route::put('/classes/{id}', [classesController::class, 'update']);
+        Route::post('/classes/{id}', [classesController::class, 'update']);
         Route::get('/get-classes', [ClassesController::class, 'getClasses']);
 
         Route::get('/fees-remainder', [FeesReminderController::class, 'index']);
         Route::post('/fees-remainder', [FeesReminderController::class, 'create']);
         Route::delete('/fees-remainder/{id}', [FeesReminderController::class, 'destroy']);
-        Route::put('/fees-remainder/{id}', [FeesReminderController::class, 'update']);
+        Route::post('/fees-remainder/{id}', [FeesReminderController::class, 'update']);
 
 
 
         Route::get('/searchpayment', [SearchPaymentController::class, 'index']);
         Route::post('/searchpayment', [SearchPaymentController::class, 'create']);
         Route::delete('/searchpayment/{id}', [SearchPaymentController::class, 'destroy']);
-        Route::put('/searchpayment/{id}', [SearchPaymentController::class, 'update']);
+        Route::post('/searchpayment/{id}', [SearchPaymentController::class, 'update']);
 
         Route::get('/student-attendance', [StudentAttendencesController::class, 'index']);
         Route::post('/student-attendance', [StudentAttendencesController::class, 'create']);
         Route::delete('/student-attendance/{id}', [StudentAttendencesController::class, 'destroy']);
-        Route::put('/student-attendance/{id}', [StudentAttendencesController::class, 'update']);
+        Route::post('/student-attendance/{id}', [StudentAttendencesController::class, 'update']);
 
         Route::get('/syllabus', [SubjectSyllabusController::class, 'index']);
         Route::post('/syllabus', [SubjectSyllabusController::class, 'create']);
         Route::delete('/syllabus/{id}', [SubjectSyllabusController::class, 'destroy']);
-        Route::put('/syllabus/{id}', [SubjectSyllabusController::class, 'update']);
+        Route::post('/syllabus/{id}', [SubjectSyllabusController::class, 'update']);
 
 
 
         Route::get('/search-duefees', [SearchDueFeesController::class, 'getDueStudentFeesDefault']);
         Route::post('/search-duefees', [SearchDueFeesController::class, 'create']);
         Route::delete('/search-duefees/{id}', [SearchDueFeesController::class, 'destroy']);
-        Route::put('/search-duefees/{id}', [SearchDueFeesController::class, 'update']);
+        Route::post('/search-duefees/{id}', [SearchDueFeesController::class, 'update']);
 
 
         Route::get('/lessonplan-lesson', [LessonplanLessonController::class, 'getLessonList']);
         Route::post('/lessonplan-lesson', [LessonplanLessonController::class, 'create']);
         Route::delete('/lessonplan-lesson/{id}', [LessonplanLessonController::class, 'destroy']);
-        Route::put('/lessonplan-lesson/{id}', [LessonplanLessonController::class, 'update']);
+        Route::post('/lessonplan-lesson/{id}', [LessonplanLessonController::class, 'update']);
 
 
 
         Route::get('/subject-groups', [SubjectGroupsController::class, 'index']);
         Route::post('/subject-groups', [SubjectGroupsController::class, 'create']);
         Route::delete('/subject-groups/{id}', [SubjectGroupsController::class, 'destroy']);
-        Route::put('/subject-groups/{id}', [SubjectGroupsController::class, 'update']);
+        Route::post('/subject-groups/{id}', [SubjectGroupsController::class, 'update']);
 
 
         Route::get('/studentfees', [StudentFeesController::class, 'index']);
         Route::post('/student-fees', [StudentFeesController::class, 'getStudentFees']);
         Route::post('/studentfees', [StudentFeesController::class, 'create']);
         Route::delete('/studentfees/{id}', [StudentFeesController::class, 'destroy']);
-        Route::put('/studentfees/{id}', [StudentFeesController::class, 'update']);
+        Route::post('/studentfees/{id}', [StudentFeesController::class, 'update']);
 
 
         Route::get('/approve-leave', [StudentApplyleaveController::class, 'index']);
         Route::post('/approve-leave', [StudentApplyleaveController::class, 'create']);
         Route::delete('/approve-leave/{id}', [StudentApplyleaveController::class, 'destroy']);
-        Route::put('/approve-leave/{id}', [StudentApplyleaveController::class, 'update']);
+        Route::post('/approve-leave/{id}', [StudentApplyleaveController::class, 'update']);
 
         Route::get('/staff-attendance', [StaffAttendanceController::class, 'index']);
         Route::post('/staff-attendance', [StaffAttendanceController::class, 'create']);
         Route::delete('/staff-attendance/{id}', [StaffAttendanceController::class, 'destroy']);
-        Route::put('/staff-attendance/{id}', [StaffAttendanceController::class, 'update']);
+        Route::post('/staff-attendance/{id}', [StaffAttendanceController::class, 'update']);
 
 
 
