@@ -58,7 +58,8 @@ return [
 
         'uploads' => [
         'driver' => 'local',
-        'root' => '/uploads',
+        /* 'root'   => '/home/smartcitylibrary.com/dindayalupadhyay/public/uploads/ebooks', */
+        'root'   => 'C:/wamp64/www/uploads',
         'url' => env('APP_URL') . '/uploads',
         'visibility' => 'public',
     ],

@@ -257,10 +257,14 @@ $paginatedData = $query->paginate($perPage, ['*'], 'page', $page);
         // Find the category by id
         $student = Students::findOrFail($id);
 
-        // Validate the request data
-        /* $validatedData = $request->all(); */
+        /* for image update */
+        $file = $request->file('image');
+        $imageName = 'profile_picture_' . time(); // Example name
+        $imageSubfolder = 'profile_pictures';    // Example subfolder
 
-        // Update the category
+        $imagePath = uploadImage($file, $imageName, $imageSubfolder);
+
+        /*  */
         $student->update($request->all());
 
 
