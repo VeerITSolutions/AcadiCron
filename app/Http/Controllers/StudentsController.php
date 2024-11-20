@@ -286,8 +286,8 @@ $paginatedData = $query->paginate($perPage, ['*'], 'page', $page);
 
         /* for image update */
         $file = $request->file('image');
-        $imageName = 'profile_picture_' . time(); // Example name
-        $imageSubfolder = 'profile_pictures';    // Example subfolder
+        $imageName = 'student_images_' . time(); // Example name
+        $imageSubfolder = 'student_images';    // Example subfolder
 
         $imagePath = uploadImage($file, $imageName, $imageSubfolder);
         $data = $request->all();
