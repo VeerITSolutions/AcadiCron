@@ -65,7 +65,29 @@ class SchSettingsController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $id = $request->id;
+
+        // Find the category by id
+        $settings = SchSettings::findOrFail($id);
+
+        /* for image update */
+        $file = $request->file('image');
+        $imageName = 'profile_picture_' . time(); // Example name
+        $imageSubfolder = 'profile_pictures';    // Example subfolder
+
+        $imagePath = uploadImage($file, $imageName, $imageSubfolder);
+
+
+        $settings->update($request->all());
+
+
+
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Edit successfully',
+            'category' => $settings,
+        ], 201); // 201 Created status code
     }
 
     /**

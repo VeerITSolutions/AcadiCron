@@ -91,6 +91,7 @@ Route::post('/login', [SiteController::class, 'login'])->name('login');
 
 
     Route::get('/schsetting', [SchSettingsController::class, 'index']);
+    Route::post('/schsetting/{id}', [SchSettingsController::class, 'update']);
 
     Route::get('/session', [SessionsController::class, 'index']);
 
