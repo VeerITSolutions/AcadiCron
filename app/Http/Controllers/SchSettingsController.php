@@ -28,13 +28,46 @@ class SchSettingsController extends Controller
 
     }
 
+
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Request $request)
     {
-        //
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email',
+            'phone' => 'required|string|max:20',
+            'currency' => 'required|string', 
+            'timezone' => 'required|string',
+         
+        ]);
+    
+        $settings = new SchSettings();
+
+        
+        $settings->name = $validatedData['name'];
+        $settings->email = $validatedData['email'];
+        $settings->phone = $validatedData['phone'];
+        $settings->currency = $validatedData['currency'];
+        $settings->timezone = $validatedData['timezone'];
+        $settings->address = $validatedData['address'] ?? '';
+        $settings->languages = $validatedData['languages'] ?? '[]';
+        $settings->time_format = $validatedData['time_format'] ?? '12-hour';
+        $settings->currency_symbol = $validatedData['currency_symbol'] ?? '';
+        $settings->my_question = $validatedData['my_question'] ?? '';
+    
+        $settings->save();
+
+        return response()->json([
+            'status' => 200,
+            'message' => 'Settings added successfully',
+            'settings' => $settings,
+        ], 201);
     }
+    
+    
+
 
     /**
      * Store a newly created resource in storage.
