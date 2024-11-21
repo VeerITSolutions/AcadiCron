@@ -293,10 +293,32 @@ $paginatedData = $query->paginate($perPage, ['*'], 'page', $page);
         $data = $request->all();
         $data['image'] = $imagePath;
 
+        $file = $request->file('guardian_pic');
+        $imageName = 'guardian_pic_' . time(); // Example name
+        $imageSubfolder = 'guardian_pic';    // Example subfolder
+        $full_path = 1;
+        $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
+        $data = $request->all();
+        $data['guardian_pic'] = $imagePath;
+
+        $file = $request->file('father_pic');
+        $imageName = 'father_pic_' . time(); // Example name
+        $imageSubfolder = 'father_pic';    // Example subfolder
+        $full_path = 1;
+        $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
+        $data = $request->all();
+        $data['father_pic'] = $imagePath;
+
+        $file = $request->file('mother_pic');
+        $imageName = 'mother_pic_' . time(); // Example name
+        $imageSubfolder = 'mother_pic';    // Example subfolder
+        $full_path = 1;
+        $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
+        $data = $request->all();
+        $data['mother_pic'] = $imagePath;
+
+
         $student->update($data);
-
-
-
 
         return response()->json([
             'success' => true,
