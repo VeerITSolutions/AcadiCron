@@ -38,14 +38,14 @@ class SchSettingsController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email',
             'phone' => 'required|string|max:20',
-            'currency' => 'required|string', 
+            'currency' => 'required|string',
             'timezone' => 'required|string',
-         
+
         ]);
-    
+
         $settings = new SchSettings();
 
-        
+
         $settings->name = $validatedData['name'];
         $settings->email = $validatedData['email'];
         $settings->phone = $validatedData['phone'];
@@ -56,7 +56,7 @@ class SchSettingsController extends Controller
         $settings->time_format = $validatedData['time_format'] ?? '12-hour';
         $settings->currency_symbol = $validatedData['currency_symbol'] ?? '';
         $settings->my_question = $validatedData['my_question'] ?? '';
-    
+
         $settings->save();
 
         return response()->json([
@@ -65,8 +65,8 @@ class SchSettingsController extends Controller
             'settings' => $settings,
         ], 201);
     }
-    
-    
+
+
 
 
     /**
@@ -102,18 +102,18 @@ class SchSettingsController extends Controller
 
         // Find the category by id
         $settings = SchSettings::findOrFail($id);
-
+        $data = $request->all();
         /* for image update */
         $file = $request->file('admin_logo');
-        $imageName = 'admin_logo' . time(); // Example name
+        if($file){
+            $imageName = 'admin_logo' . time(); // Example name
+            $imageSubfolder = 'school_content/admin_logo';    // Example subfolder
+            $full_path = 0;
+            $imagePath = uploadImage($file, $imageName, $imageSubfolder , $full_path);
+            $data['admin_logo'] = $imagePath;
+        }
 
-        $imageSubfolder = 'school_content/admin_logo';    // Example subfolder
-        $full_path = 0;
 
-        $imagePath = uploadImage($file, $imageName, $imageSubfolder , $full_path);
-
-        $data = $request->all();
-        $data['admin_logo'] = $imagePath;
         $settings->update($data);
 
 

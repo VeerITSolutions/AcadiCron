@@ -220,32 +220,44 @@ $paginatedData = $query->paginate($perPage, ['*'], 'page', $page);
             /* image  */
 
          $file = $request->file('image');
-         $imageName = $student->id .'_student_images_'. time(); // Example name
-         $imageSubfolder = 'student_images';    // Example subfolder
-         $full_path = 1;
-         $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
-         $validatedData['image'] = $imagePath;
+         if($file)
+         {
+            $imageName = $student->id .'_student_images_'. time(); // Example name
+            $imageSubfolder = 'student_images';    // Example subfolder
+            $full_path = 1;
+            $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
+            $validatedData['image'] = $imagePath;
+         }
+
 
          $file = $request->file('guardian_pic');
+         if($file)
+         {
          $imageName =  $student->id .'_guardian_pic_' . time(); // Example name
          $imageSubfolder = 'student_images';    // Example subfolder
          $full_path = 1;
          $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
          $validatedData['guardian_pic'] = $imagePath;
+         }
 
          $file = $request->file('father_pic');
+         if($file)
+         {
          $imageName =  $student->id .'_father_pic_' . time(); // Example name
          $imageSubfolder = 'student_images';    // Example subfolder
          $full_path = 1;
          $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
          $validatedData['father_pic'] = $imagePath;
-
+         }
+         if($file)
+         {
          $file = $request->file('mother_pic');
          $imageName =  $student->id .'_mother_pic_' . time(); // Example name
          $imageSubfolder = 'student_images';    // Example subfolder
          $full_path = 1;
          $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
          $validatedData['mother_pic'] = $imagePath;
+         }
 
          /* image end */
 
