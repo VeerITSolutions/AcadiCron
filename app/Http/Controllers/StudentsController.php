@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\SchSettings;
+use App\Models\Sessions;
 use App\Models\Students;
 use App\Models\StudentSession;
 use Illuminate\Http\Request;
@@ -135,6 +137,8 @@ $paginatedData = $query->paginate($perPage, ['*'], 'page', $page);
         $validatedData = $request->all();
 
 
+        $get_year = SchSettings::first();
+
 
         // Create a new category
         $student = new Students();
@@ -205,7 +209,7 @@ $paginatedData = $query->paginate($perPage, ['*'], 'page', $page);
         $newdata = array(
             'student_id' => $student->id,
             'section_id' => $validatedData['section_id'],
-            'session_id' => $validatedData['session_id'],
+            'session_id' => $get_year->session_id,
             'class_id' => $validatedData['class_id'],
             'route_id' => $validatedData['route_id'] ?? 0,
             'hostel_room_id' => $validatedData['hostel_room_id'] ?? 0,
