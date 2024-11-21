@@ -336,40 +336,51 @@ $paginatedData = $query->paginate($perPage, ['*'], 'page', $page);
 
         // Find the category by id
         $student = Students::findOrFail($id);
-       /*  $uploaddir = './uploads/student_documents/' . $insert_id . '/'; */
-       /*  $img_name = $insert_id . "guardian" . '.' . $fileInfo['extension']; */
-        /* for image update */
+
+
+        $data = $request->all();
+
         $file = $request->file('image');
+        if($file)
+        {
         $imageName = $id .'_student_images_'. time(); // Example name
         $imageSubfolder = 'student_images';    // Example subfolder
         $full_path = 1;
         $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
-        $data = $request->all();
         $data['image'] = $imagePath;
 
+        }
+
+
         $file = $request->file('guardian_pic');
+        if($file)
+        {
         $imageName =  $id .'_guardian_pic_' . time(); // Example name
         $imageSubfolder = 'student_images';    // Example subfolder
         $full_path = 1;
         $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
-        $data = $request->all();
         $data['guardian_pic'] = $imagePath;
+        }
 
         $file = $request->file('father_pic');
+        if($file)
+        {
         $imageName =  $id .'_father_pic_' . time(); // Example name
         $imageSubfolder = 'student_images';    // Example subfolder
         $full_path = 1;
         $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
-        $data = $request->all();
         $data['father_pic'] = $imagePath;
+        }
 
         $file = $request->file('mother_pic');
+        if($file)
+        {
         $imageName =  $id .'_mother_pic_' . time(); // Example name
         $imageSubfolder = 'student_images';    // Example subfolder
         $full_path = 1;
         $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
-        $data = $request->all();
         $data['mother_pic'] = $imagePath;
+        }
 
 
         $student->update($data);
