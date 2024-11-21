@@ -138,6 +138,38 @@ $paginatedData = $query->paginate($perPage, ['*'], 'page', $page);
 
         // Create a new category
         $student = new Students();
+
+         /* image  */
+
+         $file = $request->file('image');
+         $imageName = $validatedData['id'] .'_student_images_'. time(); // Example name
+         $imageSubfolder = 'student_images';    // Example subfolder
+         $full_path = 1;
+         $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
+         $validatedData['image'] = $imagePath;
+
+         $file = $request->file('guardian_pic');
+         $imageName =  $validatedData['id'] .'_guardian_pic_' . time(); // Example name
+         $imageSubfolder = 'student_images';    // Example subfolder
+         $full_path = 1;
+         $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
+         $validatedData['guardian_pic'] = $imagePath;
+
+         $file = $request->file('father_pic');
+         $imageName =  $validatedData['id'] .'_father_pic_' . time(); // Example name
+         $imageSubfolder = 'student_images';    // Example subfolder
+         $full_path = 1;
+         $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
+         $validatedData['father_pic'] = $imagePath;
+
+         $file = $request->file('mother_pic');
+         $imageName =  $validatedData['id'] .'_mother_pic_' . time(); // Example name
+         $imageSubfolder = 'student_images';    // Example subfolder
+         $full_path = 1;
+         $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
+         $validatedData['mother_pic'] = $imagePath;
+
+         /* image end */
         $student->parent_id = $validatedData['parent_id'];
         $student->admission_no = $validatedData['admission_no'];
         $student->roll_no = $validatedData['roll_no'];
@@ -262,9 +294,10 @@ $paginatedData = $query->paginate($perPage, ['*'], 'page', $page);
         $file = $request->file('image');
         $imageName = 'profile_picture_' . time(); // Custom name
         $imageSubfolder = 'profile_pictures';    // Optional subfolder
+        $file_path = 1;
 
         // Use the helper to upload the file
-        $imagePath = uploadImage($file, $imageName, $imageSubfolder);
+        $imagePath = uploadImage($file, $imageName, $imageSubfolder, $file_path);
 
         if ($imagePath) {
             return response()->json([
