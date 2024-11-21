@@ -283,10 +283,11 @@ $paginatedData = $query->paginate($perPage, ['*'], 'page', $page);
 
         // Find the category by id
         $student = Students::findOrFail($id);
-
+       /*  $uploaddir = './uploads/student_documents/' . $insert_id . '/'; */
+       /*  $img_name = $insert_id . "guardian" . '.' . $fileInfo['extension']; */
         /* for image update */
         $file = $request->file('image');
-        $imageName = 'student_images_' . time(); // Example name
+        $imageName = $id .'_student_images_'. time(); // Example name
         $imageSubfolder = 'student_images';    // Example subfolder
         $full_path = 1;
         $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
@@ -294,24 +295,24 @@ $paginatedData = $query->paginate($perPage, ['*'], 'page', $page);
         $data['image'] = $imagePath;
 
         $file = $request->file('guardian_pic');
-        $imageName = 'guardian_pic_' . time(); // Example name
-        $imageSubfolder = 'guardian_pic';    // Example subfolder
+        $imageName =  $id .'_guardian_pic_' . time(); // Example name
+        $imageSubfolder = 'student_images';    // Example subfolder
         $full_path = 1;
         $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
         $data = $request->all();
         $data['guardian_pic'] = $imagePath;
 
         $file = $request->file('father_pic');
-        $imageName = 'father_pic_' . time(); // Example name
-        $imageSubfolder = 'father_pic';    // Example subfolder
+        $imageName =  $id .'_father_pic_' . time(); // Example name
+        $imageSubfolder = 'student_images';    // Example subfolder
         $full_path = 1;
         $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
         $data = $request->all();
         $data['father_pic'] = $imagePath;
 
         $file = $request->file('mother_pic');
-        $imageName = 'mother_pic_' . time(); // Example name
-        $imageSubfolder = 'mother_pic';    // Example subfolder
+        $imageName =  $id .'_mother_pic_' . time(); // Example name
+        $imageSubfolder = 'student_images';    // Example subfolder
         $full_path = 1;
         $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
         $data = $request->all();
