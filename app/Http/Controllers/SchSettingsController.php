@@ -75,8 +75,9 @@ class SchSettingsController extends Controller
         $imageName = 'admin_logo' . time(); // Example name
 
         $imageSubfolder = 'school_content/admin_logo';    // Example subfolder
+        $full_path = 0;
 
-        $imagePath = uploadImage($file, $imageName, $imageSubfolder);
+        $imagePath = uploadImage($file, $imageName, $imageSubfolder , $full_path);
 
         $data = $request->all();
         $data['admin_logo'] = $imagePath;
