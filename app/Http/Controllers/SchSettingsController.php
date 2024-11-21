@@ -71,14 +71,16 @@ class SchSettingsController extends Controller
         $settings = SchSettings::findOrFail($id);
 
         /* for image update */
-        $file = $request->file('image');
-        $imageName = 'profile_picture_' . time(); // Example name
-        $imageSubfolder = 'profile_pictures';    // Example subfolder
+        $file = $request->file('admin_logo');
+        $imageName = 'admin_logo' . time(); // Example name
+
+        $imageSubfolder = 'school_content/admin_logo';    // Example subfolder
 
         $imagePath = uploadImage($file, $imageName, $imageSubfolder);
 
-
-        $settings->update($request->all());
+        $data = $request->all();
+        $data['admin_logo'] = $imagePath;
+        $settings->update($data);
 
 
 
