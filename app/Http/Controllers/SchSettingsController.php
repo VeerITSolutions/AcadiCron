@@ -120,7 +120,7 @@ class SchSettingsController extends Controller
 
 
         return response()->json([
-            'success' => true,
+            'status' => 200,
             'message' => 'Edit successfully',
             'category' => $settings,
         ], 201); // 201 Created status code
