@@ -389,6 +389,20 @@ $paginatedData = $query->paginate($perPage, ['*'], 'page', $page);
 
         $student->update($data);
 
+        $studentsession = StudentSession::where('student_id',$id)->first();
+        $newdata = array(
+            'student_id' => $id,
+            'section_id' => $request->section_id,
+
+            'class_id' => $request->class_id,
+            'route_id' => $request->route_id ?? 0,
+            'hostel_room_id' => $request->hostel_room_id ?? 0,
+            'vehroute_id' => $request->vehroute_id ?? 0,
+            'is_alumni' => 0,
+        );
+
+        $studentsession->update($newdata);
+
         return response()->json([
             'success' => true,
             'message' => 'Edit successfully',
