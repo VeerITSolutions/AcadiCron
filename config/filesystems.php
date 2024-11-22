@@ -57,12 +57,12 @@ return [
         ],
 
         'uploads' => [
-        'driver' => 'local',
-        /* 'root'   => '/home/smartcitylibrary.com/dindayalupadhyay/public/uploads/ebooks', */
-        'root'   => 'C:/wamp64/www/uploads',
-        'url' => env('APP_URL') . '/uploads',
-        'visibility' => 'public',
-    ],
+    'driver' => 'local',
+    'root'   => env('UPLOADS_ROOT', 'C:/wamp64/www/uploads'), // Default value if not in .env
+    'url'    => env('APP_URL') . '/uploads',
+    'visibility' => 'public',
+],
+
     ],
 
     /*
