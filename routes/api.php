@@ -56,7 +56,7 @@ use App\Http\Controllers\SubjectSyllabusController;
 use App\Http\Controllers\SubjectGroupsController;
 use App\Http\Controllers\StudentFeesController;
 use App\Http\Controllers\StudentApplyleaveController;
-
+use App\Http\Controllers\StudentDocController;
 
 /*
 |--------------------------------------------------------------------------
@@ -378,6 +378,13 @@ Route::post('/login', [SiteController::class, 'login'])->name('login');
         Route::post('/student', [StudentsController::class, 'create']);
         Route::delete('/student/{id}', [StudentsController::class, 'destroy']);
         Route::post('/student/{id}', [StudentsController::class, 'update']);
+
+        Route::get('/student-doc', [StudentDocController::class, 'index']);
+        Route::post('/student-doc', [StudentDocController::class, 'create']);
+        Route::delete('/student-doc/{id}', [StudentDocController::class, 'destroy']);
+        Route::post('/student-doc/{id}', [StudentDocController::class, 'update']);
+
+
 
         Route::get('/student-none-promoted', [StudentsController::class, 'searchNonPromotedStudents']);
 
