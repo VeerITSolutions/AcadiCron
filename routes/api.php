@@ -93,7 +93,7 @@ Route::post('/login', [SiteController::class, 'login'])->name('login');
     Route::get('/schsetting', [SchSettingsController::class, 'index']);
     Route::post('/schsetting', [SchSettingsController::class, 'create']);
     Route::post('/schsetting/{id}', [SchSettingsController::class, 'update']);
-   
+
 
     Route::get('/session', [SessionsController::class, 'index']);
 
@@ -443,7 +443,7 @@ Route::post('/login', [SiteController::class, 'login'])->name('login');
         Route::post('/subject-groups/{id}', [SubjectGroupsController::class, 'update']);
 
 
-        Route::get('/studentfees', [StudentFeesController::class, 'index']);
+        Route::get('/studentfees/{id}', [StudentFeesController::class, 'index']);
         Route::post('/student-fees', [StudentFeesController::class, 'getStudentFees']);
         Route::post('/studentfees', [StudentFeesController::class, 'create']);
         Route::delete('/studentfees/{id}', [StudentFeesController::class, 'destroy']);

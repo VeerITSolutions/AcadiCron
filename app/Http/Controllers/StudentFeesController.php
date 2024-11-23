@@ -16,129 +16,85 @@ class StudentFeesController extends Controller
      */
     public function index(Request $request, $id = null, $role = null)
     {
-        $student_session_id = $request->student_session_id;
-
-        // Fetching the student's fees along with fee group details
-            $result = StudentFeesMaster::where('student_session_id', $student_session_id)
-            ->join('fee_session_groups', 'student_fees_master.fee_session_group_id', '=', 'fee_session_groups.id')
-            ->join('fee_groups', 'fee_groups.id', '=', 'fee_session_groups.fee_groups_id')
-            ->select('student_fees_master.*', 'fee_groups.name')
-            ->orderBy('student_fees_master.id')
-            ->get();
-
-        // Adding additional data by iterating over each result
-        foreach ($result as $result_key => $result_value) {
-            $fee_session_group_id = $result_value->fee_session_group_id;
-            $student_fees_master_id = $result_value->id;
-
-            // Assuming getDueFeeByFeeSessionGroup is a method to fetch due fees
-            $result_value->fees = $this->getDueFeeByFeeSessionGroup($fee_session_group_id, $student_fees_master_id);
-
-            // Adjusting the amount if 'is_system' is not zero
-            if ($result_value->is_system != 0 && isset($result_value->fees[0])) {
-                $result_value->fees[0]->amount = $result_value->amount;
-            }
-        }
+        $student_session_id = 1816;
 
 
+        $studentDueFees = $this->getStudentFees($student_session_id) ?? [];// Replace with actual query logic
 
+    $studentDiscounts = $this->getStudentFeesDiscount( $student_session_id) ?? [];; // Replace with actual query logic
 
+    $currencySymbol = "$"; // Replace with your currency symbol logic
 
-        return response()->json([
-            'success' => true,
-            'data' => $result,
-        ], 200);
+    return response()->json([
+        'student_due_fees' => $studentDueFees,
+        'student_discount_fees' => $studentDiscounts,
+        'totals' => [
+            'amount' => 0, // Total amount
+            'paid' => 0,   // Total paid
+            'discount' => 0, // Total discount
+            'fine' => 0,   // Total fine
+            'balance' => 0 // Remaining balance
+        ],
+        'currency_symbol' => $currencySymbol
+    ]);
     }
 
-    public function getStudentFees(Request $request, $id = null, $role = null)
-    {
-
-
-
-        $student_session_id = StudentSession::where('student_id', $request->id)->where('session_id', 20)->first();
-
-
-        // Fetching the student's fees along with fee group details
-        $result = StudentFeesMaster::where('student_session_id', $student_session_id->id)
-            ->join('fee_session_groups', 'student_fees_master.fee_session_group_id', '=', 'fee_session_groups.id')
-            ->join('fee_groups', 'fee_groups.id', '=', 'fee_session_groups.fee_groups_id')
-            ->select('student_fees_master.*', 'fee_groups.name')
-            ->orderBy('student_fees_master.id')
-            ->get();
-
-        // Adding additional data by iterating over each result
-        foreach ($result as $result_key => $result_value) {
-            $fee_session_group_id = $result_value->fee_session_group_id;
-            $student_fees_master_id = $result_value->id;
-
-            // Fetching due fees
-            $result_value->fees = $this->getDueFeeByFeeSessionGroup($fee_session_group_id, $student_fees_master_id);
-
-            // Adjusting the amount if 'is_system' is not zero
-            if ($result_value->is_system != 0 && isset($result_value->fees[0])) {
-                $result_value->fees[0]->amount = $result_value->amount;
-            }
-        }
-
-        // Initialize total variables
-        $total_fees_fine_amount = 0;
-        $total_amount = 0;
-        $total_discount_amount = 0;
-        $total_deposite_amount = 0;
-        $total_fine_amount = 0;
-        $total_balance_amount = 0;
-
-        // Calculate totals and fine amounts
-        foreach ($result as $key => $fee) {
-            foreach ($fee->fees as $fee_key => $fee_value) {
-                $fee_paid = 0;
-                $fee_discount = 0;
-                $fee_fine = 0;
-                $fees_fine_amount = 0;
-
-                if (!empty($fee_value->amount_detail)) {
-                    $fee_deposits = json_decode($fee_value->amount_detail);
-
-                    foreach ($fee_deposits as $fee_deposits_value) {
-                        $fee_paid += $fee_deposits_value->amount;
-                        $fee_discount += $fee_deposits_value->amount_discount;
-                        $fee_fine += $fee_deposits_value->amount_fine;
-                    }
-                }
-
-                if (!empty($fee_value->due_date) && $fee_value->due_date != "0000-00-00" && strtotime($fee_value->due_date) < strtotime(date('Y-m-d'))) {
-                    $fees_fine_amount = $fee_value->fine_amount;
-                    $total_fees_fine_amount += $fee_value->fine_amount;
-                }
-
-                $total_amount += $fee_value->amount;
-                $total_discount_amount += $fee_discount;
-                $total_deposite_amount += $fee_paid;
-                $total_fine_amount += $fee_fine;
-                $feetype_balance = $fee_value->amount - ($fee_paid + $fee_discount);
-                $total_balance_amount += $feetype_balance;
-            }
-        }
-
-        return response()->json([
-            'success' => true,
-            'data' => $result,
-            'totals' => [
-                'total_amount' => $total_amount,
-                'total_discount_amount' => $total_discount_amount,
-                'total_deposite_amount' => $total_deposite_amount,
-                'total_fine_amount' => $total_fine_amount,
-                'total_balance_amount' => $total_balance_amount,
-                'total_fees_fine_amount' => $total_fees_fine_amount,
-            ],
-        ], 200);
-    }
-
-    public function getDueFeeByFeeSessionGroup($fee_session_groups_id, $student_fees_master_id)
+    public function getStudentFees($student_session_id)
 {
-    // Building the query with Eloquent
-    $result = StudentFeesMaster::where('student_fees_master.fee_session_group_id', $fee_session_groups_id)
-        ->where('student_fees_master.id', $student_fees_master_id)
+    // Fetch the student fees along with the fee group names
+    $result = DB::table('student_fees_master')
+        ->join('fee_session_groups', 'student_fees_master.fee_session_group_id', '=', 'fee_session_groups.id')
+        ->join('fee_groups', 'fee_groups.id', '=', 'fee_session_groups.fee_groups_id')
+        ->where('student_session_id', $student_session_id)
+        ->select('student_fees_master.*', 'fee_groups.name')
+        ->orderBy('student_fees_master.id')
+        ->get();
+
+    if ($result->isNotEmpty()) {
+        foreach ($result as $result_value) {
+            $fee_session_group_id = $result_value->fee_session_group_id;
+            $student_fees_master_id = $result_value->id;
+
+            // Assuming this is a method you have that will return the due fee
+            $result_value->fees = $this->getDueFeeByFeeSessionGroup($fee_session_group_id, $student_fees_master_id);
+
+            // Check if the fee is system related and update the amount
+            if ($result_value->is_system != 0 && isset($result_value->fees[0])) {
+                $result_value->fees[0]->amount = $result_value->amount;
+            }
+        }
+    }
+
+    return $result;
+}
+
+public function getStudentFeesDiscount($student_session_id = null)
+{
+    $result = DB::table('student_fees_discounts')
+        ->join('fees_discounts', 'fees_discounts.id', '=', 'student_fees_discounts.fees_discount_id')
+        ->where('student_fees_discounts.student_session_id', $student_session_id)
+        ->select(
+            'student_fees_discounts.id',
+            'student_fees_discounts.student_session_id',
+            'student_fees_discounts.status',
+            'student_fees_discounts.payment_id',
+            'student_fees_discounts.description as student_fees_discount_description',
+            'student_fees_discounts.fees_discount_id',
+            'fees_discounts.name',
+            'fees_discounts.code',
+            'fees_discounts.amount',
+            'fees_discounts.description',
+            'fees_discounts.session_id'
+        )
+        ->orderBy('student_fees_discounts.id')
+        ->get();
+
+    return $result->toArray(); // Return the result as an array
+}
+
+public function getDueFeeByFeeSessionGroup($fee_session_groups_id, $student_fees_master_id)
+{
+    $result = DB::table('student_fees_master')
         ->join('fee_session_groups', 'fee_session_groups.id', '=', 'student_fees_master.fee_session_group_id')
         ->join('fee_groups_feetype', 'fee_groups_feetype.fee_session_group_id', '=', 'fee_session_groups.id')
         ->join('fee_groups', 'fee_groups.id', '=', 'fee_groups_feetype.fee_groups_id')
@@ -147,6 +103,8 @@ class StudentFeesController extends Controller
             $join->on('student_fees_deposite.student_fees_master_id', '=', 'student_fees_master.id')
                  ->on('student_fees_deposite.fee_groups_feetype_id', '=', 'fee_groups_feetype.id');
         })
+        ->where('student_fees_master.fee_session_group_id', $fee_session_groups_id)
+        ->where('student_fees_master.id', $student_fees_master_id)
         ->select(
             'student_fees_master.*',
             'fee_groups_feetype.id as fee_groups_feetype_id',
@@ -166,6 +124,7 @@ class StudentFeesController extends Controller
 
     return $result;
 }
+
 
 
 
