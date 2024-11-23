@@ -29,12 +29,14 @@ class StudentListController extends Controller
         $query = Students::join('student_session', 'student_session.student_id', '=', 'students.id')
             ->join('classes', 'classes.id', '=', 'student_session.class_id')
             ->join('sections', 'sections.id', '=', 'student_session.section_id')
+            ->leftjoin('categories', 'categories.id', '=', 'students.category_id')
             ->select(
                 'students.*',
                 'student_session.class_id as class_id',
                 'student_session.section_id as section_id',
                 'classes.class as class_name',
-                'sections.section as section_name'
+                'sections.section as section_name',
+                'categories.category as category_name'
             );
 
         // Apply filtering based on student ID
