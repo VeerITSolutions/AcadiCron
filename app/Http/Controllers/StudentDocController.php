@@ -50,7 +50,7 @@ class StudentDocController extends Controller
         $studentdoc = new StudentDoc();
 
 
-        $studentdoc->studentdoc_id = $validatedData['id'];
+        $studentdoc->student_id = $validatedData['id'];
         $studentdoc->title = $validatedData['title'];
         $studentdoc->doc = $validatedData['doc'];
 
