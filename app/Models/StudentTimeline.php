@@ -18,5 +18,5 @@ class StudentTimeline extends Model
 'document',
 'status',
 'date',
-    ]
+    ];
 }
