@@ -16,7 +16,7 @@ class StudentFeesController extends Controller
      */
     public function index(Request $request, $id = null, $role = null)
     {
-        $student_session_id = 1816;
+        $student_session_id = $request->id;
 
 
         $studentDueFees = $this->getStudentFees($student_session_id) ?? [];// Replace with actual query logic
