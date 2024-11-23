@@ -57,6 +57,7 @@ use App\Http\Controllers\SubjectGroupsController;
 use App\Http\Controllers\StudentFeesController;
 use App\Http\Controllers\StudentApplyleaveController;
 use App\Http\Controllers\StudentDocController;
+use App\Http\Controllers\StudentTimelineController;
 
 /*
 |--------------------------------------------------------------------------
@@ -383,6 +384,12 @@ Route::post('/login', [SiteController::class, 'login'])->name('login');
         Route::post('/student-doc', [StudentDocController::class, 'create']);
         Route::delete('/student-doc/{id}', [StudentDocController::class, 'destroy']);
         Route::post('/student-doc/{id}', [StudentDocController::class, 'update']);
+
+
+        Route::get('/student-timeline', [StudentTimelineController::class, 'index']);
+        Route::post('/student-timeline', [StudentTimelineController::class, 'create']);
+        Route::delete('/student-timeline/{id}', [StudentTimelineController::class, 'destroy']);
+        Route::post('/student-timeline/{id}', [StudentTimelineController::class, 'update']);
 
 
 

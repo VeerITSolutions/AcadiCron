@@ -36,7 +36,7 @@ class StudentDocController extends Controller
         // Validate the incoming request
         $validatedData = $request->all();
 
-        $file = $request->file('first_doc');
+        $file = $request->file('doc');
          if($file)
          {
             $imageName = $request->id .'_student_doc_'. time(); // Example name
