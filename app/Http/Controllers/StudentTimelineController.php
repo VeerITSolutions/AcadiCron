@@ -35,7 +35,9 @@ class StudentTimelineController extends Controller
         // Validate the incoming request
         $validatedData = $request->all();
 
-        $file = $request->file('doc');
+
+
+       /*  $file = $request->file('doc');
          if($file)
          {
             $imageName = $request->id .'_student_doc_'. time(); // Example name
@@ -43,7 +45,7 @@ class StudentTimelineController extends Controller
             $full_path = 0;
             $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
             $validatedData['document'] = $imagePath;
-         }
+         } */
 
         // Create a new category
         $StudentTimeline = new StudentTimeline();
@@ -53,7 +55,7 @@ class StudentTimelineController extends Controller
         $StudentTimeline->title = $validatedData['title'];
         $StudentTimeline->timeline_date = $validatedData['timeline_date'];
         $StudentTimeline->description = $validatedData['description'];
-        $StudentTimeline->document = $validatedData['document'];
+       /*  $StudentTimeline->document = $validatedData['document']; */
         $StudentTimeline->status = 1;
         $StudentTimeline->date = Carbon::now();
 

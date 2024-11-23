@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class StudentTimeline extends Model
 {
     use HasFactory;
+    protected $table = 'student_timeline';
+    public $timestamps = false;
 
     protected $fillable = [
 
