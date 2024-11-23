@@ -34,10 +34,11 @@ class StudentTimelineController extends Controller
 
         // Validate the incoming request
         $validatedData = $request->all();
+         // Create a new category */
+         $StudentTimeline = new StudentTimeline();
 
 
-
-       /*  $file = $request->file('doc');
+        $file = $request->file('document');
          if($file)
          {
             $imageName = $request->id .'_student_doc_'. time(); // Example name
@@ -45,17 +46,16 @@ class StudentTimelineController extends Controller
             $full_path = 0;
             $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
             $validatedData['document'] = $imagePath;
-         } */
+         }
 
-        // Create a new category
-        $StudentTimeline = new StudentTimeline();
+
 
 
         $StudentTimeline->student_id = $validatedData['id'];
         $StudentTimeline->title = $validatedData['title'];
         $StudentTimeline->timeline_date = $validatedData['timeline_date'];
         $StudentTimeline->description = $validatedData['description'];
-       /*  $StudentTimeline->document = $validatedData['document']; */
+
         $StudentTimeline->status = 1;
         $StudentTimeline->date = Carbon::now();
 
@@ -104,18 +104,23 @@ class StudentTimelineController extends Controller
 
         $validatedData = $request->all();
 
-        $StudentTimeline->StudentTimeline_id = $validatedData['id'];
-        $StudentTimeline->title = $validatedData['title'];
 
-        $file = $request->file('first_doc');
+        $StudentTimeline->student_id = $validatedData['id'];
+        $StudentTimeline->title = $validatedData['title'];
+        $StudentTimeline->timeline_date = $validatedData['timeline_date'];
+        $StudentTimeline->description = $validatedData['description'];
+        $StudentTimeline->status = $validatedData['status'];
+        $StudentTimeline->date = Carbon::now();
+
+        $file = $request->file('document');
          if($file)
          {
             $imageName = $request->id .'_student_doc_'. time(); // Example name
             $imageSubfolder = 'student_documents';    // Example subfolder
             $full_path = 0;
             $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
-            $validatedData['doc'] = $imagePath;
-            $StudentTimeline->doc = $validatedData['doc'];
+            $validatedData['document'] = $imagePath;
+            $StudentTimeline->document = $validatedData['document'];
          }
 
 
