@@ -54,7 +54,11 @@ $paginatedData = $query->paginate($perPage, ['*'], 'page', $page);
      {
          // Role ID (use the provided role ID or default to 1)
          $role_id = $id ?: $role ?: 2;
-
+     
+         // Get pagination inputs, default to page 1 and 10 records per page if not provided
+         $page = (int) $request->input('page', 1);
+         $perPage = (int) $request->input('perPage', 10);
+     
          // Build the query
          $query = DB::table('staff')
              ->select('staff.*',
@@ -68,16 +72,20 @@ $paginatedData = $query->paginate($perPage, ['*'], 'page', $page);
              ->leftJoin('roles', 'staff_roles.role_id', '=', 'roles.id')
              ->where('staff_roles.role_id', $role_id)
              ->where('staff.is_active', '1');
-
-         // Get all results
-         $results = $query->get();
-
-         // Return the data
+     
+         // Apply pagination
+         $paginatedData = $query->paginate($perPage, ['*'], 'page', $page);
+     
+         // Return paginated data with total count and pagination details
          return response()->json([
              'success' => true,
-             'data' => $results,
+             'data' => $paginatedData->items(), // Only return the current page data
+             'current_page' => $paginatedData->currentPage(),
+             'per_page' => $paginatedData->perPage(),
+             'total' => $paginatedData->total(),
          ], 200);
      }
+     
 
 
 
@@ -95,32 +103,63 @@ $paginatedData = $query->paginate($perPage, ['*'], 'page', $page);
 
 
         // Create a new category
-        $category = new Staff();
-        $category->class_id = $validatedData['class_id'];
-        $category->section_id = $validatedData['section_id'];
-        $category->session_id = $validatedData['session_id'];
-        $category->Staff_date = $validatedData['Staff_date'];
-        $category->submit_date = $validatedData['submit_date'];
-        $category->staff_id = $validatedData['staff_id'];
-        $category->subject_group_subject_id = $validatedData['subject_group_subject_id'];
-        $category->subject_id = $validatedData['subject_id'];
-        $category->description = $validatedData['description'];
-        $category->create_date = $validatedData['create_date'];
-        $category->evaluation_date = $validatedData['evaluation_date'];
-        $category->document = $validatedData['document'];
-        $category->created_by = $validatedData['created_by'];
-        $category->evaluated_by = $validatedData['evaluated_by'];
-        $category->subject_name = $validatedData['subject_name'];
-        $category->subject_groups_id = $validatedData['subject_groups_id'];
-        $category->name = $validatedData['name'];
-        $category->assignments = $validatedData['assignments'];
+        $staff = new Staff();
+        
+        $staff->employee_id = $validatedData['employee_id'];
+        $staff->lang_id = $validatedData['lang_id'];
+        $staff->department = $validatedData['department'];
+        $staff->designation = $validatedData['designation'];
+        $staff->qualification = $validatedData['qualification'];
+        $staff->work_exp = $validatedData['work_exp'];
+        $staff->name = $validatedData['name'];
+        $staff->surname = $validatedData['surname'];
+        $staff->father_name = $validatedData['father_name'];
+        $staff->mother_name = $validatedData['mother_name'];
+        $staff->contact_no = $validatedData['contact_no'];
+        $staff->emergency_contact_no = $validatedData['emergency_contact_no'];
+        $staff->email = $validatedData['email'];
+        $staff->dob = $validatedData['dob'];
+        $staff->marital_status = $validatedData['marital_status'];
+        $staff->date_of_joining = $validatedData['date_of_joining'];
+        $staff->date_of_leaving = $validatedData['date_of_leaving'];
+        $staff->local_address = $validatedData['local_address'];
+        $staff->permanent_address = $validatedData['permanent_address'];
+        $staff->note = $validatedData['note'];
+        $staff->image = $validatedData['image'];
+        $staff->password = $validatedData['password'];
+        $staff->gender = $validatedData['gender'];
+        $staff->account_title = $validatedData['account_title'];
+        $staff->bank_account_no = $validatedData['bank_account_no'];
+        $staff->bank_name = $validatedData['bank_name'];
+        $staff->ifsc_code = $validatedData['ifsc_code'];
+        $staff->bank_branch = $validatedData['bank_branch'];
+        $staff->payscale = $validatedData['payscale'];
+        $staff->basic_salary = $validatedData['basic_salary'];
+        $staff->epf_no = $validatedData['epf_no'];
+        $staff->contract_type = $validatedData['contract_type'];
+        $staff->shift = $validatedData['shift'];
+        $staff->location = $validatedData['location'];
+        $staff->facebook = $validatedData['facebook'];
+        $staff->twitter = $validatedData['twitter'];
+        $staff->linkedin = $validatedData['linkedin'];
+        $staff->instagram = $validatedData['instagram'];
+        $staff->resume = $validatedData['resume'];
+        $staff->joining_letter = $validatedData['joining_letter'];
+        $staff->resignation_letter = $validatedData['resignation_letter'];
+        $staff->other_document_name = $validatedData['other_document_name'];
+        $staff->other_document_file = $validatedData['other_document_file'];
+        $staff->user_id = $validatedData['user_id'];
+        $staff->is_active = $validatedData['is_active'];
+        $staff->verification_code = $validatedData['verification_code'];
+        $staff->disable_at = $validatedData['disable_at'];
+         
 
-        $category->save();
+        $staff->save();
 
         return response()->json([
             'success' => true,
             'message' => 'Staff saved successfully',
-            'category' => $category,
+            'category' => $staff,
         ], 201); // 201 Created status code
     }
 
@@ -158,13 +197,13 @@ $paginatedData = $query->paginate($perPage, ['*'], 'page', $page);
     {
 
         // Find the category by id
-        $category = Staff::findOrFail($id);
+        $staff = Staff::findOrFail($id);
 
         // Validate the request data
         $validatedData = $request->all();
 
         // Update the category
-        $category->update($validatedData);
+        $staff->update($validatedData);
 
 
 
@@ -172,7 +211,7 @@ $paginatedData = $query->paginate($perPage, ['*'], 'page', $page);
         return response()->json([
             'success' => true,
             'message' => 'Edit successfully',
-            'category' => $category,
+            'category' => $staff,
         ], 201); // 201 Created status code
     }
 
@@ -183,10 +222,10 @@ $paginatedData = $query->paginate($perPage, ['*'], 'page', $page);
     {
         try {
             // Find the category by ID
-            $category = Staff::findOrFail($id);
+            $staff = Staff::findOrFail($id);
 
             // Delete the category
-            $category->delete();
+            $staff->delete();
 
             // Return success response
             return response()->json(['success' => true, 'message' => 'Staff  deleted successfully']);
