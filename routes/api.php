@@ -16,7 +16,8 @@ use App\Http\Controllers\FeemastersController;
 use App\Http\Controllers\FeesDiscountsController;
 use App\Http\Controllers\FeetypeController;
 use App\Http\Controllers\IncomeController;
-use App\Http\Controllers\ItemController;
+use App\Http\Controllers\RolesController;
+
 use App\Http\Controllers\NotificationRolesController;
 use App\Http\Controllers\OnlineexamStudentsController;
 use App\Http\Controllers\SchoolHousesController;
@@ -485,6 +486,11 @@ Route::post('/login', [SiteController::class, 'login'])->name('login');
         Route::post('/staff-attendance/{id}', [StaffAttendanceController::class, 'update']);
 
 
+
+        Route::get('/role', [RolesController::class, 'index']);
+        Route::post('/role', [RolesController::class, 'create']);
+        Route::delete('/role/{id}', [RolesController::class, 'destroy']);
+        Route::post('/role/{id}', [RolesController::class, 'update']);
 
 
 
