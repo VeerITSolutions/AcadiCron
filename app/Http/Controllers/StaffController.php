@@ -50,10 +50,10 @@ $paginatedData = $query->paginate($perPage, ['*'], 'page', $page);
      }
 
 
-     public function getStaffbyrole(Request $request, $id = null, $role = null)
+     public function getStaffbyrole(Request $request)
      {
          // Role ID (use the provided role ID or default to 1)
-         $role_id = $id ?: $role ?: 2;
+         $role_id = $request->selectedRole;
 
          // Get pagination inputs, default to page 1 and 10 records per page if not provided
          $page = (int) $request->input('page', 1);
@@ -69,9 +69,13 @@ $paginatedData = $query->paginate($perPage, ['*'], 'page', $page);
              ->leftJoin('staff_designation', 'staff_designation.id', '=', 'staff.designation')
              ->leftJoin('department', 'department.id', '=', 'staff.department')
              ->leftJoin('staff_roles', 'staff_roles.staff_id', '=', 'staff.id')
-             ->leftJoin('roles', 'staff_roles.role_id', '=', 'roles.id')
-             ->where('staff_roles.role_id', $role_id)
-             ->where('staff.is_active', '1');
+             ->leftJoin('roles', 'staff_roles.role_id', '=', 'roles.id');
+             if($role_id)
+             {
+                $query->where('staff_roles.role_id', $role_id);
+             }
+
+             $query->where('staff.is_active', '1');
 
          // Apply pagination
          $paginatedData = $query->paginate($perPage, ['*'], 'page', $page);
