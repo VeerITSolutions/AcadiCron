@@ -54,11 +54,11 @@ $paginatedData = $query->paginate($perPage, ['*'], 'page', $page);
      {
          // Role ID (use the provided role ID or default to 1)
          $role_id = $id ?: $role ?: 2;
-     
+
          // Get pagination inputs, default to page 1 and 10 records per page if not provided
          $page = (int) $request->input('page', 1);
          $perPage = (int) $request->input('perPage', 10);
-     
+
          // Build the query
          $query = DB::table('staff')
              ->select('staff.*',
@@ -72,10 +72,10 @@ $paginatedData = $query->paginate($perPage, ['*'], 'page', $page);
              ->leftJoin('roles', 'staff_roles.role_id', '=', 'roles.id')
              ->where('staff_roles.role_id', $role_id)
              ->where('staff.is_active', '1');
-     
+
          // Apply pagination
          $paginatedData = $query->paginate($perPage, ['*'], 'page', $page);
-     
+
          // Return paginated data with total count and pagination details
          return response()->json([
              'success' => true,
@@ -85,7 +85,7 @@ $paginatedData = $query->paginate($perPage, ['*'], 'page', $page);
              'total' => $paginatedData->total(),
          ], 200);
      }
-     
+
 
 
 
@@ -98,13 +98,15 @@ $paginatedData = $query->paginate($perPage, ['*'], 'page', $page);
     public function create(Request $request){
 
 
+
         // Validate the incoming request
         $validatedData = $request->all();
 
 
         // Create a new category
         $staff = new Staff();
-        
+        /* image  */
+
         $staff->employee_id = $validatedData['employee_id'];
         $staff->lang_id = $validatedData['lang_id'];
         $staff->department = $validatedData['department'];
@@ -125,7 +127,7 @@ $paginatedData = $query->paginate($perPage, ['*'], 'page', $page);
         $staff->local_address = $validatedData['local_address'];
         $staff->permanent_address = $validatedData['permanent_address'];
         $staff->note = $validatedData['note'];
-        $staff->image = $validatedData['image'];
+
         $staff->password = $validatedData['password'];
         $staff->gender = $validatedData['gender'];
         $staff->account_title = $validatedData['account_title'];
@@ -143,22 +145,67 @@ $paginatedData = $query->paginate($perPage, ['*'], 'page', $page);
         $staff->twitter = $validatedData['twitter'];
         $staff->linkedin = $validatedData['linkedin'];
         $staff->instagram = $validatedData['instagram'];
-        $staff->resume = $validatedData['resume'];
-        $staff->joining_letter = $validatedData['joining_letter'];
-        $staff->resignation_letter = $validatedData['resignation_letter'];
         $staff->other_document_name = $validatedData['other_document_name'];
-        $staff->other_document_file = $validatedData['other_document_file'];
         $staff->user_id = $validatedData['user_id'];
         $staff->is_active = $validatedData['is_active'];
         $staff->verification_code = $validatedData['verification_code'];
         $staff->disable_at = $validatedData['disable_at'];
-         
+
 
         $staff->save();
 
+        $updatestaff = Staff::findOrFail($staff->id);
+
+        $file = $request->file('image');
+        if($file)
+        {
+           $imageName = $staff->id .'_image_'. time(); // Example name
+            $imageSubfolder = "/staff_documents/".$staff->id;      // Example subfolder
+           $full_path = 0;
+           $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
+           $validatedData['image'] = $imagePath;
+        }
+
+        $file = $request->file('resume');
+        if($file)
+        {
+           $imageName = $staff->id .'_resume_'. time(); // Example name
+            $imageSubfolder = "/staff_documents/".$staff->id;      // Example subfolder
+           $full_path = 0;
+           $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
+           $validatedData['resume'] = $imagePath;
+        }
+
+        $file = $request->file('joining_letter');
+        if($file)
+        {
+           $imageName = $staff->id .'_joining_letter_'. time(); // Example name
+            $imageSubfolder = "/staff_documents/".$staff->id;      // Example subfolder
+           $full_path = 0;
+           $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
+           $validatedData['joining_letter'] = $imagePath;
+        }
+
+        $file = $request->file('other_document_file');
+        if($file)
+        {
+           $imageName = $staff->id .'_other_document_file_'. time(); // Example name
+           $imageSubfolder = "/staff_documents/".$staff->id;   // Example subfolder
+           $full_path = 0;
+           $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
+           $validatedData['other_document_file'] = $imagePath;
+        }
+
+
+
+
+
+        // Update the category
+        $updatestaff->update($validatedData);
+
         return response()->json([
-            'success' => true,
-            'message' => 'Staff saved successfully',
+            'status' => 200,
+            'message' => 'Created successfully',
             'category' => $staff,
         ], 201); // 201 Created status code
     }
