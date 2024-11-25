@@ -56,7 +56,13 @@ class ExamsController extends Controller
             }
         }
 
-        return $student_exams;
+
+
+        return response()->json([
+            'status' => 200,
+            'message' => 'Student Exam Fetched',
+            'data' => $student_exams,
+        ], 200); // 201 Created status code
     }
 
 /**
