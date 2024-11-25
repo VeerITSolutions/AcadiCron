@@ -58,6 +58,7 @@ $paginatedData = $query->paginate($perPage, ['*'], 'page', $page);
          // Get pagination inputs, default to page 1 and 10 records per page if not provided
          $page = (int) $request->input('page', 1);
          $perPage = (int) $request->input('perPage', 10);
+         $keyword = $request->input('keyword');
 
          // Build the query
          $query = DB::table('staff')
@@ -74,6 +75,11 @@ $paginatedData = $query->paginate($perPage, ['*'], 'page', $page);
              {
                 $query->where('staff_roles.role_id', $role_id);
              }
+
+               // Apply filtering based on keyword (searching in the 'firstname' field)
+            if (!empty($keyword)) {
+                $query->where('staff.name', 'like', '%' . $keyword . '%');
+            }
 
              $query->where('staff.is_active', '1');
 
