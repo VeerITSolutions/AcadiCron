@@ -380,7 +380,7 @@ Route::post('/login', [SiteController::class, 'login'])->name('login');
         Route::delete('/student/{id}', [StudentsController::class, 'destroy']);
         Route::post('/student/{id}', [StudentsController::class, 'update']);
 
-        Route::get('/student-doc', [StudentDocController::class, 'index']);
+        Route::get('/student-doc/{id}', [StudentDocController::class, 'index']);
         Route::post('/student-doc', [StudentDocController::class, 'create']);
         Route::delete('/student-doc/{id}', [StudentDocController::class, 'destroy']);
         Route::post('/student-doc/{id}', [StudentDocController::class, 'update']);
