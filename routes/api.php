@@ -386,10 +386,13 @@ Route::post('/login', [SiteController::class, 'login'])->name('login');
         Route::post('/student-doc/{id}', [StudentDocController::class, 'update']);
 
 
+
         Route::get('/student-timeline/{id}', [StudentTimelineController::class, 'index']);
         Route::post('/student-timeline', [StudentTimelineController::class, 'create']);
         Route::delete('/student-timeline/{id}', [StudentTimelineController::class, 'destroy']);
         Route::post('/student-timeline/{id}', [StudentTimelineController::class, 'update']);
+
+
 
 
 

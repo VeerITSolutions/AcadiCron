@@ -9,6 +9,8 @@ class StudentDoc extends Model
 {
     use HasFactory;
 
+    protected $table = 'student_doc';
+
     protected $fillable = ['student_id',
 'title',
 'doc'];
