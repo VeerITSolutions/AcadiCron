@@ -42,6 +42,7 @@ use App\Http\Controllers\HomeworkController;
 use App\Http\Controllers\LeaveTypesController;
 use App\Http\Controllers\NotificationSettingController;
 use App\Http\Controllers\ContentSectionController;
+use App\Http\Controllers\ExamsController;
 use App\Http\Controllers\SectionsController;
 use App\Http\Controllers\StaffLeaveRequestController;
 use App\Http\Controllers\StaffPayrollController;
@@ -391,6 +392,12 @@ Route::post('/login', [SiteController::class, 'login'])->name('login');
         Route::post('/student-timeline', [StudentTimelineController::class, 'create']);
         Route::delete('/student-timeline/{id}', [StudentTimelineController::class, 'destroy']);
         Route::post('/student-timeline/{id}', [StudentTimelineController::class, 'update']);
+
+
+        Route::get('/student-exam/{id}', [ExamsController::class, 'searchStudentExams']);
+        Route::post('/student-exam', [ExamsController::class, 'create']);
+        Route::delete('/student-exam/{id}', [ExamsController::class, 'destroy']);
+        Route::post('/student-exam/{id}', [ExamsController::class, 'update']);
 
 
 
