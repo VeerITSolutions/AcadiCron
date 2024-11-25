@@ -10,6 +10,8 @@ class StudentDoc extends Model
     use HasFactory;
 
     protected $table = 'student_doc';
+    public $timestamps = false;
+
 
     protected $fillable = ['student_id',
 'title',
