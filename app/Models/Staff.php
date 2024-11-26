@@ -36,6 +36,11 @@ class Staff  extends Authenticatable
         return $this->belongsToMany(Roles::class, 'staff_roles', 'staff_id', 'role_id');
     }
 
+    public function staffLeaveDetails()
+    {
+        return $this->hasMany(StaffLeaveDetails::class, 'staff_id', 'id');
+    }
+
     public function isAdmin()
         {
             return $this->roles()->where('name', 'admin')->exists();

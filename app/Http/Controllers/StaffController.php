@@ -97,6 +97,51 @@ $paginatedData = $query->paginate($perPage, ['*'], 'page', $page);
      }
 
 
+     public function getSingleData(Request $request)
+     {
+         // Role ID (use the provided role ID or default to 1)
+         $id = $request->id;
+
+         // Get pagination inputs, default to page 1 and 10 records per page if not provided
+         $page = (int) $request->input('page', 1);
+         $perPage = (int) $request->input('perPage', 10);
+         $keyword = $request->input('keyword');
+
+
+         // Build the query
+         $query = Staff::select('staff.*',
+                      'staff_designation.designation as designation_name',
+                      'staff_roles.role_id',
+                      'department.department_name as department_name',
+                      'roles.name as user_type')->with('staffLeaveDetails')
+             ->leftJoin('staff_designation', 'staff_designation.id', '=', 'staff.designation')
+             ->leftJoin('department', 'department.id', '=', 'staff.department')
+             ->leftJoin('staff_roles', 'staff_roles.staff_id', '=', 'staff.id')
+             ->leftJoin('roles', 'staff_roles.role_id', '=', 'roles.id');
+
+             if($id)
+             {
+                $query->where('staff.id', $id);
+             }
+
+               // Apply filtering based on keyword (searching in the 'firstname' field)
+            if (!empty($keyword)) {
+                $query->where('staff.name', 'like', '%' . $keyword . '%');
+            }
+
+             $query->where('staff.is_active', '1');
+
+         // Apply pagination
+         $data = $query->first();
+
+         // Return paginated data with total count and pagination details
+         return response()->json([
+             'success' => true,
+             'data' => $data,
+         ], 200);
+     }
+
+
 
 
 
@@ -259,6 +304,47 @@ $paginatedData = $query->paginate($perPage, ['*'], 'page', $page);
         // Validate the request data
         $validatedData = $request->all();
 
+
+        $file = $request->file('image');
+        if($file)
+        {
+           $imageName = $staff->id .'_image_'. time(); // Example name
+            $imageSubfolder = "/staff_documents/".$staff->id;      // Example subfolder
+           $full_path = 0;
+           $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
+           $validatedData['image'] = $imagePath;
+        }
+
+        $file = $request->file('resume');
+        if($file)
+        {
+           $imageName = $staff->id .'_resume_'. time(); // Example name
+            $imageSubfolder = "/staff_documents/".$staff->id;      // Example subfolder
+           $full_path = 0;
+           $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
+           $validatedData['resume'] = $imagePath;
+        }
+
+        $file = $request->file('joining_letter');
+        if($file)
+        {
+           $imageName = $staff->id .'_joining_letter_'. time(); // Example name
+            $imageSubfolder = "/staff_documents/".$staff->id;      // Example subfolder
+           $full_path = 0;
+           $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
+           $validatedData['joining_letter'] = $imagePath;
+        }
+
+        $file = $request->file('other_document_file');
+        if($file)
+        {
+           $imageName = $staff->id .'_other_document_file_'. time(); // Example name
+           $imageSubfolder = "/staff_documents/".$staff->id;   // Example subfolder
+           $full_path = 0;
+           $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
+           $validatedData['other_document_file'] = $imagePath;
+        }
+
         // Update the category
         $staff->update($validatedData);
 
@@ -268,7 +354,7 @@ $paginatedData = $query->paginate($perPage, ['*'], 'page', $page);
         return response()->json([
             'success' => true,
             'message' => 'Edit successfully',
-            'category' => $staff,
+            'data' => $staff,
         ], 201); // 201 Created status code
     }
 

@@ -413,6 +413,7 @@ Route::post('/login', [SiteController::class, 'login'])->name('login');
         Route::post('/class-teacher/{id}', [ClassTeacherController::class, 'update']);
 
         Route::get('/staff', [StaffController::class, 'getStaffbyrole']);
+        Route::get('/staff/{id}', [StaffController::class, 'getSingleData']);
         Route::post('/staff', [StaffController::class, 'create']);
         Route::delete('/staff/{id}', [StaffController::class, 'destroy']);
         Route::post('/staff/{id}', [StaffController::class, 'update']);
