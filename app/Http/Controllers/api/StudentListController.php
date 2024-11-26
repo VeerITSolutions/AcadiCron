@@ -61,10 +61,15 @@ class StudentListController extends Controller
         }
 
         // Apply filtering based on keyword (searching in the 'firstname' field)
-        if (!empty($keyword)) {
-            $query->where('students.firstname', 'like', '%' . $keyword . '%');
-        }
 
+
+
+        if (!empty($keyword)) {
+            $query->where(function($q) use ($keyword) {
+                $q->where('students.firstname', 'like', '%' . $keyword . '%')
+                  ->orWhereRaw('CONCAT(students.firstname, " ", students.lastname) like ?', ['%' . $keyword . '%']);
+            });
+        }
         if (!empty($selectedSessionId)) {
             $query->where('student_session.session_id', $selectedSessionId);
         }
