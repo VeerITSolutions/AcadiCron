@@ -19,56 +19,26 @@ class StaffAttendanceController extends Controller
         // Initialize pagination variables
         $page = (int) $request->input('page', 1);
         $perPage = (int) $request->input('perPage', 10);
-    
-        // Validate form input (if required)
-        $validator = Validator::make($request->all(), [
-            'class_id' => 'nullable|integer',
-            'section_id' => 'nullable|integer',
-            'user_id' => 'nullable|integer',
-            'date' => 'nullable|date',
-            'search' => 'nullable|string',
-            'holiday' => 'nullable|boolean',
-        ]);
-    
-        // If validation fails, return a validation error response
-        if ($validator->fails()) {
-            return response()->json(['success' => false, 'errors' => $validator->errors()], 400);
-        }
-    
-        // Get filters from the request
-        $user_type_id = $request->input('user_id');
-        $date = $request->input('date');
-        $search = $request->input('search');
-        $holiday = $request->input('holiday');
-    
+
+        $month = (int) $request->input('month');
+        $year = (int) $request->input('year');
+
+
+
         // Initialize the query for retrieving staff attendance
-        $query = StaffAttendance::query();
-        
-        // Apply filters if any
-        if ($user_type_id) {
-            $query->where('user_type', $user_type_id);
-        }
-    
-        if ($date) {
-            $query->whereDate('date', '=', date('Y-m-d', strtotime($date)));
-        }
-    
-        // Apply search filter if provided
-        if ($search) {
-            $query->where(function($q) use ($search) {
-                $q->where('staff_id', 'LIKE', "%{$search}%")
-                  ->orWhere('remark', 'LIKE', "%{$search}%");
-            });
-        }
-    
-        // If holiday filter is provided
-        if ($holiday !== null) {
-            $query->where('is_holiday', $holiday);
-        }
-    
+        $query = StaffAttendance::select('staff_attendance.*'  ,'staff.name as staff_name',
+        'staff.surname as staff_surname',
+        'staff_attendance_type.type as staff_attendance_type')
+             ->leftJoin('staff', 'staff.id', '=', 'staff_attendance.staff_id')
+             ->leftJoin('staff_attendance_type', 'staff_attendance_type.id', '=', 'staff_attendance.staff_attendance_type_id');
+
+
+
+
+
         // Apply pagination to the query
         $paginatedData = $query->paginate($perPage, ['*'], 'page', $page);
-    
+
         // Return paginated data with pagination details
         return response()->json([
             'success' => true,
@@ -78,8 +48,8 @@ class StaffAttendanceController extends Controller
             'total' => $paginatedData->total(),
         ], 200);
     }
-    
-   
+
+
     /**
      * Show the form for creating a new resource.
      */
