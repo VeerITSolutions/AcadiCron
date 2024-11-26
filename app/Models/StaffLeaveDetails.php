@@ -11,4 +11,9 @@ class StaffLeaveDetails extends Model
 
     protected $table = 'staff_leave_details';
     protected $fillable = ['staff_id', 'leave_type_id', 'alloted_leave'];
+
+    public function leaveType()
+    {
+        return $this->hasMany(LeaveTypes::class,'id', 'leave_type_id');
+    }
 }

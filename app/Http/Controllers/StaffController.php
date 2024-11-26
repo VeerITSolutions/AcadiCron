@@ -113,7 +113,12 @@ $paginatedData = $query->paginate($perPage, ['*'], 'page', $page);
                       'staff_designation.designation as designation_name',
                       'staff_roles.role_id',
                       'department.department_name as department_name',
-                      'roles.name as user_type')->with('staffLeaveDetails')
+                      'roles.name as user_type')
+
+                      ->with(['staffLeaveDetails' => function ($query) use ($keyword) {
+
+                        $query->with('leaveType');
+                    }])
              ->leftJoin('staff_designation', 'staff_designation.id', '=', 'staff.designation')
              ->leftJoin('department', 'department.id', '=', 'staff.department')
              ->leftJoin('staff_roles', 'staff_roles.staff_id', '=', 'staff.id')
