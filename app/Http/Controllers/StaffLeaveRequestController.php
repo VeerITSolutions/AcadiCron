@@ -155,6 +155,36 @@ class StaffLeaveRequestController extends Controller
         // Validate the request data
         $validatedData = $request->all();
 
+        $id = $validatedData['id'];
+        /*  */
+
+        $leaveFrom = Carbon::parse($validatedData['leave_from']);
+        $leaveTo = Carbon::parse($validatedData['leave_to']);
+
+        // Calculate the difference
+        $dateDifference = $leaveFrom->diffInDays($leaveTo);
+
+
+
+         $validatedData['leave_days']  = $dateDifference;
+
+        $validatedData['staff_id'] = $id;
+        $validatedData['applied_by']  =$validatedData['selectedRoleLeave'];
+
+        /*      imag update */
+        /*  $category->document_file  = 1; */
+
+        $file = $request->file('document_file');
+        if($file)
+        {
+           $imageName = $category->id .'_document_file_'. time(); // Example name
+           $imageSubfolder = "/staff_documents/".$category->id;   // Example subfolder
+           $full_path = 0;
+           $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
+           $validatedData['document_file']  =  $validatedData['document_file'] = $imagePath;
+        }
+
+
         // Update the category
         $category->update($validatedData);
 
