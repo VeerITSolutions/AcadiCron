@@ -439,6 +439,7 @@ Route::post('/login', [SiteController::class, 'login'])->name('login');
         Route::post('/searchpayment/{id}', [SearchPaymentController::class, 'update']);
 
         Route::get('/student-attendance', [StudentAttendencesController::class, 'index']);
+        Route::get('/student-attendance-by-class-section', [StudentAttendencesController::class, 'searchAttendenceClassSection']);
         Route::post('/student-attendance', [StudentAttendencesController::class, 'create']);
         Route::delete('/student-attendance/{id}', [StudentAttendencesController::class, 'destroy']);
         Route::post('/student-attendance/{id}', [StudentAttendencesController::class, 'update']);
