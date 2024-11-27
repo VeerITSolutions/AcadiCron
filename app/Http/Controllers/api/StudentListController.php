@@ -61,7 +61,9 @@ class StudentListController extends Controller
         }
 
         // Apply filtering based on keyword (searching in the 'firstname' field)
-
+        if (!empty($keyword)) {
+            $query->where('students.firstname', 'like', '%' . $keyword . '%');
+        }
 
 
         if (!empty($keyword)) {
