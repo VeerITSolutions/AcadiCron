@@ -12,6 +12,5 @@ class StaffLeaveRequest extends Model
     public $timestamps = false;
 
     // Specify the fillable fields
-    protected $fillable = ['date', 'document_file', 'leave_from', 'leave_to', 'leave_type_id'];
-    
+    protected $fillable = ['name','surname','employee_id','id','staff_id','leave_type_id','leave_from','leave_to','leave_days','employee_remark','admin_remark','status','applied_by','document_file','date','type',];
 }

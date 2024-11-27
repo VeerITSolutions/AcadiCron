@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\StaffLeaveRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-
+use Carbon\Carbon;
 class StaffLeaveRequestController extends Controller
 {
     /**
@@ -72,23 +72,45 @@ class StaffLeaveRequestController extends Controller
 
         // Create a new category
         $category = new StaffLeaveRequest();
-        $category->leave_type_id   = $validatedData['leave_type_id'];
+
+        $leaveFrom = Carbon::parse($validatedData['leave_from']);
+        $leaveTo = Carbon::parse($validatedData['leave_to']);
+
+        // Calculate the difference
+        $dateDifference = $leaveFrom->diffInDays($leaveTo);
+
+
         $category->leave_from  = $validatedData['leave_from'];
         $category->leave_to  = $validatedData['leave_to'];
-        // $category->document_file  = $validatedData['document_file'];
+        $category->leave_type_id   = $validatedData['selectedLeaveType'];
         $category->date  = $validatedData['date'];
-        $category->leave_days  = 1;
-        $category->employee_remark  = 1;
-        $category->admin_remark  = 1;
-        $category->status  = 0;
+        $category->leave_days  = $dateDifference;
+        $category->employee_remark  = $validatedData['employee_remark'];
+        $category->admin_remark  = $validatedData['admin_remark'];
+        $category->status  = $validatedData['status'];
         $category->staff_id  = 1;
-        $category->applied_by  = 1;
-        $category->document_file  = 1;
+        $category->applied_by  =$validatedData['selectedRoleLeave'];
+
+        /* imag update */
+        /*  $category->document_file  = 1; */
+
+        $file = $request->file('document_file');
+        if($file)
+        {
+           $imageName = $category->staff_id .'_document_file_'. time(); // Example name
+           $imageSubfolder = "/staff_documents/".$category->staff_id;   // Example subfolder
+           $full_path = 0;
+           $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
+           $category->document_file  =  $validatedData['document_file'] = $imagePath;
+        }
+
+
+
         $category->save();
 
 
         return response()->json([
-            'success' => true,
+            'status' => 200,
             'message' => 'Staff Leave saved successfully',
             'category' => $category,
         ], 201); // 201 Created status code
