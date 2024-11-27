@@ -73,7 +73,7 @@ class StudentAttendencesController extends Controller
                     DB::raw("IFNULL(student_attendences.id, 0) as attendence_id"),
                     'student_attendences.attendence_type_id'
                 )
-                ->where('student_session.session_id', '=', $currentSession)
+               /*  ->where('student_session.session_id', '=', $currentSession) */
                 ->where('student_session.class_id', '=', $class_id)
                 ->where('student_session.section_id', '=', $section_id),
             'student_sessions',
