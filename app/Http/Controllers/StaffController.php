@@ -54,6 +54,7 @@ $paginatedData = $query->paginate($perPage, ['*'], 'page', $page);
      {
          // Role ID (use the provided role ID or default to 1)
          $role_id = $request->selectedRole;
+         $leave_role_id = $request->selectedRoleLeave;
 
          // Get pagination inputs, default to page 1 and 10 records per page if not provided
          $page = (int) $request->input('page', 1);
@@ -76,6 +77,12 @@ $paginatedData = $query->paginate($perPage, ['*'], 'page', $page);
                 $query->where('staff_roles.role_id', $role_id);
              }
 
+             if($leave_role_id)
+             {
+                $query->where('staff_roles.role_id', $leave_role_id);
+             }
+
+
                // Apply filtering based on keyword (searching in the 'firstname' field)
             if (!empty($keyword)) {
                 $query->where('staff.name', 'like', '%' . $keyword . '%');
@@ -84,16 +91,28 @@ $paginatedData = $query->paginate($perPage, ['*'], 'page', $page);
              $query->where('staff.is_active', '1');
 
          // Apply pagination
-         $paginatedData = $query->paginate($perPage, ['*'], 'page', $page);
+
+         if($leave_role_id)
+         {
+
+            $data = $query->get();
+            return response()->json([
+                'success' => true,
+                'data' => $data
+            ], 200);
+         }else{
+            $paginatedData = $query->paginate($perPage, ['*'], 'page', $page);
+            return response()->json([
+                'success' => true,
+                'data' => $paginatedData->items(), // Only return the current page data
+                'current_page' => $paginatedData->currentPage(),
+                'per_page' => $paginatedData->perPage(),
+                'total' => $paginatedData->total(),
+            ], 200);
+         }
 
          // Return paginated data with total count and pagination details
-         return response()->json([
-             'success' => true,
-             'data' => $paginatedData->items(), // Only return the current page data
-             'current_page' => $paginatedData->currentPage(),
-             'per_page' => $paginatedData->perPage(),
-             'total' => $paginatedData->total(),
-         ], 200);
+
      }
 
 
