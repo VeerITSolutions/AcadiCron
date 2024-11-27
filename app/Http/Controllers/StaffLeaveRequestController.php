@@ -15,7 +15,7 @@ class StaffLeaveRequestController extends Controller
 {
     $page = $request->input('page', 1); // Default to page 1 if not provided
     $perPage = $request->input('perPage', 10); // Default to 10 records per page if not provided
-
+    $id = $request->input('id');
     // Validate the inputs (optional)
     $page = (int) $page;
     $perPage = (int) $perPage;
@@ -40,11 +40,18 @@ class StaffLeaveRequestController extends Controller
         ->orderBy('staff_leave_request.id', 'desc');
 
     // Apply the conditional staff_id filter if $id is provided
-    if ($id != null) {
-        $query->where('staff_leave_request.staff_id', $id);
-    }
+    if ($id) {
+        $query->where('staff_leave_request.id', $id);
 
-    // Paginate the results
+
+        $data = $query->get();
+    // Return the paginated data as a response
+    return response()->json([
+        'status' => 200,
+        'data' => $data,
+    ], 200);
+    }else{
+          // Paginate the results
     $data = $query->paginate($perPage, ['*'], 'page', $page);
 
     // Return the paginated data as a response
@@ -56,6 +63,9 @@ class StaffLeaveRequestController extends Controller
         'currentPage' => $data->currentPage(), // Current page
         'lastPage' => $data->lastPage(), // Total number of pages
     ], 200);
+    }
+
+
 }
 
 
