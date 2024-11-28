@@ -174,6 +174,8 @@ class StaffLeaveRequestController extends Controller
          // Update fields
          $leaverequest->leave_days = $dateDifference;
          $leaverequest->applied_by = $validatedData['selectedRoleLeave'];
+         $leaverequest->leave_from = $validatedData['leave_from'];
+         $leaverequest->leave_to = $validatedData['leave_to'];
          $leaverequest->employee_remark = $validatedData['employee_remark'];
          $leaverequest->admin_remark = $validatedData['admin_remark'];
          $leaverequest->status = $validatedData['status'];
