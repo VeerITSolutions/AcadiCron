@@ -156,57 +156,49 @@ class StaffLeaveRequestController extends Controller
      */
 
 
-    public function update(Request $request,string $id)
-    {
+     public function update(Request $request)
+     {
+         // Validate the request data
+         $validatedData = $request->all();
 
-        // Find the category by id
-        $category = StaffLeaveRequest::findOrFail($id);
+         // Find the category by id
+         $leaverequest = StaffLeaveRequest::findOrFail($validatedData['currentLeaveId']);
 
-        // Validate the request data
-        $validatedData = $request->all();
+         // Parse dates
+         $leaveFrom = Carbon::parse($validatedData['leave_from']);
+         $leaveTo = Carbon::parse($validatedData['leave_to']);
 
-        $id = $validatedData['id'];
-        /*  */
+         // Calculate the difference in days (inclusive)
+         $dateDifference = $leaveFrom->diffInDays($leaveTo) + 1;
 
-        $leaveFrom = Carbon::parse($validatedData['leave_from']);
-        $leaveTo = Carbon::parse($validatedData['leave_to']);
-
-        // Calculate the difference
-        $dateDifference = $leaveFrom->diffInDays($leaveTo);
-
-
-
-         $validatedData['leave_days']  = $dateDifference;
-
-        $validatedData['staff_id'] = $id;
-        $validatedData['applied_by']  =$validatedData['selectedRoleLeave'];
-
-        /*      imag update */
-        /*  $category->document_file  = 1; */
-
-        $file = $request->file('document_file');
-        if($file)
-        {
-           $imageName = $category->id .'_document_file_'. time(); // Example name
-           $imageSubfolder = "/staff_documents/".$category->id;   // Example subfolder
-           $full_path = 0;
-           $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
-           $validatedData['document_file']  =  $validatedData['document_file'] = $imagePath;
-        }
+         // Update fields
+         $leaverequest->leave_days = $dateDifference;
+         $leaverequest->applied_by = $validatedData['selectedRoleLeave'];
+         $leaverequest->employee_remark = $validatedData['employee_remark'];
+         $leaverequest->admin_remark = $validatedData['admin_remark'];
+         $leaverequest->status = $validatedData['status'];
 
 
-        // Update the category
-        $category->update($validatedData);
+         // Handle file upload if present
+         if ($request->hasFile('document_file')) {
+             $file = $request->file('document_file');
+             $imageName = $leaverequest->id . '_document_file_' . time();
+             $imageSubfolder = "/staff_documents/" . $leaverequest->id;
+             $full_path = false; // Adjust based on your uploadImage logic
+             $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
+             $leaverequest->document_file = $imagePath;
+         }
 
+         // Save the updated model
+         $leaverequest->save();
 
+         return response()->json([
+             'status' => 200,
+             'message' => 'Edit successful',
+             'leaverequest' => $leaverequest,
+         ], 200); // 200 OK status code
+     }
 
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Edit successfully',
-            'category' => $category,
-        ], 201); // 201 Created status code
-    }
 
     /**
      * Remove the specified resource from storage.
