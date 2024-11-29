@@ -9,7 +9,8 @@ class SendNotification extends Model
 {
     use HasFactory;
     protected $table = "send_notification";
-    protected $fillable = ['title',
+    protected $fillable = [
+'title',
 'publish_date',
 'date',
 'message',
@@ -23,7 +24,7 @@ class SendNotification extends Model
 'updated_at',
 'path',
 'class_id',
-'secid',];
+'secid'];
 
 
 

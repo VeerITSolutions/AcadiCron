@@ -76,10 +76,10 @@ class NotificationSettingController extends Controller
     $notification = new SendNotification();
 
 
-    $notification->name = $validatedData['title'];
-    $notification->name = $validatedData['publish_date'];
-    $notification->name = $validatedData['date'];
-    $notification->name = $validatedData['message'];
+    $notification->title = $validatedData['title'];
+    $notification->publish_date = $validatedData['publish_date'];
+    $notification->date = $validatedData['date'];
+    $notification->message = $validatedData['message'];
     if($validatedData['message_to'] == 'student')
     {
         $notification->visible_student = 'Yes';
