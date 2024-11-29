@@ -60,24 +60,12 @@ class NotificationSettingController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-   
+
 
     public function create(Request $request)
     {
         // Validate the incoming request
-        $validatedData = $request->validate([
-            'title' => 'required|string|max:50',
-            'publish_date' => 'required|date',
-            'date' => 'required|date',
-            'message' => 'required|string',
-            'message_to' => 'required|string|in:student,parent,admin',
-            'created_by' => 'required|string|max:60',
-            'created_id' => 'required|integer',
-            'is_active' => 'required|string|in:yes,no',
-            'class_id' => 'nullable|string|max:30',
-            'secid' => 'nullable|string|max:30',
-            'path' => 'nullable|file|mimes:jpeg,png,jpg,gif,pdf|max:2048', // Example validation for the file
-        ]);
+        $validatedData = $request->all();
 
         try {
             // Use DB transaction for atomicity
@@ -92,7 +80,7 @@ class NotificationSettingController extends Controller
             $notification->message = $validatedData['message'];
             $notification->created_by = $validatedData['created_by'];
             $notification->created_id = $validatedData['created_id'];
-            $notification->is_active = $validatedData['is_active'];
+            $notification->is_active = $validatedData['is_active'] ?? 1;
             $notification->class_id = $validatedData['class_id'] ?? null;
             $notification->secid = $validatedData['secid'] ?? null;
 
