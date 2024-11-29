@@ -63,12 +63,7 @@ class NotificationSettingController extends Controller
     public function create(Request $request)
 {
     // Validate the incoming request
-    $validatedData = $request->validate([
-        'title' => 'required|string|max:255',
-        'publish_date' => 'required|date',
-        'date' => 'required|date',
-        'message' => 'required|string',
-    ]);
+    $validatedData = $request->all();
 
 
 
@@ -84,15 +79,27 @@ class NotificationSettingController extends Controller
     {
         $notification->visible_student = 'Yes';
 
+        $notification->visible_staff ='No' ;
+        $notification->visible_parent ='No' ;
+
     }else if($validatedData['message_to'] == 'parent')
     {
-        $notification->visible_staff ='Yes' ;
+        $notification->visible_staff = 'Yes' ;
+        $notification->visible_student = 'No';
+
+        $notification->visible_parent = 'No' ;
 
 
     }else if($validatedData['message_to'] == 'admin')
     {
-        $notification->visible_parent =='Yes' ;
+        $notification->visible_parent ='Yes' ;
+        $notification->visible_student = 'No';
+        $notification->visible_staff = 'No' ;
+
     }else{
+        $notification->visible_student = 'No';
+        $notification->visible_staff ='No' ;
+        $notification->visible_parent ='No' ;
 
     };
 
