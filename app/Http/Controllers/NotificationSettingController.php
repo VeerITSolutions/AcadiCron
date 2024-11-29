@@ -74,7 +74,35 @@ class NotificationSettingController extends Controller
 
     // Create a new SendNotification
     $notification = new SendNotification();
-    $notification->fill($validatedData);
+
+
+    $notification->name = $validatedData['title'];
+    $notification->name = $validatedData['publish_date'];
+    $notification->name = $validatedData['date'];
+    $notification->name = $validatedData['message'];
+    if($validatedData['message_to'] == 'student')
+    {
+        $notification->visible_student = 'Yes';
+
+    }else if($validatedData['message_to'] == 'parent')
+    {
+        $notification->visible_staff ='Yes' ;
+
+
+    }else if($validatedData['message_to'] == 'admin')
+    {
+        $notification->visible_parent =='Yes' ;
+    }else{
+
+    };
+
+    $notification->name = $validatedData['created_by'];
+    $notification->name = $validatedData['created_id'];
+    $notification->name = $validatedData['is_active'];
+    $notification->name = $validatedData['class_id'];
+    $notification->name = $validatedData['secid'];
+
+
     $notification->save();
 
 
@@ -87,6 +115,10 @@ class NotificationSettingController extends Controller
             $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
             $validatedData['path'] = $imagePath;
          }
+
+         $notification = SendNotification::findOrFail($notification->id);
+
+         $notification->update($validatedData);
 
     return response()->json([
         'status' => 200,
