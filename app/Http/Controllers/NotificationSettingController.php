@@ -153,7 +153,7 @@ class NotificationSettingController extends Controller
          return response()->json([
              'success' => true,
              'message' => 'Edited successfully',
-             'category' => $category,
+             'notification' => $notification,
          ], 200); // Use 200 for successful updates
      }
 
