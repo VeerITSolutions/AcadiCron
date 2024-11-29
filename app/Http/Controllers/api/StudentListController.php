@@ -47,6 +47,10 @@ class StudentListController extends Controller
                 $query->where('student_session.section_id', $selectedSection);
             }
 
+            if (!empty($selectedSessionId)) {
+                $query->where('student_session.session_id', $selectedSessionId);
+            }
+
             // Execute the query
             $result = $query->get();
 
@@ -128,7 +132,22 @@ class StudentListController extends Controller
     }
 
 
+    public function studentBlukDelete(Request $request)
+    {
 
+     $studentIds =    $request->all();
+     foreach($studentIds as $studentId)
+     {
+        Students::where('id', $studentId)->delete();
+
+     }
+
+     return response()->json([
+        'status' => 200
+    ], 200);
+
+
+    }
 
     public function getdisableStudent(Request $request)
     {
