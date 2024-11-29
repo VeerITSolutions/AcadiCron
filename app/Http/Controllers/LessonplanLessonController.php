@@ -53,7 +53,7 @@ class LessonplanLessonController extends Controller
     }
 
     // Apply pagination
-    $paginatedData = $query->paginate($perPage, ['*'], 'page', $page);
+    $paginatedData = $query->orderBy('id', 'desc')->paginate($perPage, ['*'], 'page', $page);
 
     // Filter results based on sub_invoice_id
     $filteredResults = $paginatedData->filter(function ($item) use ($sub_invoice_id) {
@@ -77,7 +77,7 @@ class LessonplanLessonController extends Controller
 
 
 
-  
+
     public function getLessonList(Request $request)
 {
     $currentSession = "2023-2024"; //session('current_session');
@@ -122,7 +122,7 @@ class LessonplanLessonController extends Controller
             // Check permissions
             if (auth()->user()->can('edit', Lesson::class)) {
                 $editBtn = '<a href="' . route('lesson.edit', [
-                        'section_id' => $value['subject_group_class_sections_id'], 
+                        'section_id' => $value['subject_group_class_sections_id'],
                         'subject_id' => $value['subject_group_subject_id']
                     ]) . '" class="btn btn-default btn-xs" data-toggle="tooltip" title="Edit"><i class="fa fa-pencil"></i></a>';
             }
@@ -183,10 +183,10 @@ class LessonplanLessonController extends Controller
             ->where('lesson.session_id', $session)
             ->groupBy('lesson.subject_group_subject_id')
             ->groupBy('lesson.subject_group_class_sections_id');
-    
+
         return $query->get();
     }
-    
+
 
 
 

@@ -37,7 +37,7 @@ class StaffAttendanceController extends Controller
 
 
         // Apply pagination to the query
-        $paginatedData = $query->paginate($perPage, ['*'], 'page', $page);
+        $paginatedData = $query->orderBy('id', 'desc')->paginate($perPage, ['*'], 'page', $page);
 
         // Return paginated data with pagination details
         return response()->json([

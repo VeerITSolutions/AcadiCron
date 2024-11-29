@@ -20,6 +20,47 @@ class StudentListController extends Controller
         $selectedSection = $request->input('selectedSection');
         $keyword = $request->input('keyword');
 
+        $bulkDelete = $request->input('bulkDelete');
+
+        if ($bulkDelete == 1) {
+            // Build the query
+            $query = Students::join('student_session', 'student_session.student_id', '=', 'students.id')
+                ->join('classes', 'classes.id', '=', 'student_session.class_id')
+                ->join('sections', 'sections.id', '=', 'student_session.section_id')
+                ->leftJoin('categories', 'categories.id', '=', 'students.category_id')
+                ->select(
+                    'students.*',
+                    'student_session.class_id as class_id',
+                    'student_session.section_id as section_id',
+                    'classes.class as class_name',
+                    'sections.section as section_name',
+                    'categories.category as category_name'
+                );
+
+            // Apply filtering based on selectedClass
+            if (!empty($selectedClass)) {
+                $query->where('student_session.class_id', $selectedClass);
+            }
+
+            // Apply filtering based on selectedSection
+            if (!empty($selectedSection)) {
+                $query->where('student_session.section_id', $selectedSection);
+            }
+
+            if (!empty($selectedSessionId)) {
+                $query->where('student_session.session_id', $selectedSessionId);
+            }
+
+            // Execute the query
+            $result = $query->get();
+
+            // Return the result as JSON
+            return response()->json([
+                'success' => true,
+                'data' => $result,
+            ], 200);
+        }
+
         // Ensure $perPage is a positive integer and set a maximum limit
         if ($perPage <= 0 || $perPage > 100) {
             $perPage = 10;
@@ -78,7 +119,7 @@ class StudentListController extends Controller
 
 
         // Paginate the filtered students data if id is not present
-        $data = $query->paginate($perPage, ['*'], 'page', $page);
+        $data = $query->orderBy('id', 'desc')->paginate($perPage, ['*'], 'page', $page);
 
         // Return the paginated data with total count and pagination details
         return response()->json([
@@ -91,7 +132,22 @@ class StudentListController extends Controller
     }
 
 
+    public function studentBlukDelete(Request $request)
+    {
 
+     $studentIds =    $request->all();
+     foreach($studentIds as $studentId)
+     {
+        Students::where('id', $studentId)->delete();
+
+     }
+
+     return response()->json([
+        'status' => 200
+    ], 200);
+
+
+    }
 
     public function getdisableStudent(Request $request)
     {
@@ -165,7 +221,7 @@ class StudentListController extends Controller
         ->orderBy('students.id');
 
         // Paginate the filtered students data
-        $data = $query->paginate($perPage, ['*'], 'page', $page);
+        $data = $query->orderBy('id', 'desc')->paginate($perPage, ['*'], 'page', $page);
 
          // Apply filtering based on selectedClass
          if (!empty($selectedClass)) {

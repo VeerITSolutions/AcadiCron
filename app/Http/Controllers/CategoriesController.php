@@ -25,7 +25,7 @@ class CategoriesController extends Controller
         }
 
         // Paginate the students data
-        $data = Categories::paginate($perPage, ['*'], 'page', $page);
+        $data = Categories::orderBy('id', 'desc')->paginate($perPage, ['*'], 'page', $page);
 
         // Prepare the response message
         $message = '';

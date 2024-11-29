@@ -12,7 +12,7 @@ class CertificatesController extends Controller
      * Display a listing of the resource.
      */
 
-   
+
 public function index(Request $request, $id = null, $role = null)
 {
     // Get pagination inputs, default to page 1 and 10 records per page if not provided
@@ -28,7 +28,7 @@ public function index(Request $request, $id = null, $role = null)
         ->where('certificates.status', '=', 1);
 
     // Apply pagination to the query
-    $paginatedData = $query->paginate($perPage, ['*'], 'page', $page);
+    $paginatedData = $query->orderBy('id', 'desc')->paginate($perPage, ['*'], 'page', $page);
 
     // Return the response with paginated data
     return response()->json([
@@ -56,7 +56,7 @@ public function index(Request $request, $id = null, $role = null)
         // Check if the category already exists in the Category model
         $existingCategory = Certificates::where('certificate_name', $certificate_name)->first();
 
-    
+
         if ($existingCategory) {
             return response()->json([
                 'success' => false,
@@ -80,7 +80,7 @@ public function index(Request $request, $id = null, $role = null)
         $category->footer_height= $request->footer_height;
         $category->content_width= $request->content_width;
         $category->background_image= $request->background_image;
-      
+
         $category->save();
 
         return response()->json([

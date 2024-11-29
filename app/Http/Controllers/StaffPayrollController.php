@@ -70,7 +70,7 @@ class StaffPayrollController extends Controller
 
 
         // Apply pagination
-        $data = $query->paginate($perPage, ['*'], 'page', $page);
+        $data = $query->orderBy('id', 'desc')->paginate($perPage, ['*'], 'page', $page);
 
         // Return paginated data with additional pagination details
         return response()->json([

@@ -110,6 +110,7 @@ Route::post('/login', [SiteController::class, 'login'])->name('login');
 
 
         Route::match(['get', 'post'],'/admin/dtstudentlist', [StudentListController::class, 'searchdtByClassSection']);
+        Route::post('/admin/deletestudentbulk', [StudentListController::class, 'studentBlukDelete']);
 
         Route::get('/admin/dtstudentlist/disabled', [StudentListController::class, 'getdisableStudent']);
 

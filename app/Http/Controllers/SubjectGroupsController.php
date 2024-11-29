@@ -27,7 +27,7 @@ class SubjectGroupsController extends Controller
         }
 
         // Paginate the students data
-        $data = SubjectGroups::paginate($perPage, ['*'], 'page', $page);
+        $data = SubjectGroups::orderBy('id', 'desc')->paginate($perPage, ['*'], 'page', $page);
 
         // Prepare the response message
         $message = '';

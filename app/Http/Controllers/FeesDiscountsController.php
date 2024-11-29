@@ -17,15 +17,15 @@ class FeesDiscountsController extends Controller
         $page = (int) $request->input('page', 1);
         $perPage = (int) $request->input('perPage', 10);
         $order = $request->input('order', 'desc'); // Default order to 'desc' unless provided
-    
+
         // Build the base query for 'fees_discounts' table
         $query = DB::table('fees_discounts');
-    
+
         // If ID is provided, retrieve the specific row
         if ($id !== null) {
             $query->where('id', $id);
             $record = $query->first(); // Get single record for specific ID
-    
+
             // Return single record without pagination
             return response()->json([
                 'success' => true,
@@ -34,10 +34,10 @@ class FeesDiscountsController extends Controller
         } else {
             // Apply ordering and proceed with pagination for multiple records
             $query->orderBy('id', $order);
-    
+
             // Paginate the query
-            $paginatedData = $query->paginate($perPage, ['*'], 'page', $page);
-    
+            $paginatedData = $query->orderBy('id', 'desc')->paginate($perPage, ['*'], 'page', $page);
+
             // Return paginated data with pagination details
             return response()->json([
                 'success' => true,
@@ -51,7 +51,7 @@ class FeesDiscountsController extends Controller
             ], 200);
         }
     }
-    
+
 
 
 
@@ -61,7 +61,7 @@ class FeesDiscountsController extends Controller
      */
     public function create(Request $request){
 
-  
+
         $name = $request->name;
 
         $validatedData = $request->validate([
@@ -71,7 +71,7 @@ class FeesDiscountsController extends Controller
         // Check if the category already exists in the Category model
         $existingCategory = FeesDiscounts::where('name', $name)->first();
 
-    
+
         if ($existingCategory) {
             return response()->json([
                 'success' => false,
@@ -87,7 +87,7 @@ class FeesDiscountsController extends Controller
         $category->amount= $request->amount;
         $category->is_active = $request->is_active ?  $request->is_active  : 'no';
         $category->description= $request->description;
-      
+
         $category->save();
 
         return response()->json([
@@ -142,7 +142,7 @@ class FeesDiscountsController extends Controller
             $is_active = $request->input('is_active');
             $name = $request->input('name');
 
-            
+
 
             // Merge the validated data with the description
             $updatedData = array_merge($validatedData, [
