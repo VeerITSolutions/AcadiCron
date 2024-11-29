@@ -44,6 +44,7 @@ use App\Http\Controllers\LeaveTypesController;
 use App\Http\Controllers\NotificationSettingController;
 use App\Http\Controllers\ContentSectionController;
 use App\Http\Controllers\ExamsController;
+use App\Http\Controllers\ItemController;
 use App\Http\Controllers\SectionsController;
 use App\Http\Controllers\StaffLeaveRequestController;
 use App\Http\Controllers\StaffPayrollController;
