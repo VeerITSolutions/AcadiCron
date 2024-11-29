@@ -96,11 +96,11 @@ class NotificationSettingController extends Controller
 
     };
 
-    $notification->name = $validatedData['created_by'];
-    $notification->name = $validatedData['created_id'];
-    $notification->name = $validatedData['is_active'];
-    $notification->name = $validatedData['class_id'];
-    $notification->name = $validatedData['secid'];
+    $notification->created_by = $validatedData['created_by'];
+    $notification->created_id = $validatedData['created_id'];
+    $notification->is_active = $validatedData['is_active'];
+    $notification->class_id = $validatedData['class_id'];
+    $notification->secid = $validatedData['secid'];
 
 
     $notification->save();
