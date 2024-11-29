@@ -61,25 +61,40 @@ class NotificationSettingController extends Controller
      * Show the form for creating a new resource.
      */
     public function create(Request $request)
-    {
-        // Validate the incoming request
-        $validatedData = $request->validate([
-            'title' => 'required|string|max:255',
-            
-        ]);
-    
-        // Create a new SendNotification
-        $notification = new SendNotification();
-        $notification->fill($validatedData);
-        $notification->save();
-    
-        return response()->json([
-            'success' => true,
-            'message' => 'Notification saved successfully',
-            'notification' => $notification,
-        ], 201); // 201 Created status code
-    }
-    
+{
+    // Validate the incoming request
+    $validatedData = $request->validate([
+        'title' => 'required|string|max:255',
+        'publish_date' => 'required|date',
+        'date' => 'required|date',
+        'message' => 'required|string',
+    ]);
+
+
+
+    // Create a new SendNotification
+    $notification = new SendNotification();
+    $notification->fill($validatedData);
+    $notification->save();
+
+
+    $file = $request->file('path');
+         if($file)
+         {
+            $imageName = $notification->id .'_notification_'. time(); // Example name
+            $imageSubfolder = 'notification';    // Example subfolder
+            $full_path = 1;
+            $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
+            $validatedData['path'] = $imagePath;
+         }
+
+    return response()->json([
+        'status' => 200,
+        'message' => 'Notification saved successfully',
+        'notification' => $notification,
+    ], 201); // 201 Created status code
+}
+
 
 
     /**
@@ -111,27 +126,36 @@ class NotificationSettingController extends Controller
      */
 
 
-    public function update(Request $request,string $id)
-    {
+     public function update(Request $request, string $id)
+     {
+         // Find the category by ID
+         $notification = SendNotification::findOrFail($id);
 
-        // Find the category by id
-        $category = SendNotification::findOrFail($id);
+         // Validate incoming data
+         $validatedData = $request->validate([
+             'title' => 'required|string|max:255',
+             'message' => 'required|string',
+         ]);
 
-        // Validate the request data
-        $validatedData = $request->all();
+         // Update category with validated data
+         $notification->update($validatedData);
 
-        // Update the category
-        $category->update($validatedData);
+         $file = $request->file('path');
+         if($file)
+         {
+         $imageName = $id .'_notification_'. time(); // Example name
+         $imageSubfolder = 'notification';    // Example subfolder
+         $full_path = 1;
+         $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
+         $data['path'] = $imagePath;
+         }
 
-
-
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Edit successfully',
-            'category' => $category,
-        ], 201); // 201 Created status code
-    }
+         return response()->json([
+             'success' => true,
+             'message' => 'Edited successfully',
+             'category' => $category,
+         ], 200); // Use 200 for successful updates
+     }
 
     /**
      * Remove the specified resource from storage.
@@ -139,17 +163,11 @@ class NotificationSettingController extends Controller
     public function destroy($id)
     {
         try {
-            // Find the category by ID
-            $category = SendNotification::findOrFail($id);
-
-            // Delete the category
-            $category->delete();
-
-            // Return success response
+            $notification = SendNotification::findOrFail($id);
+            $notification->delete();
             return response()->json(['success' => true, 'message' => 'Notification  deleted successfully']);
         } catch (\Exception $e) {
-            // Handle failure (e.g. if the category was not found)
-            return response()->json(['success' => false, 'message' => 'Leave type deletion failed: ' . $e->getMessage()], 500);
+            return response()->json(['success' => false, 'message' => 'Notification deletion failed: ' . $e->getMessage()], 500);
         }
     }
 }
