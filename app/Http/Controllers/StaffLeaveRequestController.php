@@ -52,7 +52,7 @@ class StaffLeaveRequestController extends Controller
     ], 200);
     }else{
           // Paginate the results
-    $data = $query->paginate($perPage, ['*'], 'page', $page);
+    $data = $query->orderBy('id', 'desc')->paginate($perPage, ['*'], 'page', $page);
 
     // Return the paginated data as a response
     return response()->json([

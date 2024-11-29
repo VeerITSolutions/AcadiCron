@@ -32,7 +32,7 @@ class FeesReminderController extends Controller
 
 
         // Apply pagination
-        $paginatedData = $query->paginate($perPage, ['*'], 'page', $page);
+        $paginatedData = $query->orderBy('id', 'desc')->paginate($perPage, ['*'], 'page', $page);
 
         if (!empty($id)) {
             $query->where('students.id', $id);

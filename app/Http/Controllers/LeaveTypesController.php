@@ -25,7 +25,7 @@ class LeaveTypesController extends Controller
         }
 
         // Paginate the students data
-        $data = LeaveTypes::paginate($perPage, ['*'], 'page', $page);
+        $data = LeaveTypes::orderBy('id', 'desc')->paginate($perPage, ['*'], 'page', $page);
 
         // Prepare the response message
         $message = '';

@@ -25,22 +25,23 @@ class SchoolHousesController extends Controller
             $perPage = 10; // Default value if invalid
         }
 
-        // Paginate the students data
-        $data = SchoolHouses::paginate($perPage, ['*'], 'page', $page);
+        // Paginate the data, ordering by `id` in descending order
+        $data = SchoolHouses::orderBy('id', 'desc')->paginate($perPage, ['*'], 'page', $page);
 
         // Prepare the response message
-        $message = '';
+        $message = 'Data fetched successfully.';
 
         // Return the paginated data with total count and pagination details
         return response()->json([
             'success' => true,
             'data' => $data->items(), // Only return the current page data
             'totalCount' => $data->total(), // Total number of records
-            'rowsPerPage' => $data->lastPage(), // Total number of pages
+            'rowsPerPage' => $data->perPage(), // Number of records per page
             'currentPage' => $data->currentPage(), // Current page
             'message' => $message,
         ], 200);
     }
+
 
 
 

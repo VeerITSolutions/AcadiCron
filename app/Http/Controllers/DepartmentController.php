@@ -25,7 +25,7 @@ class DepartmentController extends Controller
         }
 
         // Paginate the students data
-        $data = Department::paginate($perPage, ['*'], 'page', $page);
+        $data = Department::orderBy('id', 'desc')->paginate($perPage, ['*'], 'page', $page);
 
         // Prepare the response message
         $message = '';

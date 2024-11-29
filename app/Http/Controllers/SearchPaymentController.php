@@ -51,7 +51,7 @@ class SearchPaymentController extends Controller
     }
 
     // Apply pagination
-    $paginatedData = $query->paginate($perPage, ['*'], 'page', $page);
+    $paginatedData = $query->orderBy('id', 'desc')->paginate($perPage, ['*'], 'page', $page);
 
     // Filter results based on sub_invoice_id
     $filteredResults = $paginatedData->filter(function ($item) use ($sub_invoice_id) {

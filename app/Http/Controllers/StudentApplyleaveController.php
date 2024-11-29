@@ -16,33 +16,33 @@ class StudentApplyleaveController extends Controller
      */
     public function index(Request $request)
     {
-       
-    
+
+
         // Initialize pagination variables
         $page = (int) $request->input('page', 1);
         $perPage = (int) $request->input('perPage', 10);
-    
+
         // Validate form input
         $validator = Validator::make($request->all(), [
             'class_id' => 'required|integer',
             'section_id' => 'required|integer',
         ]);
-    
+
         // Start building the query for ApplyLeaveModel
         $query = DB::table('student_applyleave') // Replace with the actual table name
                    ->select('student_applyleave.*') // Specify the columns as needed
                    ->orderBy('student_applyleave.created_at', 'desc');
-    
+
         // Apply filters if validation passes
         if (!$validator->fails()) {
             $class_id = $request->input('class_id');
             $section_id = $request->input('section_id');
 
         }
-    
+
         // Apply pagination
-        $paginatedData = $query->paginate($perPage, ['*'], 'page', $page);
-    
+        $paginatedData = $query->orderBy('id', 'desc')->paginate($perPage, ['*'], 'page', $page);
+
         // Return paginated data with pagination details
         return response()->json([
             'success' => true,
@@ -52,8 +52,8 @@ class StudentApplyleaveController extends Controller
             'total' => $paginatedData->total(),
         ], 200);
     }
-    
-    
+
+
     /**
      * Show the form for creating a new resource.
      */

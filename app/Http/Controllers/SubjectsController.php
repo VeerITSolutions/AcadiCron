@@ -25,7 +25,7 @@ class SubjectsController extends Controller
         }
 
         // Paginate the students data
-        $data = Subjects::paginate($perPage, ['*'], 'page', $page);
+        $data = Subjects::orderBy('id', 'desc')->paginate($perPage, ['*'], 'page', $page);
 
         // Prepare the response message
         $message = '';

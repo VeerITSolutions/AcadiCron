@@ -30,7 +30,7 @@ class ClassSectionsController extends Controller
         ->join('sections', 'class_sections.section_id', '=', 'sections.id')
 
         ->select('class_sections.*', 'classes.class as class_name', 'sections.section as section_name') // Specify the columns you need from fee_groups
-        ->paginate($perPage, ['*'], 'page', $page);
+        ->orderBy('id', 'desc')->paginate($perPage, ['*'], 'page', $page);
 
         // Prepare the response message
         $message = '';

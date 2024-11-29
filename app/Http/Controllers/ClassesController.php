@@ -32,7 +32,7 @@ class ClassesController extends Controller
 
 
 // Apply pagination
-$paginatedData = $query->paginate($perPage, ['*'], 'page', $page);
+$paginatedData = $query->orderBy('id', 'desc')->paginate($perPage, ['*'], 'page', $page);
 
     // Return paginated data with total count and pagination details
     return response()->json([

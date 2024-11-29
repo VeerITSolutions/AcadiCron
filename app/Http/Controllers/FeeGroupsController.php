@@ -21,7 +21,7 @@ $query = DB::table('fee_groups')->select('fee_groups.*')
             ->orderBy('created_at', 'desc'); // Adjust column name if needed
 
 // Apply pagination
-$paginatedData = $query->paginate($perPage, ['*'], 'page', $page);
+$paginatedData = $query->orderBy('id', 'desc')->paginate($perPage, ['*'], 'page', $page);
 
 // Return paginated data with pagination details
 return response()->json([
@@ -125,7 +125,7 @@ return response()->json([
             ]);
             // Get the description from the request without validation
             $description = $request->input('description');
-           
+
 
             $is_active = $request->input('is_active') ?  $request->input('is_active')  : 'no';
             $name = $request->input('name');
