@@ -357,7 +357,7 @@ Route::post('/login', [SiteController::class, 'login'])->name('login');
         Route::delete('/content-for-upload/{id}', [ContentForController::class, 'destroy']);
         Route::post('/content-for-upload/{id}', [ContentForController::class, 'update']);
 
-        Route::get('/notification', [NotificationSettingController::class, 'index']);
+        Route::get('/notification/{id?}', [NotificationSettingController::class, 'index']);
         Route::post('/notification', [NotificationSettingController::class, 'create']);
         Route::delete('/notification/{id}', [NotificationSettingController::class, 'destroy']);
         Route::post('/notification/{id}', [NotificationSettingController::class, 'update']);

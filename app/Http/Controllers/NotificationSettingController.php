@@ -17,7 +17,7 @@ class NotificationSettingController extends Controller
      {
          $page = $request->input('page', 1); // Default to page 1 if not provided
          $perPage = $request->input('perPage', 10); // Default to 10 records per page if not provided
-
+         $id = $request->input('id');
          // Validate the inputs (optional)
          $page = (int) $page;
          $perPage = (int) $perPage;
@@ -117,6 +117,26 @@ class NotificationSettingController extends Controller
             // Save updated data (if path was added)
             $notification->save();
 
+            /*  */
+            $notification = SendNotification::findOrFail($notification->id);
+
+
+
+
+
+               $file = $request->file('path');
+               if($file)
+               {
+               $imageName = $notification->id .'_notification_'. time(); // Example name
+               $imageSubfolder = 'notification';    // Example subfolder
+               $full_path = 1;
+               $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
+               $validatedData['path'] = $imagePath;
+               }
+
+             // Update category with validated data
+             $notification->update($validatedData);
+
             // Commit the transaction
             DB::commit();
 
@@ -175,28 +195,27 @@ class NotificationSettingController extends Controller
          $notification = SendNotification::findOrFail($id);
 
          // Validate incoming data
-         $validatedData = $request->validate([
-             'title' => 'required|string|max:255',
-             'message' => 'required|string',
-         ]);
+         $validatedData = $request->all();
 
-         // Update category with validated data
-         $notification->update($validatedData);
 
-         $file = $request->file('path');
-         if($file)
-         {
-         $imageName = $id .'_notification_'. time(); // Example name
-         $imageSubfolder = 'notification';    // Example subfolder
-         $full_path = 1;
-         $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
-         $data['path'] = $imagePath;
-         }
+
+            $file = $request->file('path');
+            if($file)
+            {
+            $imageName = $id .'_notification_'. time(); // Example name
+            $imageSubfolder = 'notification';    // Example subfolder
+            $full_path = 1;
+            $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
+            $validatedData['path'] = $imagePath;
+            }
+
+          // Update category with validated data
+          $notification->update($validatedData);
 
          return response()->json([
              'success' => true,
              'message' => 'Edited successfully',
-             'category' => $category,
+             'category' => $notification,
          ], 200); // Use 200 for successful updates
      }
 
