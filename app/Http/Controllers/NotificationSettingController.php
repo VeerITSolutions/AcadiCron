@@ -131,11 +131,11 @@ class NotificationSettingController extends Controller
                $imageSubfolder = 'notification';    // Example subfolder
                $full_path = 1;
                $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
-               $validatedData['path'] = $imagePath;
+               $updatevalidatedData['path'] = $imagePath;
                }
 
              // Update category with validated data
-             $notification->update($validatedData);
+             $notification->update($updatevalidatedData);
 
             // Commit the transaction
             DB::commit();
@@ -213,7 +213,7 @@ class NotificationSettingController extends Controller
           $notification->update($validatedData);
 
          return response()->json([
-             'success' => true,
+             'status' => 200,
              'message' => 'Edited successfully',
              'category' => $notification,
          ], 200); // Use 200 for successful updates
@@ -227,7 +227,7 @@ class NotificationSettingController extends Controller
         try {
             $notification = SendNotification::findOrFail($id);
             $notification->delete();
-            return response()->json(['success' => true, 'message' => 'Notification  deleted successfully']);
+            return response()->json(['status' => 200, 'message' => 'Notification  deleted successfully']);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => 'Notification deletion failed: ' . $e->getMessage()], 500);
         }
