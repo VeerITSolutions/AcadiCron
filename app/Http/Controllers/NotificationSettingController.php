@@ -60,72 +60,83 @@ class NotificationSettingController extends Controller
     /**
      * Show the form for creating a new resource.
      */
+
+
     public function create(Request $request)
-{
-    // Validate the incoming request
-    $validatedData = $request->validate([
-        'title' => 'required|string|max:255',
-        'publish_date' => 'required|date',
-        'date' => 'required|date',
-        'message' => 'required|string',
-    ]);
-
-
-
-    // Create a new SendNotification
-    $notification = new SendNotification();
-
-
-    $notification->name = $validatedData['title'];
-    $notification->name = $validatedData['publish_date'];
-    $notification->name = $validatedData['date'];
-    $notification->name = $validatedData['message'];
-    if($validatedData['message_to'] == 'student')
     {
-        $notification->visible_student = 'Yes';
+        // Validate the incoming request
+        $validatedData = $request->all();
 
-    }else if($validatedData['message_to'] == 'parent')
-    {
-        $notification->visible_staff ='Yes' ;
+        try {
+            // Use DB transaction for atomicity
+            DB::beginTransaction();
 
+            // Create a new SendNotification instance
+            $notification = new SendNotification();
 
-    }else if($validatedData['message_to'] == 'admin')
-    {
-        $notification->visible_parent =='Yes' ;
-    }else{
+            $notification->title = $validatedData['title'];
+            $notification->publish_date = $validatedData['publish_date'];
+            $notification->date = $validatedData['date'];
+            $notification->message = $validatedData['message'];
+            $notification->created_by = $validatedData['created_by'];
+            $notification->created_id = $validatedData['created_id'];
+            $notification->is_active = $validatedData['is_active'] ?? 1;
+            $notification->class_id = $validatedData['class_id'] ?? null;
+            $notification->secid = $validatedData['secid'] ?? null;
 
-    };
+            // Determine visibility flags
+            $visibilityMap = [
+                'student' => ['visible_student' => 'Yes', 'visible_staff' => 'No', 'visible_parent' => 'No'],
+                'parent' => ['visible_student' => 'No', 'visible_staff' => 'Yes', 'visible_parent' => 'No'],
+                'admin' => ['visible_student' => 'No', 'visible_staff' => 'No', 'visible_parent' => 'Yes'],
+            ];
 
-    $notification->name = $validatedData['created_by'];
-    $notification->name = $validatedData['created_id'];
-    $notification->name = $validatedData['is_active'];
-    $notification->name = $validatedData['class_id'];
-    $notification->name = $validatedData['secid'];
+            $visibility = $visibilityMap[$validatedData['message_to']] ?? [
+                'visible_student' => 'No',
+                'visible_staff' => 'No',
+                'visible_parent' => 'No',
+            ];
 
+            $notification->visible_student = $visibility['visible_student'];
+            $notification->visible_staff = $visibility['visible_staff'];
+            $notification->visible_parent = $visibility['visible_parent'];
 
-    $notification->save();
+            // Save the notification
+            $notification->save();
 
+            // Handle file upload
+            if ($request->hasFile('path')) {
+                $file = $request->file('path');
+                $imageName = $notification->id . '_notification_' . time(); // Example name
+                $imageSubfolder = 'notification'; // Example subfolder
+                $full_path = 1;
+                $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
+                $notification->path = $imagePath;
+            }
 
-    $file = $request->file('path');
-         if($file)
-         {
-            $imageName = $notification->id .'_notification_'. time(); // Example name
-            $imageSubfolder = 'notification';    // Example subfolder
-            $full_path = 1;
-            $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
-            $validatedData['path'] = $imagePath;
-         }
+            // Save updated data (if path was added)
+            $notification->save();
 
-         $notification = SendNotification::findOrFail($notification->id);
+            // Commit the transaction
+            DB::commit();
 
-         $notification->update($validatedData);
+            return response()->json([
+                'status' => 200,
+                'message' => 'Notification saved successfully',
+                'notification' => $notification,
+            ], 201); // 201 Created status code
+        } catch (\Exception $e) {
+            // Rollback on error
+            DB::rollBack();
 
-    return response()->json([
-        'status' => 200,
-        'message' => 'Notification saved successfully',
-        'notification' => $notification,
-    ], 201); // 201 Created status code
-}
+            return response()->json([
+                'status' => 500,
+                'message' => 'An error occurred while saving the notification',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
 
 
 
