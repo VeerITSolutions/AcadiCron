@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 
-use App\Models\Contents;
-use App\Models\ClassSections;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\Contents;
+use Validator;
+use Session;
 
 class ContentsController extends Controller
 {
@@ -41,6 +43,18 @@ class ContentsController extends Controller
         // If $id is provided, fetch a single record
         if ($id !== null) {
             $result = $query->where('contents.id', $id)->first(); // Fetch a single record
+            if ($result) {
+                return response()->json([
+                    'success' => true,
+                    'data' => $result, // Return the single content record
+                    'message' => 'Data retrieved successfully.',
+                ], 200);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Content not found.',
+                ], 404);
+            }
         }
 
         // If $id is not provided, paginate the results
@@ -63,11 +77,43 @@ class ContentsController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
-    {
-        //
-    }
+    public function create(Request $request){
 
+        $validatedData = $request->all();
+        $content = new Contents();
+        $content->title = $validatedData['title'] ?? "";
+        $content->type = $validatedData['type'] ?? "";
+        $content->is_public = $validatedData['is_public'] ?? "";
+        $content->class_id = $validatedData['class_id'] ?? "";
+        $content->cls_sec_id = $validatedData['cls_sec_id'] ?? "";
+        $content->created_by = $validatedData['created_by'] ?? 1;
+        $content->note = $validatedData['note'] ?? "";
+        $content->is_active = $validatedData['is_active'] ?? "";
+        $content->created_at = $validatedData['created_at'] ?? now();
+        $content->updated_at = $validatedData['updated_at'] ?? now();
+        $content->date = $validatedData['date'] ?? "";
+
+        $content->save();
+
+        $content = Contents::findOrFail($content->id);
+        if ($request->hasFile('file')) {
+            $file = $request->file('file');
+            $imageName = $content->id . '_school_content_' . time(); // Example name
+            $imageSubfolder = 'school_content/material'; // Example subfolder
+            $full_path = 1;
+            $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
+            $UpdatevalidatedData["file"] = $imagePath;
+        }
+
+
+        $content->update($UpdatevalidatedData);
+
+        return response()->json([
+            'status' => 200,
+            'message' => 'Content saved successfully',
+            'content' => $content,
+        ], 201); // 201 Created status code
+    }
     /**
      * Store a newly created resource in storage.
      */
@@ -95,16 +141,40 @@ class ContentsController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request,string $id)
     {
-        //
+
+        // Find the content by id
+        $content = Contents::findOrFail($id);
+        $validatedData = $request->all();
+
+        // Update the content
+        $content->update($validatedData);
+
+        return response()->json([
+            'status' => 200,
+            'message' => 'Edit successfully',
+            'content' => $content,
+        ], 201); // 201 Created status code
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy($id)
     {
-        //
+        try {
+            // Find the content by ID
+            $content = Contents::findOrFail($id);
+
+            // Delete the content
+            $content->delete();
+
+            // Return success response
+            return response()->json(['status' => 200, 'message' => 'content deleted successfully']);
+        } catch (\Exception $e) {
+            // Handle failure (e.g. if the content was not found)
+            return response()->json(['status' => 200, 'message' => 'content deletion failed: ' . $e->getMessage()], 500);
+        }
     }
 }
