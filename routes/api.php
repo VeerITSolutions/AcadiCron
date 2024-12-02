@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 
 
 use App\Http\Controllers\ComplaintController;
-use App\Http\Controllers\ContentsController;
 use App\Http\Controllers\DisableReasonController;
 use App\Http\Controllers\EnquiryController;
 use App\Http\Controllers\ExamGroupsController;
@@ -17,7 +16,7 @@ use App\Http\Controllers\FeesDiscountsController;
 use App\Http\Controllers\FeetypeController;
 use App\Http\Controllers\IncomeController;
 use App\Http\Controllers\RolesController;
-
+use App\Http\Controllers\ContentsController;
 use App\Http\Controllers\NotificationRolesController;
 use App\Http\Controllers\OnlineexamStudentsController;
 use App\Http\Controllers\SchoolHousesController;
@@ -357,7 +356,7 @@ Route::post('/login', [SiteController::class, 'login'])->name('login');
         Route::delete('/content-for-upload/{id}', [ContentForController::class, 'destroy']);
         Route::post('/content-for-upload/{id}', [ContentForController::class, 'update']);
 
-        Route::get('/notification', [NotificationSettingController::class, 'index']);
+        Route::get('/notification/{id?}', [NotificationSettingController::class, 'index']);
         Route::post('/notification', [NotificationSettingController::class, 'create']);
         Route::delete('/notification/{id}', [NotificationSettingController::class, 'destroy']);
         Route::post('/notification/{id}', [NotificationSettingController::class, 'update']);
@@ -496,6 +495,10 @@ Route::post('/login', [SiteController::class, 'login'])->name('login');
         Route::delete('/role/{id}', [RolesController::class, 'destroy']);
         Route::post('/role/{id}', [RolesController::class, 'update']);
 
+        Route::get('/upload-content', [ContentsController::class, 'index']);
+        Route::post('/upload-content', [ContentsController::class, 'create']);
+        Route::delete('/upload-content/{id}', [ContentsController::class, 'destroy']);
+        Route::post('/upload-content/{id}', [ContentsController::class, 'update']);
 
 
 
