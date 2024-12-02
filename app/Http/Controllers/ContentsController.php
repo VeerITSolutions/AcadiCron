@@ -94,8 +94,8 @@ class ContentsController extends Controller
         $content->title = $validatedData['title'] ?? "";
         $content->type = $validatedData['type'] ?? "";
         $content->is_public = $validatedData['is_public'] ?? "";
-        $content->class_id = $validatedData['class_id'] ?? "";
-        $content->cls_sec_id = $validatedData['cls_sec_id'] ?? "";
+        $content->class_id = $validatedData['class_id'] ;
+        $content->cls_sec_id = $validatedData['cls_sec_id'] ;
         $content->created_by = $validatedData['created_by'] ?? 1;
         $content->note = $validatedData['note'] ?? "";
         $content->is_active = $validatedData['is_active'] ?? "";
