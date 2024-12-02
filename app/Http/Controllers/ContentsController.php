@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 
 use App\Http\Controllers\Controller;
+use App\Models\ContentFor;
 use Illuminate\Http\Request;
 use App\Models\Contents;
 use Validator;
 use Session;
+
 
 class ContentsController extends Controller
 {
@@ -32,11 +34,15 @@ class ContentsController extends Controller
             'contents.*',
             'classes.class',
             'sections.section',
+            'content_for.role as content_for_role',
+            'content_for.content_id as content_for_content_id',
+            'content_for.user_id as content_for_user_id',
             \DB::raw('(SELECT GROUP_CONCAT(role) FROM content_for WHERE content_id = contents.id) as role'),
             'class_sections.id as aa'
         )
         ->leftJoin('class_sections', 'contents.cls_sec_id', '=', 'class_sections.id')
         ->leftJoin('classes', 'class_sections.class_id', '=', 'classes.id')
+        ->leftJoin('content_for', 'contents.id', '=', 'content_for.content_id')
         ->leftJoin('sections', 'class_sections.section_id', '=', 'sections.id')
         ->orderBy('contents.id', 'desc'); // Default ordering
 
@@ -79,7 +85,11 @@ class ContentsController extends Controller
      */
     public function create(Request $request){
 
-        $validatedData = $request->all();
+        $validatedData = $request->except(['allsuperadmin', 'allstudents', 'allclasses', 'role']);
+
+        $onlyvalidatedData = $request->only(['allsuperadmin', 'allstudents', 'allclasses' ,'role']);
+
+
         $content = new Contents();
         $content->title = $validatedData['title'] ?? "";
         $content->type = $validatedData['type'] ?? "";
@@ -93,7 +103,48 @@ class ContentsController extends Controller
         $content->updated_at = $validatedData['updated_at'] ?? now();
         $content->date = $validatedData['date'] ?? "";
 
+
+        $content->created_at = $validatedData['created_at'] ?? now();
+        $content->updated_at = $validatedData['updated_at'] ?? now();
+        $content->date = $validatedData['date'] ?? "";
+
         $content->save();
+        /* content for  */
+
+         /* added content for  */
+         $content_for = new ContentFor();
+
+
+
+        if($onlyvalidatedData['allsuperadmin'] == "true")
+        {
+            $content_for->role = 'All Super Admin';
+        }else if($onlyvalidatedData['allstudents'] == "true")
+        {
+
+            $content_for->role = 'All Student';
+
+        }elseif ($onlyvalidatedData['allclasses'] == "true")
+        {
+            $content_for->role = 'All Classes';
+
+        }else{
+            $content_for->role = 'Students';
+
+        }
+
+
+
+         $content_for->content_id = $content->id ?? "";
+
+
+         $content_for->user_id = null;
+
+         $content_for->created_at = $onlyvalidatedData['created_at'] ?? now();
+
+         $content_for->save();
+
+
 
         $content = Contents::findOrFail($content->id);
         if ($request->hasFile('file')) {
@@ -104,6 +155,8 @@ class ContentsController extends Controller
             $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
             $UpdatevalidatedData["file"] = $imagePath;
         }
+
+
 
 
         $content->update($UpdatevalidatedData);
@@ -166,6 +219,8 @@ class ContentsController extends Controller
         try {
             // Find the content by ID
             $content = Contents::findOrFail($id);
+
+            $content_for = ContentFor::where('content_id', $id)->delete();
 
             // Delete the content
             $content->delete();

@@ -351,10 +351,7 @@ Route::post('/login', [SiteController::class, 'login'])->name('login');
         Route::delete('/leave-type/{id}', [LeaveTypesController::class, 'destroy']);
         Route::post('/leave-type/{id}', [LeaveTypesController::class, 'update']);
 
-        Route::get('/content-for-upload', [ContentForController::class, 'index']);
-        Route::post('/content-for-upload', [ContentForController::class, 'create']);
-        Route::delete('/content-for-upload/{id}', [ContentForController::class, 'destroy']);
-        Route::post('/content-for-upload/{id}', [ContentForController::class, 'update']);
+
 
         Route::get('/notification/{id?}', [NotificationSettingController::class, 'index']);
         Route::post('/notification', [NotificationSettingController::class, 'create']);
@@ -362,10 +359,7 @@ Route::post('/login', [SiteController::class, 'login'])->name('login');
         Route::post('/notification/{id}', [NotificationSettingController::class, 'update']);
 
 
-        Route::get('/content-section', [ContentSectionController::class, 'index']);
-        Route::post('/content-section', [ContentSectionController::class, 'create']);
-        Route::delete('/content-section/{id}', [ContentSectionController::class, 'destroy']);
-        Route::post('/content-section/{id}', [ContentSectionController::class, 'update']);
+
 
 
         Route::get('/homework', [HomeworkController::class, 'index']);
@@ -495,12 +489,26 @@ Route::post('/login', [SiteController::class, 'login'])->name('login');
         Route::delete('/role/{id}', [RolesController::class, 'destroy']);
         Route::post('/role/{id}', [RolesController::class, 'update']);
 
+        /* for content manangment  */
+
         Route::get('/upload-content', [ContentsController::class, 'index']);
         Route::post('/upload-content', [ContentsController::class, 'create']);
         Route::delete('/upload-content/{id}', [ContentsController::class, 'destroy']);
         Route::post('/upload-content/{id}', [ContentsController::class, 'update']);
 
 
+
+        Route::get('/content-section', [ContentSectionController::class, 'index']);
+        Route::post('/content-section', [ContentSectionController::class, 'create']);
+        Route::delete('/content-section/{id}', [ContentSectionController::class, 'destroy']);
+        Route::post('/content-section/{id}', [ContentSectionController::class, 'update']);
+
+        Route::get('/content-for-upload', [ContentForController::class, 'index']);
+        Route::post('/content-for-upload', [ContentForController::class, 'create']);
+        Route::delete('/content-for-upload/{id}', [ContentForController::class, 'destroy']);
+        Route::post('/content-for-upload/{id}', [ContentForController::class, 'update']);
+
+     /* for content manangment  end */
 
 
 
