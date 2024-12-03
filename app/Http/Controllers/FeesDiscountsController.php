@@ -59,43 +59,43 @@ class FeesDiscountsController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create(Request $request){
-
-
-        $name = $request->name;
-
+    public function create(Request $request)
+    {
+        // Validate incoming data
         $validatedData = $request->validate([
-            'name' => 'required',
+            'name' => 'required|string|max:255',
+            'code' => 'nullable|string|max:100',
+            'amount' => 'nullable|numeric|min:0',
+            'is_active' => 'nullable|in:yes,no',
+            'description' => 'nullable|string|max:1000',
         ]);
 
-        // Check if the category already exists in the Category model
-        $existingCategory = FeesDiscounts::where('name', $name)->first();
-
+        // Check if the category already exists in the FeesDiscounts model
+        $existingCategory = FeesDiscounts::where('name', $validatedData['name'])->first();
 
         if ($existingCategory) {
             return response()->json([
                 'success' => false,
-                'message' => 'fees name already exists',
-            ], 409); // 409 Conflict status code
+                'message' => 'Fees name already exists',
+            ], 409);
         }
 
-        // Create a new category
-        $category = new FeesDiscounts();
-
-        $category->name= $request->name;
-        $category->code= $request->code;
-        $category->amount= $request->amount;
-        $category->is_active = $request->is_active ?  $request->is_active  : 'no';
-        $category->description= $request->description;
-
-        $category->save();
+        // Create a new FeesDiscounts record
+        $category = FeesDiscounts::create([
+            'name' => $validatedData['name'],
+            'code' => $validatedData['code'] ?? null,
+            'amount' => $validatedData['amount'] ?? 0,
+            'is_active' => $validatedData['is_active'] ?? 'no',
+            'description' => $validatedData['description'] ?? null,
+        ]);
 
         return response()->json([
             'success' => true,
-            'message' => 'fees name saved successfully',
+            'message' => 'Fees name saved successfully',
             'category' => $category,
-        ], 201); // 201 Created status code
+        ], 201);
     }
+
 
     /**
      * Store a newly created resource in storage.
