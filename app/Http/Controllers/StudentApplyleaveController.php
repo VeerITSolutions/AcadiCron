@@ -16,60 +16,90 @@ class StudentApplyleaveController extends Controller
      * Display a listing of the resource.
      */
     public function index(Request $request)
-    {
-        // Initialize pagination variables
-        $page = (int) $request->input('page', 1);
-        $perPage = (int) $request->input('perPage', 10);
-        $selectedClass = $request->input('selectedClass');
-        $selectedSection = $request->input('selectedSection');
+{
+    // Initialize pagination variables
+    $page = (int) $request->input('page', 1);
+    $perPage = (int) $request->input('perPage', 10);
+    $selectedClass = $request->input('selectedClass');
+    $selectedSection = $request->input('selectedSection');
+    $student = $request->input('student');  // Get student input from the request
 
-        // Validate form input
-        $validator = Validator::make($request->all(), [
-            'selectedClass' => 'nullable|integer',
-            'selectedSection' => 'nullable|integer',
-        ]);
+    // Validate form input
+    $validator = Validator::make($request->all(), [
+        'selectedClass' => 'nullable|integer',
+        'selectedSection' => 'nullable|integer',
+        'student' => 'nullable|integer|exists:students,id',  // Validate if student exists in the 'students' table
+    ]);
 
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'errors' => $validator->errors(),
-            ], 422);
-        }
-
-        // Build the query
-        $query = DB::table('student_applyleave')
-            ->join('student_session', 'student_applyleave.student_session_id', '=', 'student_session.id') // Ensure correct column reference
-            ->join('classes', 'classes.id', '=', 'student_session.class_id')
-            ->join('sections', 'sections.id', '=', 'student_session.section_id')
-            ->select(
-                'student_applyleave.*',
-                'classes.class as class_name',
-                'sections.section as section_name'
-            )
-            ->orderBy('student_applyleave.created_at', 'desc');
-
-        // Apply filtering based on selectedClass
-        if (!empty($selectedClass)) {
-            $query->where('student_session.class_id', $selectedClass);
-        }
-
-        // Apply filtering based on selectedSection
-        if (!empty($selectedSection)) {
-            $query->where('student_session.section_id', $selectedSection);
-        }
-
-        // Apply pagination
-        $paginatedData = $query->paginate($perPage, ['*'], 'page', $page);
-
-        // Return paginated data with pagination details
+    if ($validator->fails()) {
         return response()->json([
-            'success' => true,
-            'data' => $paginatedData->items(), // Current page data
-            'current_page' => $paginatedData->currentPage(),
-            'per_page' => $paginatedData->perPage(),
-            'total' => $paginatedData->total(),
-        ], 200);
+            'success' => false,
+            'errors' => $validator->errors(),
+        ], 422);
     }
+
+    // Build the query
+    $query = DB::table('student_applyleave')
+        ->join('student_session', 'student_applyleave.student_session_id', '=', 'student_session.id')
+        ->join('students', 'students.id', '=', 'student_session.student_id') // Join with the students table
+        ->join('classes', 'classes.id', '=', 'student_session.class_id')
+        ->join('sections', 'sections.id', '=', 'student_session.section_id')
+        ->select(
+            'student_applyleave.*',
+            'students.firstname',
+            'students.middlename',
+            'students.lastname',
+            'students.id as student_id',  // Include student_id for reference
+            'classes.class as class_name',
+            'sections.section as section_name'
+        )
+        ->orderBy('student_applyleave.created_at', 'desc');
+
+    // Apply filtering based on selectedClass
+    if (!empty($selectedClass)) {
+        $query->where('student_session.class_id', $selectedClass);
+    }
+
+    // Apply filtering based on selectedSection
+    if (!empty($selectedSection)) {
+        $query->where('student_session.section_id', $selectedSection);
+    }
+
+    // Apply filtering based on student
+    if (!empty($student)) {
+        $query->where('students.id', $student);  // Filter by student ID if provided
+    }
+
+    // Apply pagination
+    $paginatedData = $query->paginate($perPage, ['*'], 'page', $page);
+
+    // Return paginated data with pagination details and full name concatenated
+    $data = $paginatedData->items();
+    foreach ($data as $key => $value) {
+        // Concatenate the full name directly using object notation
+        $fullName = $value->firstname;
+
+        if (!empty($value->middlename)) {
+            $fullName .= ' ' . $value->middlename;
+        }
+
+        if (!empty($value->lastname)) {
+            $fullName .= ' ' . $value->lastname;
+        }
+
+        // Add the full name to the result as 'student_name'
+        $data[$key]->student_name = $fullName; // Use object notation to set the value
+    }
+
+    // Return paginated data with pagination details
+    return response()->json([
+        'success' => true,
+        'data' => $data, // Current page data with student names
+        'current_page' => $paginatedData->currentPage(),
+        'per_page' => $paginatedData->perPage(),
+        'total' => $paginatedData->total(),
+    ], 200);
+}
 
 
 
