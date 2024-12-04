@@ -352,7 +352,6 @@ Route::post('/login', [SiteController::class, 'login'])->name('login');
         Route::post('/leave-type/{id}', [LeaveTypesController::class, 'update']);
 
 
-
         Route::get('/notification/{id?}', [NotificationSettingController::class, 'index']);
         Route::post('/notification', [NotificationSettingController::class, 'create']);
         Route::delete('/notification/{id}', [NotificationSettingController::class, 'destroy']);

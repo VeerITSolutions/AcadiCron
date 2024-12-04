@@ -17,32 +17,49 @@ class StudentApplyleaveController extends Controller
      */
     public function index(Request $request)
     {
-
-
         // Initialize pagination variables
         $page = (int) $request->input('page', 1);
         $perPage = (int) $request->input('perPage', 10);
+        $selectedClass = $request->input('selectedClass');
+        $selectedSection = $request->input('selectedSection');
 
         // Validate form input
         $validator = Validator::make($request->all(), [
-            'class_id' => 'required|integer',
-            'section_id' => 'required|integer',
+            'selectedClass' => 'nullable|integer',
+            'selectedSection' => 'nullable|integer',
         ]);
 
-        // Start building the query for ApplyLeaveModel
-        $query = DB::table('student_applyleave') // Replace with the actual table name
-                   ->select('student_applyleave.*') // Specify the columns as needed
-                   ->orderBy('student_applyleave.created_at', 'desc');
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors(),
+            ], 422);
+        }
 
-        // Apply filters if validation passes
-        if (!$validator->fails()) {
-            $class_id = $request->input('class_id');
-            $section_id = $request->input('section_id');
+        // Build the query
+        $query = DB::table('student_applyleave')
+            ->join('student_session', 'student_applyleave.student_session_id', '=', 'student_session.id') // Ensure correct column reference
+            ->join('classes', 'classes.id', '=', 'student_session.class_id')
+            ->join('sections', 'sections.id', '=', 'student_session.section_id')
+            ->select(
+                'student_applyleave.*',
+                'classes.class as class_name',
+                'sections.section as section_name'
+            )
+            ->orderBy('student_applyleave.created_at', 'desc');
 
+        // Apply filtering based on selectedClass
+        if (!empty($selectedClass)) {
+            $query->where('student_session.class_id', $selectedClass);
+        }
+
+        // Apply filtering based on selectedSection
+        if (!empty($selectedSection)) {
+            $query->where('student_session.section_id', $selectedSection);
         }
 
         // Apply pagination
-        $paginatedData = $query->orderBy('id', 'desc')->paginate($perPage, ['*'], 'page', $page);
+        $paginatedData = $query->paginate($perPage, ['*'], 'page', $page);
 
         // Return paginated data with pagination details
         return response()->json([
@@ -53,6 +70,7 @@ class StudentApplyleaveController extends Controller
             'total' => $paginatedData->total(),
         ], 200);
     }
+
 
 
     /**
