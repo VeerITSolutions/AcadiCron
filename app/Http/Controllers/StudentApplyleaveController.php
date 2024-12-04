@@ -112,8 +112,7 @@ class StudentApplyleaveController extends Controller
      public function changeStatus(Request $request){
 
         $id = $request->id;
-
-
+        $role_id = $request->role_id;
 
 
 
@@ -122,9 +121,11 @@ class StudentApplyleaveController extends Controller
 
          if($leaverequest->status == '1'){
             $leaverequest->status  = 0;
+             $leaverequest->approve_by  =  $role_id;
          }else{
 
             $leaverequest->status  = 1;
+            $leaverequest->approve_by  = $role_id;
 
          }
 
