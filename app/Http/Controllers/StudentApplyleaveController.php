@@ -109,7 +109,38 @@ class StudentApplyleaveController extends Controller
      * Show the form for creating a new resource.
      */
 
+     public function changeStatus(Request $request){
+
+        $id = $request->id;
+
+
+
+
+
+         // Find the category by id
+         $leaverequest = StudentApplyleave::where('id', $id)->first();
+
+         if($leaverequest->status == '1'){
+            $leaverequest->status  = 0;
+         }else{
+
+            $leaverequest->status  = 1;
+
+         }
+
+         $leaverequest->update();
+        return response()->json([
+            'status' => 200,
+            'message' => 'successfully',
+            'category' => $leaverequest,
+        ], 201); // 201 Created status code
+
+
+    }
+
     public function create(Request $request){
+
+
 
         // Validate the incoming request
         $validatedData = $request->all();

@@ -473,6 +473,7 @@ Route::post('/login', [SiteController::class, 'login'])->name('login');
 
         Route::get('/approve-leave', [StudentApplyleaveController::class, 'index']);
         Route::post('/approve-leave', [StudentApplyleaveController::class, 'create']);
+        Route::get('/approve-leave-change-status/{id}', [StudentApplyleaveController::class, 'changeStatus']);
         Route::delete('/approve-leave/{id}', [StudentApplyleaveController::class, 'destroy']);
         Route::post('/approve-leave/{id}', [StudentApplyleaveController::class, 'update']);
 
