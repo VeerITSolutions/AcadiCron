@@ -40,18 +40,23 @@ class StudentApplyleaveController extends Controller
 
     // Build the query
     $query = DB::table('student_applyleave')
-        ->join('student_session', 'student_applyleave.student_session_id', '=', 'student_session.id')
-        ->join('students', 'students.id', '=', 'student_session.student_id') // Join with the students table
-        ->join('classes', 'classes.id', '=', 'student_session.class_id')
-        ->join('sections', 'sections.id', '=', 'student_session.section_id')
+        ->leftJoin('student_session', 'student_applyleave.student_session_id', '=', 'student_session.id')
+        ->leftJoin('students', 'students.id', '=', 'student_session.student_id') // Join with the students table
+        ->leftJoin('classes', 'classes.id', '=', 'student_session.class_id')
+        ->leftJoin('sections', 'sections.id', '=', 'student_session.section_id')
+        ->leftJoin('staff', 'staff.id', '=', 'student_applyleave.approve_by')
+
         ->select(
             'student_applyleave.*',
             'students.firstname',
-            'students.middlename',
             'students.lastname',
             'students.id as student_id',  // Include student_id for reference
             'classes.class as class_name',
-            'sections.section as section_name'
+            'sections.section as section_name',
+            'staff.name as staff_name',
+            'staff.surname as staff_surname'
+
+
         )
         ->orderBy('student_applyleave.created_at', 'desc');
 
@@ -79,9 +84,6 @@ class StudentApplyleaveController extends Controller
         // Concatenate the full name directly using object notation
         $fullName = $value->firstname;
 
-        if (!empty($value->middlename)) {
-            $fullName .= ' ' . $value->middlename;
-        }
 
         if (!empty($value->lastname)) {
             $fullName .= ' ' . $value->lastname;
