@@ -7,40 +7,90 @@ use App\Models\FeeGroups;
 use App\Models\Feetype;
 use App\Models\FeeSessionGroups;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class FeemastersController extends Controller
 {
    /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+
+    public function index(Request $request, $id = null)
     {
-        // Fetch the data
+        // Dynamically fetch the current session (from session or fallback)
+        $current_session = session('current_session') ?? 'default_session'; // Replace with your actual logic
+
+        // Get pagination inputs from the request, with defaults
+        $page = $request->input('page', 1); // Default to page 1 if not provided
+        $perPage = $request->input('perPage', 10); // Default to 10 records per page if not provided
+
+        // Validate inputs (optional)
+        $page = (int) $page;
+        $perPage = (int) $perPage;
+
+        // Ensure $perPage is a positive integer and set a reasonable max value if needed
+        if ($perPage <= 0 || $perPage > 100) {
+            $perPage = 10; // Default value if invalid
+        }
+
+        // Fetch lists of FeeGroups, Feetype, and FeeSessionGroups
         $feegroupList = FeeGroups::latest()->get();
         $feetypeList = Feetype::latest()->get();
         $feemasterList = FeeSessionGroups::all(); // Use ::all() if no custom method is needed
-    
-        // Prepare the response data
-        $data = [
-            'feegroupList' => $feegroupList,
-            'feetypeList' => $feetypeList,
-            'feemasterList' => $feemasterList,
-        ];
-    
-        // Return JSON response with data and total counts
+
+        // Initialize the query for paginated fee data
+        $query = DB::table('feemasters')
+                    ->join('classes', 'feemasters.class_id', '=', 'classes.id')
+                    ->join('feetype', 'feemasters.feetype_id', '=', 'feetype.id')
+                    ->select(
+                        'feemasters.feetype_id',
+                        'feemasters.id',
+                        'feemasters.class_id',
+                        'feemasters.session_id',
+                        'feemasters.amount',
+                        'feemasters.description',
+                        'classes.class',
+                        'feetype.type',
+                        'feetype.feecategory_id'
+                    )
+                    ->where('feemasters.session_id', $current_session);
+
+
+        // If an ID is provided, fetch single record
+        if ($id != null) {
+            $data = $query->where('feemasters.id', $id)->first();
+            return response()->json([
+                'success' => true,
+                'data' => $data, // Return the single record
+                'message' => 'Data fetched successfully',
+            ], 200);
+        }
+
+        // For pagination, order by ID and paginate the results
+        $data = $query->orderBy('feemasters.id', 'asc')->paginate($perPage, ['*'], 'page', $page);
+
+
+        // Return the JSON response with paginated data and total counts for each list
         return response()->json([
             'success' => true,
-            'data' => $data,
+            'data' => [
+                'feegroupList' => $feegroupList,
+                'feetypeList' => $feetypeList,
+                'feemasterList' => $feemasterList,
+                'feemasters' => $data->items(), // Paginated fee data
+            ],
             'totalCounts' => [
                 'feegroupCount' => $feegroupList->count(),
                 'feetypeCount' => $feetypeList->count(),
                 'feemasterCount' => $feemasterList->count(),
+                'feemasterPaginatedCount' => $data->total(), // Total records in the paginated query
             ],
+            'rowsPerPage' => $data->perPage(), // Records per page
+            'currentPage' => $data->currentPage(), // Current page
+            'totalPages' => $data->lastPage(), // Total pages
             'message' => 'Data retrieved successfully',
         ], 200);
     }
-    
-
 
 
     /**
@@ -75,7 +125,7 @@ class FeemastersController extends Controller
         $category->is_active = 0;
         $category->save();
 
-       
+
 
         return response()->json([
             'success' => true,
