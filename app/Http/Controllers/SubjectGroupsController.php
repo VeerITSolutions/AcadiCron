@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\SubjectGroups; // Adjust the namespace as necessary
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
+
 
 
 
@@ -14,35 +17,29 @@ class SubjectGroupsController extends Controller
      */
     public function index(Request $request)
     {
-        $page = $request->input('page', 1); // Default to page 1 if not provided
-        $perPage = $request->input('perPage', 10); // Default to 10 records per page if not provided
+        // Initialize pagination variables
+        $page = (int) $request->input('page', 1);
+        $perPage = (int) $request->input('perPage', 10);
 
-        // Validate the inputs (optional)
-        $page = (int) $page;
-        $perPage = (int) $perPage;
 
-        // Ensure $perPage is a positive integer and set a reasonable maximum value if needed
-        if ($perPage <= 0 || $perPage > 100) {
-            $perPage = 10; // Default value if invalid
-        }
+        // Build the query for SubjectGroups data
+        $query = DB::table('subject_groups')
+            ->select('*')
+            ->orderBy('id', 'desc');
 
-        // Paginate the students data
-        $data = SubjectGroups::orderBy('id', 'desc')->paginate($perPage, ['*'], 'page', $page);
 
-        // Prepare the response message
-        $message = '';
+        // Apply pagination
+        $paginatedData = $query->paginate($perPage, ['*'], 'page', $page);
 
-        // Return the paginated data with total count and pagination details
+        // Return paginated data with pagination details
         return response()->json([
             'success' => true,
-            'data' => $data->items(), // Only return the current page data
-            'totalCount' => $data->total(), // Total number of records
-            'rowsPerPage' => $data->lastPage(), // Total number of pages
-            'currentPage' => $data->currentPage(), // Current page
-            'message' => $message,
+            'data' => $paginatedData->items(), // Current page data
+            'current_page' => $paginatedData->currentPage(),
+            'per_page' => $paginatedData->perPage(),
+            'total' => $paginatedData->total(),
         ], 200);
     }
-
 
     /**
      * Show the form for creating a new resource.
