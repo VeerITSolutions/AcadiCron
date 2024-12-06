@@ -23,11 +23,12 @@ class SubjectGroupsController extends Controller
 
     $query = SubjectGroups::with([
         'subjects',
+        'session',
     ])->orderBy('id', 'desc');
 
 /* 'classSections.class',
     'classSections.section',
-    'session', */
+    */
 
 
     // Apply pagination
