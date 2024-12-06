@@ -25,7 +25,9 @@ class SubjectGroupsController extends Controller
         'subjects',
     ])->orderBy('id', 'desc');
 
-
+/* 'classSections.class',
+    'classSections.section',
+    'session', */
 
 
     // Apply pagination
