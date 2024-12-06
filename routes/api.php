@@ -460,6 +460,7 @@ Route::post('/login', [SiteController::class, 'login'])->name('login');
 
         Route::get('/subject-groups', [SubjectGroupsController::class, 'index']);
         Route::post('/subject-groups', [SubjectGroupsController::class, 'create']);
+        Route::post('/subject-groups-create', [SubjectGroupsController::class, 'add']);
         Route::delete('/subject-groups/{id}', [SubjectGroupsController::class, 'destroy']);
         Route::post('/subject-groups/{id}', [SubjectGroupsController::class, 'update']);
 

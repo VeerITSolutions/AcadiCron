@@ -88,4 +88,51 @@ class SubjectGroupsController extends Controller
     {
         //
     }
+
+    public function add(Request $request)
+    {
+
+        $data = $request->data;
+        $subject_group = $request->subject_group;
+        $section_group = $request->section_group;
+        $session_id = $request->session_id;
+        if (isset($data['id'])) {
+            // Update subject group
+            DB::table('subject_groups')->where('id', $data['id'])->update($data);
+            $subject_group_id = $data['id'];
+        } else {
+            // Insert new subject group
+            $subject_group_id = DB::table('subject_groups')->insertGetId($data);
+        }
+
+        // Prepare subject group subjects data
+        $subject_group_subject_array = array_map(function ($subject_id) use ($subject_group_id, $session_id) {
+            return [
+                'subject_group_id' => $subject_group_id,
+                'subject_id' => $subject_id,
+                'session_id' => $session_id,
+            ];
+        }, $subject_group);
+
+        // Batch insert into subject_group_subjects
+        DB::table('subject_group_subjects')->insert($subject_group_subject_array);
+
+        // Prepare subject group class sections data
+        $section_group_array = array_map(function ($class_section_id) use ($subject_group_id, $session_id) {
+            return [
+                'subject_group_id' => $subject_group_id,
+                'class_section_id' => $class_section_id,
+                'session_id' => $session_id,
+            ];
+        }, $section_group);
+
+        // Batch insert into subject_group_class_sections
+        DB::table('subject_group_class_sections')->insert($section_group_array);
+
+        return response()->json([
+            'success' => true,
+            'data' => '', // Current page data
+
+        ], 200);
+    }
 }
