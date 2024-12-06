@@ -11,6 +11,8 @@ class Classes extends Model
 
     protected $table = 'classes';
 
+    protected $fillable = ['class'];
+
     public function classSections()
     {
         return $this->hasMany(ClassSections::class, 'class_id');

@@ -175,25 +175,30 @@ $paginatedData = $query->orderBy('id', 'desc')->paginate($perPage, ['*'], 'page'
     public function add(Request $request)
         {
             // Extract data from the request
-            $data = $request->input('data');
+            $name = $request->input('name');
+            $id = $request->input('id');
             $sections = $request->input('sections');
+
+            $data_array = [
+                'name' => $name
+            ];
 
             // Start a transaction manually
             DB::beginTransaction();
 
             try {
                 // Check if 'id' is set for update or insert
-                if (isset($data['id'])) {
+                if (isset($id)) {
                     // Update class
-                    $class = Classes::find($data['id']);
+                    $class = Classes::find($id);
                     if ($class) {
-                        $class->update($data);
+                        $class->update($data_array);
                         $class_id = $class->id;
 
                     }
                 } else {
                     // Insert new class
-                    $class = Classes::create($data);
+                    $class = Classes::create($data_array);
                     $class_id = $class->id;
 
                 }
