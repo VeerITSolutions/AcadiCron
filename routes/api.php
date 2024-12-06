@@ -418,7 +418,9 @@ Route::post('/login', [SiteController::class, 'login'])->name('login');
         Route::post('/classes', [classesController::class, 'create']);
         Route::delete('/classes/{id}', [classesController::class, 'destroy']);
         Route::post('/classes/{id}', [classesController::class, 'update']);
+        Route::post('/classes-add', [classesController::class, 'add']);
         Route::get('/get-classes', [ClassesController::class, 'getClasses']);
+
 
         Route::get('/fees-remainder', [FeesReminderController::class, 'index']);
         Route::post('/fees-remainder', [FeesReminderController::class, 'create']);

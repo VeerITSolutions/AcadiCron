@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Classes;
+use App\Models\ClassSections;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -170,4 +171,56 @@ $paginatedData = $query->orderBy('id', 'desc')->paginate($perPage, ['*'], 'page'
             return response()->json(['success' => false, 'message' => 'class  deletion failed: ' . $e->getMessage()], 500);
         }
     }
+
+    public function add(Request $request)
+        {
+            // Extract data from the request
+            $data = $request->input('data');
+            $sections = $request->input('sections');
+
+            // Start a transaction manually
+            DB::beginTransaction();
+
+            try {
+                // Check if 'id' is set for update or insert
+                if (isset($data['id'])) {
+                    // Update class
+                    $class = Classes::find($data['id']);
+                    if ($class) {
+                        $class->update($data);
+                        $class_id = $class->id;
+
+                    }
+                } else {
+                    // Insert new class
+                    $class = Classes::create($data);
+                    $class_id = $class->id;
+
+                }
+
+                // Prepare data for batch insert into class_sections table
+                $sections_array = [];
+                foreach ($sections as $vec_value) {
+                    $sections_array[] = [
+                        'class_id' => $class_id,
+                        'section_id' => $vec_value,
+                    ];
+                }
+
+                // Insert batch data into class_sections table
+                ClassSections::insert($sections_array);
+
+                // Commit the transaction if all went well
+                DB::commit();
+
+                return response()->json(['success' => 'Record added/updated successfully']);
+
+            } catch (\Exception $e) {
+                // Rollback transaction if something went wrong
+                DB::rollBack();
+
+                // Return error message
+                return response()->json(['error' => $e->getMessage()], 500);
+            }
+        }
 }
