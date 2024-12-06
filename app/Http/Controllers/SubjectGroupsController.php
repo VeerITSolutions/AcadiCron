@@ -24,10 +24,12 @@ class SubjectGroupsController extends Controller
     $query = SubjectGroups::with([
         'subjects',
         'session',
+        'classSections.classSection.class',
+    'classSections.classSection.section',
     ])->orderBy('id', 'desc');
 
-/* 'classSections.class',
-    'classSections.section',
+/* 'classSections.classSection.class',
+    'classSections.classSection.section',
     */
 
 
