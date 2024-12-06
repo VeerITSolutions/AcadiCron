@@ -16,30 +16,42 @@ class SubjectGroupsController extends Controller
      * Display a listing of the resource.
      */
     public function index(Request $request)
-    {
-        // Initialize pagination variables
-        $page = (int) $request->input('page', 1);
-        $perPage = (int) $request->input('perPage', 10);
+{
+    // Initialize pagination variables
+    $page = (int) $request->input('page', 1);
+    $perPage = (int) $request->input('perPage', 10);
 
+    $query = DB::table('subject_groups')
+    ->leftJoin('subject_group_subjects', 'subject_groups.id', '=', 'subject_group_subjects.subject_group_id')
+    ->leftJoin('subjects', 'subject_group_subjects.subject_id', '=', 'subjects.id')
+    ->leftJoin('subject_group_class_sections', 'subject_groups.id', '=', 'subject_group_class_sections.subject_group_id')
+    ->leftJoin('class_sections', 'subject_group_class_sections.class_section_id', '=', 'class_sections.id')
+    ->leftJoin('classes', 'class_sections.class_id', '=', 'classes.id')
+    ->leftJoin('sections', 'class_sections.section_id', '=', 'sections.id') // Left join with sections table
+    ->select(
+        'subject_groups.id as subject_group_id',
+        'subject_groups.name as name',
+        'subject_groups.description',
+        'classes.class as class_name',
+        'subjects.name as subject_name',
+        'sections.section as section_name', // Get section name from sections table
+        'subject_groups.session_id'
+    )
+    ->orderBy('subject_groups.id', 'desc');
 
-        // Build the query for SubjectGroups data
-        $query = DB::table('subject_groups')
-            ->select('*')
-            ->orderBy('id', 'desc');
+    // Apply pagination
+    $paginatedData = $query->paginate($perPage, ['*'], 'page', $page);
 
+    // Return paginated data with pagination details
+    return response()->json([
+        'success' => true,
+        'data' => $paginatedData->items(), // Current page data
+        'current_page' => $paginatedData->currentPage(),
+        'per_page' => $paginatedData->perPage(),
+        'total' => $paginatedData->total(),
+    ], 200);
+}
 
-        // Apply pagination
-        $paginatedData = $query->paginate($perPage, ['*'], 'page', $page);
-
-        // Return paginated data with pagination details
-        return response()->json([
-            'success' => true,
-            'data' => $paginatedData->items(), // Current page data
-            'current_page' => $paginatedData->currentPage(),
-            'per_page' => $paginatedData->perPage(),
-            'total' => $paginatedData->total(),
-        ], 200);
-    }
 
     /**
      * Show the form for creating a new resource.
