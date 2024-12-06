@@ -86,7 +86,19 @@ class SubjectGroupsController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        try {
+            // Find the category by ID
+            $category = SubjectGroups::findOrFail($id);
+
+            // Delete the category
+            $category->delete();
+
+            // Return success response
+            return response()->json(['success' => true, 'message' => ' deleted successfully']);
+        } catch (\Exception $e) {
+            // Handle failure (e.g. if the  was not found)
+            return response()->json(['success' => false, 'message' => ' deletion failed: ' . $e->getMessage()], 500);
+        }
     }
 
     public function add(Request $request)
