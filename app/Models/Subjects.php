@@ -10,4 +10,11 @@ class Subjects extends Model
     use HasFactory;
 
     protected $fillable = ['name','code','type','is_active'];
+
+    protected $table = 'subjects';
+
+    public function subjectGroups()
+    {
+        return $this->belongsToMany(SubjectGroups::class, 'subject_group_subjects', 'subject_id', 'subject_group_id');
+    }
 }

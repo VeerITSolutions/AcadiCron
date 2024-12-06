@@ -10,4 +10,11 @@ class Sections extends Model
     use HasFactory;
 
     protected $fillable = ['section'];
+
+    protected $table = 'sections';
+
+    public function classSections()
+    {
+        return $this->hasMany(ClassSections::class, 'section_id');
+    }
 }
