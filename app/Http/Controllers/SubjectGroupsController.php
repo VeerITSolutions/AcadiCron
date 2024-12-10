@@ -21,6 +21,41 @@ class SubjectGroupsController extends Controller
     $page = (int) $request->input('page', 1);
     $perPage = (int) $request->input('perPage', 10);
 
+
+    $section_id = $request->input('section_id');
+    $class_id = $request->input('class_id');
+    if($section_id && $class_id){
+        $query = SubjectGroups::with([
+            'subjects',
+            'session',
+            'classSections.classSection.class',
+            'classSections.classSection.section',
+        ]);
+
+        // Ensure $section_id is an array
+        if (!is_array($section_id)) {
+            $section_id = [$section_id];
+        }
+
+        // Applying the filter for classSections.classSection
+        $query->whereHas('classSections.classSection', function ($q) use ($class_id, $section_id) {
+            $q->where('class_id', $class_id)
+              ->whereIn('section_id', $section_id);
+        });
+
+        // Adding order by clause
+        $query->orderBy('id', 'desc');
+
+        // Fetching the filtered and sorted data
+        $data = $query->get();
+
+        // Return paginated data with pagination details
+        return response()->json([
+            'success' => true,
+            'data' => $data, // Current page data
+        ], 200);
+    }
+
     $query = SubjectGroups::with([
         'subjects',
         'session',
