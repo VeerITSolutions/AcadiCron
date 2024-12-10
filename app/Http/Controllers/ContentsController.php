@@ -20,7 +20,8 @@ class ContentsController extends Controller
     {
         // Get pagination parameters from the request
         $page = $request->input('page', 1); // Default to page 1 if not provided
-        $perPage = $request->input('perPage', 10); // Default to 10 records per page if not provided
+        $perPage = $request->input('perPage', 10);
+        $type = $request->input('type'); // Default to 10 records per page if not provided
 
         // Validate pagination inputs
         $page = (int) $page;
@@ -43,8 +44,13 @@ class ContentsController extends Controller
         ->leftJoin('class_sections', 'contents.cls_sec_id', '=', 'class_sections.id')
         ->leftJoin('classes', 'class_sections.class_id', '=', 'classes.id')
         ->leftJoin('content_for', 'contents.id', '=', 'content_for.content_id')
-        ->leftJoin('sections', 'class_sections.section_id', '=', 'sections.id')
-        ->orderBy('contents.id', 'desc'); // Default ordering
+        ->leftJoin('sections', 'class_sections.section_id', '=', 'sections.id');
+
+        if($type){
+            $query->where('type', $type);
+        }
+
+        $query->orderBy('contents.id', 'desc'); // Default ordering
 
         // If $id is provided, fetch a single record
         if ($id !== null) {
