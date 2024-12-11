@@ -11,37 +11,67 @@ class HomeworkController extends Controller
      /**
      * Display a listing of the resource.
      */
-
-     public function index(Request $request, $id = null, $role = null)
-     {
-          // Get pagination inputs, default to page 1 and 10 records per page if not provided
+     public function index(Request $request)
+{
+    // Get pagination inputs, default to page 1 and 10 records per page if not provided
     $page = (int) $request->input('page', 1);
     $perPage = (int) $request->input('perPage', 10);
 
-    // Role ID (replace or customize as per your logic)
-    $role_id = 1;
+    // Get filtering inputs from the request
+    $class_id = $request->input('class_id');
+    $section_id = $request->input('section_id');
+    $subject_group_id = $request->input('subject_group_id');
+    $subject_id = $request->input('subject_id');
 
-    // Build the query
+    // Start building the query
     $query = DB::table('homework')
         ->select(
-           'classes.class as class_name', 'sections.section as section_name',
+            'classes.class as class_name',
+            'sections.section as section_name',
             'homework.*',
             'subject_group_subjects.subject_id',
             'subject_group_subjects.id as subject_group_subject_id',
             'subjects.name as subject_name',
             'subject_groups.id as subject_groups_id',
             'subject_groups.name',
-            DB::raw('(select count(*) from submit_assignment where submit_assignment.homework_id = homework.id) as assignments')
+            DB::raw('(select count(*) from submit_assignment where submit_assignment.homework_id = homework.id) as assignments'),
+            'staff.name as staff_name',
+            'staff.surname as staff_surname'
         )
-        ->join('classes', 'classes.id', '=', 'homework.class_id')
-        ->join('sections', 'sections.id', '=', 'homework.section_id')
-        ->join('subject_group_subjects', 'subject_group_subjects.id', '=', 'homework.subject_group_subject_id')
-        ->join('subjects', 'subjects.id', '=', 'subject_group_subjects.subject_id')
-        ->join('subject_groups', 'subject_group_subjects.subject_group_id', '=', 'subject_groups.id');
-        //->where('homework.session_id', $this->current_session); // Replace with your session logic
+        ->leftjoin('classes', 'classes.id', '=', 'homework.class_id')
+        ->leftjoin('sections', 'sections.id', '=', 'homework.section_id')
+        ->leftjoin('subject_group_subjects', 'subject_group_subjects.id', '=', 'homework.subject_group_subject_id')
+        ->leftjoin('subjects', 'subjects.id', '=', 'subject_group_subjects.subject_id')
+        ->leftjoin('subject_groups', 'subject_group_subjects.subject_group_id', '=', 'subject_groups.id')
+        ->leftjoin('staff', 'homework.created_by', '=', 'staff.id');
 
-    // Apply pagination
-    $paginatedData = $query->orderBy('id', 'desc')->paginate($perPage, ['*'], 'page', $page);
+
+    // Apply dynamic filtering based on inputs
+    if (!empty($class_id) && !empty($section_id) && !empty($subject_group_id) && !empty($subject_id)) {
+        $query->where([
+            ['homework.class_id', '=', $class_id],
+            ['homework.section_id', '=', $section_id],
+            ['subject_groups.id', '=', $subject_group_id],
+            ['subject_group_subjects.id', '=', $subject_id],
+        ]);
+    } elseif (!empty($class_id) && !empty($section_id) && !empty($subject_group_id)) {
+        $query->where([
+            ['homework.class_id', '=', $class_id],
+            ['homework.section_id', '=', $section_id],
+            ['subject_groups.id', '=', $subject_group_id],
+        ]);
+    } elseif (!empty($class_id) && empty($section_id) && empty($subject_id)) {
+        $query->where('homework.class_id', '=', $class_id);
+    } elseif (!empty($class_id) && !empty($section_id) && empty($subject_id)) {
+        $query->where([
+            ['homework.class_id', '=', $class_id],
+            ['homework.section_id', '=', $section_id],
+        ]);
+    }
+
+    // Apply sorting
+    $paginatedData = $query->orderBy('homework.id', 'asc')->paginate($perPage, ['*'], 'page', $page);
+
 
     // Return paginated data with total count and pagination details
     return response()->json([
@@ -51,7 +81,7 @@ class HomeworkController extends Controller
         'per_page' => $paginatedData->perPage(),
         'total' => $paginatedData->total(),
     ], 200);
-     }
+}
 
 
 
@@ -66,7 +96,7 @@ class HomeworkController extends Controller
         $validatedData = $request->all();
 
 
-        // Create a new category
+        // Create a new homework
         $homework = new Homework();
         $homework->class_id = $validatedData['selectedClass2'];
         $homework->section_id = $validatedData['selectedSection2'];
@@ -136,27 +166,52 @@ class HomeworkController extends Controller
      */
 
 
-    public function update(Request $request,string $id)
-    {
+     public function update(Request $request, string $id)
+     {
+         // Find the homework by id
+         $homework = Homework::findOrFail($id);
 
-        // Find the category by id
-        $category = Homework::findOrFail($id);
+         // Validate the request data
+         $validatedData = $request->validate([
+             'selectedClass2' => 'required',
+             'selectedSection2' => 'required',
+             'homework_date' => 'required|date',
+             'submit_date' => 'required|date',
+             'description' => 'required|string',
+             'selectedSubject2' => 'required',
+             'selectedSubjectGroup2' => 'required',
+             'document' => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png',
+         ]);
 
-        // Validate the request data
-        $validatedData = $request->all();
+         // Update the homework properties
+         $homework->class_id = $validatedData['selectedClass2'];
+         $homework->section_id = $validatedData['selectedSection2'];
+         $homework->homework_date = $validatedData['homework_date'];
+         $homework->submit_date = $validatedData['submit_date'];
+         $homework->description = $validatedData['description'];
+         $homework->subject_id = $validatedData['selectedSubject2'];
+         $homework->subject_group_subject_id = $validatedData['selectedSubjectGroup2'];
 
-        // Update the category
-        $category->update($validatedData);
+         // Handle the file upload if provided
+         if ($request->hasFile('document')) {
+             $file = $request->file('document');
+             $imageName = $homework->staff_id . '_document_' . time(); // Example name
+             $imageSubfolder = "/homework/assignment/" . $homework->staff_id; // Example subfolder
+             $full_path = 0;
+             $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
+             $homework->document = $imagePath; // Save the file path to the document field
+         }
 
+         // Save the homework updates
+         $homework->save();
 
+         return response()->json([
+             'success' => true,
+             'message' => 'Edit successfully',
+             'homework' => $homework,
+         ], 200); // 200 OK status code
+     }
 
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Edit successfully',
-            'category' => $category,
-        ], 201); // 201 Created status code
-    }
 
     /**
      * Remove the specified resource from storage.
@@ -164,16 +219,16 @@ class HomeworkController extends Controller
     public function destroy($id)
     {
         try {
-            // Find the category by ID
-            $category = Homework::findOrFail($id);
+            // Find the homework by ID
+            $homework = Homework::findOrFail($id);
 
-            // Delete the category
-            $category->delete();
+            // Delete the homework
+            $homework->delete();
 
             // Return success response
             return response()->json(['success' => true, 'message' => 'Homework  deleted successfully']);
         } catch (\Exception $e) {
-            // Handle failure (e.g. if the category was not found)
+            // Handle failure (e.g. if the homework was not found)
             return response()->json(['success' => false, 'message' => 'Leave type deletion failed: ' . $e->getMessage()], 500);
         }
     }
