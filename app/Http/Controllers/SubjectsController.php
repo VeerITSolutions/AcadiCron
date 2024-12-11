@@ -27,7 +27,7 @@ class SubjectsController extends Controller
 
             // Build the query with Eloquent
             $query = SubjectGroupSubjects::join('subjects', 'subjects.id', '=', 'subject_group_subjects.subject_id')
-            ->select('subject_group_subjects.*')
+            ->select('subject_group_subjects.*', 'subjects.name as name')
             ->where('subject_group_subjects.subject_group_id', $subjectGroupId);
             /* ->where('subject_group_subjects.session_id', $sessionId); */
 
