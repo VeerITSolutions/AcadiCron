@@ -19,6 +19,28 @@ class SubjectsController extends Controller
         $page = (int) $page;
         $perPage = (int) $perPage;
 
+        $subjectGroupId = $request->input('subject_gropu_id');
+        $sessionId = '20'; // Assuming $this->currentSession holds the current session ID
+        if($subjectGroupId)
+        {
+
+            // Build the query with Eloquent
+            $query = SubjectGroupSubjects::join('subjects', 'subjects.id', '=', 'subject_group_subjects.subject_id')
+            ->select('subjects.*')
+            ->where('subject_group_subjects.subject_group_id', $subjectGroupId);
+            /* ->where('subject_group_subjects.session_id', $sessionId); */
+
+        // Paginate the query results
+        $data = $query->get();
+
+        // Return the paginated data
+        return response()->json([
+            'success' => true,
+            'data' => $data
+        ], 200);
+        }
+
+
         // Ensure $perPage is a positive integer and set a reasonable maximum value if needed
         if ($perPage <= 0 || $perPage > 100) {
             $perPage = 10; // Default value if invalid
@@ -40,6 +62,8 @@ class SubjectsController extends Controller
             'message' => $message,
         ], 200);
     }
+
+
 
 
 
