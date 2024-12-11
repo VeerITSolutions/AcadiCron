@@ -67,32 +67,42 @@ class HomeworkController extends Controller
 
 
         // Create a new category
-        $category = new Homework();
-        $category->class_id = $validatedData['class_id'];
-        $category->section_id = $validatedData['section_id'];
-        $category->session_id = $validatedData['session_id'];
-        $category->homework_date = $validatedData['homework_date'];
-        $category->submit_date = $validatedData['submit_date'];
-        $category->staff_id = $validatedData['staff_id'];
-        $category->subject_group_subject_id = $validatedData['subject_group_subject_id'];
-        $category->subject_id = $validatedData['subject_id'];
-        $category->description = $validatedData['description'];
-        $category->create_date = $validatedData['create_date'];
-        $category->evaluation_date = $validatedData['evaluation_date'];
-        $category->document = $validatedData['document'];
-        $category->created_by = $validatedData['created_by'];
-        $category->evaluated_by = $validatedData['evaluated_by'];
-        $category->subject_name = $validatedData['subject_name'];
-        $category->subject_groups_id = $validatedData['subject_groups_id'];
-        $category->name = $validatedData['name'];
-        $category->assignments = $validatedData['assignments'];
+        $homework = new Homework();
+        $homework->class_id = $validatedData['selectedClass2'];
+        $homework->section_id = $validatedData['selectedSection2'];
+        $homework->homework_date = $validatedData['homework_date'];
+        $homework->submit_date = $validatedData['submit_date'];
+        $homework->description = $validatedData['description'];
+        $homework->subject_id = $validatedData['selectedSubject2'];
+        $homework->subject_group_subject_id = $validatedData['selectedSubjectGroup2'];
+        $homework->session_id = $validatedData['session_id'] ?? 1;
+        $homework->staff_id = $validatedData['staff_id'] ?? 1;
+        $homework->create_date = $validatedData['create_date'] ?? now();
+        $homework->evaluation_date = $validatedData['evaluation_date'] ?? now();
+        $homework->created_by = $validatedData['created_by'] ?? 0;
+        $homework->evaluated_by = $validatedData['evaluated_by'] ?? 0;
 
-        $category->save();
+
+
+
+
+
+        $file = $request->file('document');
+        if($file)
+        {
+           $imageName = $homework->staff_id .'_document_'. time(); // Example name
+           $imageSubfolder = "/homework/assignment/".$homework->staff_id;   // Example subfolder
+           $full_path = 0;
+           $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
+           $homework->document  =  $validatedData['document'] = $imagePath;
+        }
+
+        $homework->save();
 
         return response()->json([
             'success' => true,
-            'message' => 'Home Workd  saved successfully',
-            'category' => $category,
+            'message' => 'Homework  saved successfully',
+            'homework' => $homework,
         ], 201); // 201 Created status code
     }
 
