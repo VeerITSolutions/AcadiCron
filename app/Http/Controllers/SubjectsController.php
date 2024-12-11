@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\SubjectGroupSubjects;
 use App\Models\Subjects;
 use Illuminate\Http\Request;
 
@@ -26,7 +27,7 @@ class SubjectsController extends Controller
 
             // Build the query with Eloquent
             $query = SubjectGroupSubjects::join('subjects', 'subjects.id', '=', 'subject_group_subjects.subject_id')
-            ->select('subjects.*')
+            ->select('subject_group_subjects.*')
             ->where('subject_group_subjects.subject_group_id', $subjectGroupId);
             /* ->where('subject_group_subjects.session_id', $sessionId); */
 
