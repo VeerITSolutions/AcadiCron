@@ -32,7 +32,7 @@ class HomeworkController extends Controller
             'subject_group_subjects.id as subject_group_subject_id',
             'subjects.name as subject_name',
             'subject_groups.id as subject_groups_id',
-            'subject_groups.name',
+            'subject_groups.name as subject_groups_name',
             DB::raw('(select count(*) from submit_assignment where submit_assignment.homework_id = homework.id) as assignments'),
             'staff.name as staff_name',
             'staff.surname as staff_surname'
@@ -41,7 +41,7 @@ class HomeworkController extends Controller
         ->leftjoin('sections', 'sections.id', '=', 'homework.section_id')
         ->leftjoin('subject_group_subjects', 'subject_group_subjects.id', '=', 'homework.subject_group_subject_id')
         ->leftjoin('subjects', 'subjects.id', '=', 'subject_group_subjects.subject_id')
-        ->leftjoin('subject_groups', 'subject_group_subjects.subject_group_id', '=', 'subject_groups.id')
+        ->leftjoin('subject_groups', 'homework.subject_group_subject_id', '=', 'subject_groups.id')
         ->leftjoin('staff', 'homework.created_by', '=', 'staff.id');
 
 
