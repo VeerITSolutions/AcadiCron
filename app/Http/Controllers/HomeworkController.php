@@ -29,7 +29,6 @@ class HomeworkController extends Controller
             'classes.class as class_name',
             'sections.section as section_name',
             'homework.*',
-            'subject_group_subjects.subject_id',
             'subject_group_subjects.id as subject_group_subject_id',
             'subjects.name as subject_name',
             'subject_groups.id as subject_groups_id',
