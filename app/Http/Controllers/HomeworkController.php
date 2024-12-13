@@ -39,10 +39,13 @@ class HomeworkController extends Controller
         )
         ->leftjoin('classes', 'classes.id', '=', 'homework.class_id')
         ->leftjoin('sections', 'sections.id', '=', 'homework.section_id')
-        ->leftjoin('subject_group_subjects', 'subject_group_subjects.id', '=', 'homework.subject_group_subject_id')
+        ->leftjoin('subject_group_subjects', 'subject_group_subjects.id', '=', 'homework.subject_id')
         ->leftjoin('subjects', 'subjects.id', '=', 'subject_group_subjects.subject_id')
         ->leftjoin('subject_groups', 'homework.subject_group_subject_id', '=', 'subject_groups.id')
         ->leftjoin('staff', 'homework.staff_id', '=', 'staff.id');
+
+
+
 
 
     // Apply dynamic filtering based on inputs
