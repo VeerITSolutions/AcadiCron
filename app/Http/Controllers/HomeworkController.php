@@ -202,6 +202,7 @@ class HomeworkController extends Controller
 
          return response()->json([
 
+            'success' => true,
             'message' => 'Edit successfully',
              'homework' => $homework,
          ], 200); // 200 OK status code
