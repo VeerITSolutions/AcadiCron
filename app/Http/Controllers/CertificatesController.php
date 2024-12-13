@@ -49,44 +49,58 @@ public function index(Request $request, $id = null, $role = null)
 
         $certificate_name = $request->certificate_name;
 
-        $validatedData = $request->validate([
-            'certificate_name' => 'required',
-        ]);
+       $validatedData = $request->all();
 
-        // Check if the category already exists in the Category model
-        $existingCategory = Certificates::where('certificate_name', $certificate_name)->first();
+        // Check if the certificate already exists in the certificate model
+        $existingcertificate = Certificates::where('certificate_name', $certificate_name)->first();
 
 
-        if ($existingCategory) {
+        if ($existingcertificate) {
             return response()->json([
                 'success' => false,
-                'message' => 'fees name already exists',
+                'message' => 'already exists',
             ], 409); // 409 Conflict status code
         }
 
-        // Create a new category
-        $category = new Certificates();
+        // Create a new certificate
+        $certificate = new Certificates();
 
-        $category->certificate_name= $request->certificate_name;
-        $category->certificate_text= $request->certificate_text;
-        $category->left_header= $request->left_header;
-        $category->center_header= $request->center_header;
-        $category->right_header= $request->right_header;
-        $category->left_footer= $request->left_footer;
-        $category->right_footer= $request->right_footer;
-        $category->center_footer= $request->center_footer;
-        $category->header_height= $request->header_height;
-        $category->content_height= $request->content_height;
-        $category->footer_height= $request->footer_height;
-        $category->content_width= $request->content_width;
-        $category->background_image= $request->background_image;
 
-        $category->save();
+        $certificate->certificate_name= $request->certificate_name;
+        $certificate->certificate_text= $request->certificate_text;
+        $certificate->left_header= $request->left_header;
+        $certificate->center_header= $request->center_header;
+        $certificate->right_header= $request->right_header;
+        $certificate->left_footer= $request->left_footer;
+        $certificate->right_footer= $request->right_footer;
+        $certificate->center_footer= $request->center_footer;
+        $certificate->header_height= $request->header_height;
+        $certificate->content_height= $request->content_height;
+        $certificate->footer_height= $request->footer_height;
+        $certificate->content_width= $request->content_width;
+        $certificate->created_for = $request->created_for ;
+        $certificate->status = $request->status ;
+        $certificate->enable_student_image = $request->enable_student_image;
+        $certificate->enable_image_height = $request->enable_image_height;
+
+
+
+        $file = $request->file('background_image');
+        if($file)
+        {
+           $imageName = $homework->staff_id .'_document_'. time(); // Example name
+           $imageSubfolder = "/homework/assignment/".$homework->staff_id;   // Example subfolder
+           $full_path = 0;
+           $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
+           $certificate->background_image  =  $request->background_image = $imagePath;
+        }
+
+        $certificate->save();
 
         return response()->json([
             'success' => true,
-            'message' => 'fees name saved successfully',
-            'category' => $category,
+            'message' => 'saved successfully',
+            'certificate' => $certificate,
         ], 201); // 201 Created status code
     }
 
@@ -125,17 +139,27 @@ public function index(Request $request, $id = null, $role = null)
     {
 
         // Find the category by id
-        $category = Certificates::findOrFail($id);
+        $certificate = Certificates::findOrFail($id);
 
         // Validate the request data
         $validatedData = $request->all();
 
-        // Update the category
-        $category->update($validatedData);
+         // Handle the file upload if provided
+         if ($request->hasFile('background_image')) {
+            $file = $request->file('document');
+            $imageName = $homework->staff_id . '_document_' . time(); // Example name
+            $imageSubfolder = "/homework/assignment/" . $homework->staff_id; // Example subfolder
+            $full_path = 0;
+            $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
+            $certificate->background_image = $imagePath; // Save the file path to the document field
+        }
+
+        // Update the certificate
+        $certificate->update($validatedData);
         return response()->json([
             'success' => true,
             'message' => 'Edit successfully',
-            'category' => $category,
+            'certificate' => $certificate,
         ], 201); // 201 Created status code
     }
 
@@ -146,16 +170,16 @@ public function index(Request $request, $id = null, $role = null)
     {
         try {
             // Find the category by ID
-            $category = Certificates::findOrFail($id);
+            $certificate = Certificates::findOrFail($id);
 
-            // Delete the category
-            $category->delete();
+            // Delete the certificate
+            $certificate->delete();
 
             // Return success response
-            return response()->json(['success' => true, 'message' => 'Certificates  deleted successfully']);
+            return response()->json(['success' => true, 'message' => 'deleted successfully']);
         } catch (\Exception $e) {
-            // Handle failure (e.g. if the category was not found)
-            return response()->json(['success' => false, 'message' => 'Leave type deletion failed: ' . $e->getMessage()], 500);
+            // Handle failure (e.g. if the certificate was not found)
+            return response()->json(['success' => false, 'message' => ' deletion failed: ' . $e->getMessage()], 500);
         }
     }
 }
