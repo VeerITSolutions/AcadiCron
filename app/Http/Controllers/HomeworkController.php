@@ -170,19 +170,13 @@ class HomeworkController extends Controller
      public function update(Request $request, string $id)
      {
          // Find the homework by id
+
+
          $homework = Homework::findOrFail($id);
 
-         // Validate the request data
-         $validatedData = $request->validate([
-             'selectedClass2' => 'required',
-             'selectedSection2' => 'required',
-             'homework_date' => 'required|date',
-             'submit_date' => 'required|date',
-             'description' => 'required|string',
-             'selectedSubject2' => 'required',
-             'selectedSubjectGroup2' => 'required',
-             'document' => 'nullable|file|mimes:pdf,doc,docx,jpg,jpeg,png',
-         ]);
+         $validatedData = $request->all();
+
+
 
          // Update the homework properties
          $homework->class_id = $validatedData['selectedClass2'];
@@ -204,11 +198,11 @@ class HomeworkController extends Controller
          }
 
          // Save the homework updates
-         $homework->save();
+         $homework->update();
 
          return response()->json([
-             'success' => true,
-             'message' => 'Edit successfully',
+
+            'message' => 'Edit successfully',
              'homework' => $homework,
          ], 200); // 200 OK status code
      }
