@@ -18,10 +18,10 @@ class HomeworkController extends Controller
     $perPage = (int) $request->input('perPage', 10);
 
     // Get filtering inputs from the request
-    $class_id = $request->input('class_id');
-    $section_id = $request->input('section_id');
-    $subject_group_id = $request->input('subject_group_id');
-    $subject_id = $request->input('subject_id');
+    $class_id = $request->input('selectedClass');
+    $section_id = $request->input('selectedSection');
+    $subject_group_id = $request->input('selectedSubjectGroup');
+    $subject_id = $request->input('selectedSubject');
 
     // Start building the query
     $query = DB::table('homework')
@@ -50,21 +50,23 @@ class HomeworkController extends Controller
         $query->where([
             ['homework.class_id', '=', $class_id],
             ['homework.section_id', '=', $section_id],
-            ['subject_groups.id', '=', $subject_group_id],
-            ['subject_group_subjects.id', '=', $subject_id],
+            ['homework.subject_group_subject_id', '=', $subject_group_id],
+            ['homework.subject_id', '=', $subject_id],
         ]);
     } elseif (!empty($class_id) && !empty($section_id) && !empty($subject_group_id)) {
         $query->where([
             ['homework.class_id', '=', $class_id],
             ['homework.section_id', '=', $section_id],
-            ['subject_groups.id', '=', $subject_group_id],
+            ['homework.subject_group_subject_id', '=', $subject_group_id],
         ]);
-    } elseif (!empty($class_id) && empty($section_id) && empty($subject_id)) {
-        $query->where('homework.class_id', '=', $class_id);
-    } elseif (!empty($class_id) && !empty($section_id) && empty($subject_id)) {
+    } elseif (!empty($class_id) && !empty($section_id) ) {
         $query->where([
             ['homework.class_id', '=', $class_id],
             ['homework.section_id', '=', $section_id],
+        ]);
+    }elseif (!empty($class_id) ) {
+        $query->where([
+            ['homework.class_id', '=', $class_id]
         ]);
     }
 
