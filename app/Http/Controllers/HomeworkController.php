@@ -83,7 +83,7 @@ class HomeworkController extends Controller
         'data' => $paginatedData->items(), // Only return the current page data
         'current_page' => $paginatedData->currentPage(),
         'per_page' => $paginatedData->perPage(),
-        'total' => $paginatedData->total(),
+        'totalCount' => $paginatedData->total(),
     ], 200);
 }
 
