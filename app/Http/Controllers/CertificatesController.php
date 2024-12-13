@@ -78,21 +78,20 @@ public function index(Request $request, $id = null, $role = null)
         $certificate->content_height= $request->content_height;
         $certificate->footer_height= $request->footer_height;
         $certificate->content_width= $request->content_width;
-        $certificate->created_for = $request->created_for ;
-        $certificate->status = $request->status ;
-        $certificate->enable_student_image = $request->enable_student_image;
-        $certificate->enable_image_height = $request->enable_image_height;
-
-
+        $certificate->created_for = $request->created_for ?? 1;
+        $certificate->status = $request->status ?? 1;
+        $certificate->enable_student_image = $request->enable_student_image ?? 1;
+        $certificate->enable_image_height = $request->enable_image_height ?? 1;
 
         $file = $request->file('background_image');
-        if($file)
-        {
-           $imageName = $homework->staff_id .'_document_'. time(); // Example name
-           $imageSubfolder = "/homework/assignment/".$homework->staff_id;   // Example subfolder
-           $full_path = 0;
-           $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
-           $certificate->background_image  =  $request->background_image = $imagePath;
+        if ($file) {
+            $imageName = $certificate->staff_id .'_document_'. time(); // Example name
+            $imageSubfolder = "/certificate/".$certificate->staff_id; // Example subfolder
+            $full_path = 0;
+            $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
+            $certificate->background_image = $imagePath;
+        } else {
+            $certificate->background_image = ''; // Provide a default value if no image is uploaded
         }
 
         $certificate->save();
@@ -147,8 +146,8 @@ public function index(Request $request, $id = null, $role = null)
          // Handle the file upload if provided
          if ($request->hasFile('background_image')) {
             $file = $request->file('document');
-            $imageName = $homework->staff_id . '_document_' . time(); // Example name
-            $imageSubfolder = "/homework/assignment/" . $homework->staff_id; // Example subfolder
+            $imageName = $certificate->staff_id . '_document_' . time(); // Example name
+            $imageSubfolder = "/certificate/" . $certificate->staff_id; // Example subfolder
             $full_path = 0;
             $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
             $certificate->background_image = $imagePath; // Save the file path to the document field
