@@ -80,8 +80,18 @@ public function index(Request $request, $id = null, $role = null)
         $certificate->content_width= $request->content_width;
         $certificate->created_for = $request->created_for ?? 1;
         $certificate->status = $request->status ?? 1;
-        $certificate->enable_student_image = $request->enable_student_image ?? 1;
-        $certificate->enable_image_height = $request->enable_image_height ?? 1;
+
+
+        if ($request->enable_student_image == 1) {
+            $enableimg = $request->enable_student_image;
+            $imgHeight = $request->enable_image_height;
+        } else {
+            $enableimg = 0;
+            $imgHeight = 0;
+        }
+
+        $certificate->enable_student_image = $enableimg;
+        $certificate->enable_image_height = $imgHeight;
 
         $file = $request->file('background_image');
         if ($file) {
