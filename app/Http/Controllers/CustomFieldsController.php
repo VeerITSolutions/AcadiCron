@@ -18,7 +18,7 @@ class CustomFieldsController extends Controller
     public function getCustomFields(Request $request)
 {
 
-   $belongsTo =  $request->belongsTo;
+   $belongsTo =  'students';
    $displayTable = $request->displayTable;
     // Start building the query
     $query = DB::table('custom_fields')
@@ -31,7 +31,12 @@ class CustomFieldsController extends Controller
     }
 
     // Execute the query and return the results
-    return $query->get();
+    $data =  $query->get();
+
+    return response()->json([
+        'success' => true,
+        'data' => $data
+    ], 200);
 }
 
     /**

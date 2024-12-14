@@ -25,6 +25,9 @@ use App\Http\Controllers\StaffAttendanceController;
 use App\Http\Controllers\StaffController;
 use App\Http\Controllers\StudentAttendencesController;
 use App\Http\Controllers\TimetablesController;
+
+use App\Http\Controllers\CustomFieldsController;
+
 use App\Models\FeeSessionGroups;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\api\StudentListController;
@@ -370,6 +373,13 @@ Route::post('/login', [SiteController::class, 'login'])->name('login');
         Route::post('/certificate', [CertificatesController::class, 'create']);
         Route::delete('/certificate/{id}', [CertificatesController::class, 'destroy']);
         Route::post('/certificate/{id}', [CertificatesController::class, 'update']);
+
+
+        Route::get('/custome-filds', [CustomFieldsController::class, 'index']);
+        Route::get('/get-custome-filds', [CustomFieldsController::class, 'getCustomFields']);
+        Route::post('/custome-filds', [CustomFieldsController::class, 'create']);
+        Route::delete('/custome-filds/{id}', [CustomFieldsController::class, 'destroy']);
+        Route::post('/custome-filds/{id}', [CustomFieldsController::class, 'update']);
 
         Route::get('/student', [StudentsController::class, 'index']);
         Route::post('/student', [StudentsController::class, 'create']);
