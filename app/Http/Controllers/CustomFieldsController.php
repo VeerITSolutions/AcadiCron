@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use DB;
 
 class CustomFieldsController extends Controller
 {
@@ -13,6 +14,25 @@ class CustomFieldsController extends Controller
     {
         //
     }
+
+    public function getCustomFields(Request $request)
+{
+
+   $belongsTo =  $request->belongsTo;
+   $displayTable = $request->displayTable;
+    // Start building the query
+    $query = DB::table('custom_fields')
+        ->where('belong_to', $belongsTo)
+        ->orderBy('weight', 'asc');
+
+    // Check if $displayTable is provided and not empty
+    if (!empty($displayTable)) {
+        $query->where('visible_on_table', $displayTable);
+    }
+
+    // Execute the query and return the results
+    return $query->get();
+}
 
     /**
      * Show the form for creating a new resource.
