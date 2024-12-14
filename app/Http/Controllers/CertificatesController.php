@@ -45,15 +45,14 @@ public function index(Request $request, $id = null, $role = null)
     /**
      * Show the form for creating a new resource.
      */
-    public function create(Request $request){
-
+    public function create(Request $request)
+    {
         $certificate_name = $request->certificate_name;
 
-       $validatedData = $request->all();
+        $validatedData = $request->all();
 
         // Check if the certificate already exists in the certificate model
         $existingcertificate = Certificates::where('certificate_name', $certificate_name)->first();
-
 
         if ($existingcertificate) {
             return response()->json([
@@ -65,26 +64,24 @@ public function index(Request $request, $id = null, $role = null)
         // Create a new certificate
         $certificate = new Certificates();
 
+        $certificate->certificate_name = $validatedData['certificate_name'];
+        $certificate->certificate_text = $validatedData['certificate_text'];
+        $certificate->left_header = $validatedData['left_header'];
+        $certificate->center_header = $validatedData['center_header'];
+        $certificate->right_header = $validatedData['right_header'];
+        $certificate->left_footer = $validatedData['left_footer'];
+        $certificate->right_footer = $validatedData['right_footer'];
+        $certificate->center_footer = $validatedData['center_footer'];
+        $certificate->header_height = $validatedData['header_height'];
+        $certificate->content_height = $validatedData['content_height'];
+        $certificate->footer_height = $validatedData['footer_height'];
+        $certificate->content_width = $validatedData['content_width'];
+        $certificate->created_for = $validatedData['created_for'] ?? 1;
+        $certificate->status = $validatedData['status'] ?? 1;
 
-        $certificate->certificate_name= $request->certificate_name;
-        $certificate->certificate_text= $request->certificate_text;
-        $certificate->left_header= $request->left_header;
-        $certificate->center_header= $request->center_header;
-        $certificate->right_header= $request->right_header;
-        $certificate->left_footer= $request->left_footer;
-        $certificate->right_footer= $request->right_footer;
-        $certificate->center_footer= $request->center_footer;
-        $certificate->header_height= $request->header_height;
-        $certificate->content_height= $request->content_height;
-        $certificate->footer_height= $request->footer_height;
-        $certificate->content_width= $request->content_width;
-        $certificate->created_for = $request->created_for ?? 1;
-        $certificate->status = $request->status ?? 1;
-
-
-        if ($request->enable_student_image == 1) {
-            $enableimg = $request->enable_student_image;
-            $imgHeight = $request->enable_image_height;
+        if ($validatedData['enable_student_image'] == 1) {
+            $enableimg = $validatedData['enable_student_image'];
+            $imgHeight = $validatedData['enable_image_height'];
         } else {
             $enableimg = 0;
             $imgHeight = 0;
@@ -95,8 +92,8 @@ public function index(Request $request, $id = null, $role = null)
 
         $file = $request->file('background_image');
         if ($file) {
-            $imageName = $certificate->staff_id .'_document_'. time(); // Example name
-            $imageSubfolder = "/certificate/".$certificate->staff_id; // Example subfolder
+            $imageName = $certificate->staff_id . '_document_' . time(); // Example name
+            $imageSubfolder = "/certificate/" . $certificate->staff_id; // Example subfolder
             $full_path = 0;
             $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
             $certificate->background_image = $imagePath;
@@ -112,6 +109,7 @@ public function index(Request $request, $id = null, $role = null)
             'certificate' => $certificate,
         ], 201); // 201 Created status code
     }
+
 
 
 
