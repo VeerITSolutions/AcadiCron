@@ -119,7 +119,9 @@ class StudentListController extends Controller
 
 
         // Paginate the filtered students data if id is not present
-        $data = $query->orderBy('id', 'desc')->paginate($perPage, ['*'], 'page', $page);
+
+
+        $data = $query->orderBy('students.id', 'desc')->paginate($perPage, ['*'], 'page', $page);
 
         // Return the paginated data with total count and pagination details
         return response()->json([
@@ -217,11 +219,10 @@ class StudentListController extends Controller
         ->join('sections', 'sections.id', '=', 'student_session.section_id')
         ->leftJoin('categories', 'students.category_id', '=', 'categories.id')
         /* ->where('student_session.session_id', $this->current_session) */
-        ->where('students.is_active', 'no')
-        ->orderBy('students.id');
+        ->where('students.is_active', 'no');
 
         // Paginate the filtered students data
-        $data = $query->orderBy('id', 'desc')->paginate($perPage, ['*'], 'page', $page);
+        $data = $query->orderBy('students.id', 'desc')->paginate($perPage, ['*'], 'page', $page);
 
          // Apply filtering based on selectedClass
          if (!empty($selectedClass)) {
