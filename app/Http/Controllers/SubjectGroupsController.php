@@ -119,26 +119,38 @@ class SubjectGroupsController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        // Find the subject group by ID
         $subjectGroup = SubjectGroups::findOrFail($id);
 
-        $validatedData = $request->all();
+        $validatedData = $request->validate([
+            'name' => 'required',
+        ]);
 
-        $subjectGroup->name = $validatedData['name'] ?? null;
-        $subjectGroup->description = $validatedData['description'] ?? null;
-        // $subjectGroup->subject_group = $validatedData['selectedSubject'] ?? null;
-        // $subjectGroup->section_group = $validatedData['selectedSection'] ?? null;
-        $subjectGroup->session_id = $validatedData['savedSessionstate'] ?? null;
+         // Get the description from the request without validation
+         $name = $request->input('name');
+         $description = $request->input('description');
+         $savedSessionstate = $request->input('savedSessionstate');
+         $is_active = $request->input('is_active');
+
+         // Merge the validated data with the description
+         $updatedData = array_merge($validatedData, [
+             'name' => $name,
+             'description' => $description,
+             'savedSessionstate' => $savedSessionstate,
+         ]);
 
 
+        // Save the updated record
         $subjectGroup->save();
 
-
+        // Return a success response
         return response()->json([
             'success' => true,
             'message' => 'Subject group updated successfully',
             'subjectGroup' => $subjectGroup,
         ], 200);
     }
+
 
 
     /**
