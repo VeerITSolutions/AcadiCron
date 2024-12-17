@@ -13,8 +13,9 @@ class TimetablesController extends Controller
      */
     public function index(Request $request)
     {
-        $class_id    = 2 ;//$request->input('class_id');
-        $section_id  =  1; //$request->input('section_id');
+        $class_id    = $request->input('class_id');
+        $section_id  =  $request->input('section_id');
+        $subject_group_id  =  $request->input('subject_group_id');
 
         $days = getDayList();
         $days_record = [];
@@ -24,6 +25,7 @@ class TimetablesController extends Controller
             /* subject_timetable */
             $days_record[$day_key] = SubjectTimetable::where('class_id', $class_id)
                                                     ->where('section_id', $section_id)
+                                                    ->where('subject_group_id', $subject_group_id)
                                                     ->where('day', $day_key)
                                                     ->get();
         }
@@ -82,10 +84,40 @@ class TimetablesController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Request $request)
     {
-        //
+        // Validate the incoming request
+        $validatedData = $request->all();
+
+
+
+        // Create a new designation
+        $subject_timetable = new SubjectTimetable();
+
+        $subject_timetable->day = $validatedData['day'];
+        $subject_timetable->class_id = $validatedData['class_id'];
+        $subject_timetable->section_id = $validatedData['section_id'];
+        $subject_timetable->subject_group_id = $validatedData['subject_group_id'];
+        $subject_timetable->subject_group_subject_id = $validatedData['subject_group_subject_id'];
+        $subject_timetable->staff_id = $validatedData['staff_id'];
+        $subject_timetable->time_from = $validatedData['time_from'];
+        $subject_timetable->time_to = $validatedData['time_to'];
+        $subject_timetable->start_time = $validatedData['start_time'];
+        $subject_timetable->end_time = $validatedData['end_time'];
+        $subject_timetable->room_no = $validatedData['room_no'];
+        $subject_timetable->session_id = $validatedData['session_id'];
+        $subject_timetable->created_at = now(); // Use the current timestamp for created_at
+
+        $subject_timetable->save();
+
+
+        return response()->json([
+            'success' => true,
+            'message' => 'saved successfully',
+            'subject_timetable' => $subject_timetable,
+        ], 201); // 201 Created status code
     }
+
 
     /**
      * Store a newly created resource in storage.
@@ -116,14 +148,44 @@ class TimetablesController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        // Attempt to find the category
+        $subject_timetable = SubjectTimetable::find($id);
+
+
+
+        // Validate the fields you need to validate
+        $validatedData = $request->all();
+
+        // Update the category with validated data
+        $subject_timetable->update($validatedData);
+
+        // Return success response
+        return response()->json([
+            'success' => true,
+            'message' => 'Edit successful',
+            'subject_timetable' => $subject_timetable,
+        ], 200); // 200 OK status code
     }
+
+
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy($id)
     {
-        //
+        try {
+            // Find the category by ID
+            $subject_timetable = SubjectTimetable::findOrFail($id);
+
+            // Delete the category
+            $subject_timetable->delete();
+
+            // Return success response
+            return response()->json(['success' => true, 'message' => 'deleted successfully']);
+        } catch (\Exception $e) {
+            // Handle failure (e.g. if the category was not found)
+            return response()->json(['success' => false, 'message' => 'deletion failed: ' . $e->getMessage()], 500);
+        }
     }
 }

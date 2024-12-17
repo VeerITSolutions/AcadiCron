@@ -342,6 +342,12 @@ Route::post('/login', [SiteController::class, 'login'])->name('login');
         Route::get('/timetable', [TimetablesController::class, 'index']);
         Route::get('/timetable-by/{class_id?}/{section_id?}/{group_id?}/{day_id?}', [TimetablesController::class, 'getBySubjectGroupDayClassSection']);
 
+        Route::post('/timetable', [TimetablesController::class, 'create']);
+        Route::delete('/timetable/{id}', [TimetablesController::class, 'destroy']);
+        Route::post('/timetable/{id}', [TimetablesController::class, 'update']);
+
+
+
         Route::get('/staff-payroll', [StaffPayrollController::class, 'index']);
 
         Route::get('/leave-request', [StaffLeaveRequestController::class, 'index']);
