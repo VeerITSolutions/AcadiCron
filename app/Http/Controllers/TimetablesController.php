@@ -13,9 +13,9 @@ class TimetablesController extends Controller
      */
     public function index(Request $request)
     {
-        $class_id    = $request->input('class_id');
-        $section_id  =  $request->input('section_id');
-        $subject_group_id  =  $request->input('subject_group_id');
+        $class_id = $request->input('selectedClass');
+        $section_id = $request->input('selectedSection');
+        $subject_group_id = $request->input('selectedSubjectGroup');
 
         $days = getDayList();
         $days_record = [];
