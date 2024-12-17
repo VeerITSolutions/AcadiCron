@@ -147,10 +147,16 @@ class SubjectsController extends Controller
 
             // Get the description from the request without validation
             $name = $request->input('name');
+            $code = $request->input('code');
+            $type = $request->input('type');
+            $is_active = $request->input('is_active');
 
             // Merge the validated data with the description
             $updatedData = array_merge($validatedData, [
                 'name' => $name,
+                'code' => $code,
+                'type' => $type,
+                'is_active' => $is_active,
             ]);
 
         // Update the category
