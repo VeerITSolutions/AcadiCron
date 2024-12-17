@@ -119,8 +119,27 @@ class SubjectGroupsController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $subjectGroup = SubjectGroups::findOrFail($id);
+
+        $validatedData = $request->all();
+
+        $subjectGroup->name = $validatedData['name'] ?? null;
+        $subjectGroup->description = $validatedData['description'] ?? null;
+        // $subjectGroup->subject_group = $validatedData['selectedSubject'] ?? null;
+        // $subjectGroup->section_group = $validatedData['selectedSection'] ?? null;
+        $subjectGroup->session_id = $validatedData['savedSessionstate'] ?? null;
+
+
+        $subjectGroup->save();
+
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Subject group updated successfully',
+            'subjectGroup' => $subjectGroup,
+        ], 200);
     }
+
 
     /**
      * Remove the specified resource from storage.

@@ -34,8 +34,8 @@ class FeetypeController extends Controller
      */
     public function create(Request $request){
 
-        
-        
+
+
         $type = $request->type;
 
         $validatedData = $request->validate([
@@ -45,9 +45,9 @@ class FeetypeController extends Controller
         // Check if the category already exists in the Category model
         $existingCategory = Feetype::where('type', $type)->first();
 
-        
 
-        
+
+
 
         if ($existingCategory) {
             return response()->json([
@@ -65,13 +65,13 @@ class FeetypeController extends Controller
         $category->code= $request->code;
         $category->is_active = $request->is_active ?  $request->is_active  : 'no';
         $category->description= $request->description;
-      
 
-       
+
+
         $category->save();
 
 
-       
+
 
         return response()->json([
             'success' => true,
@@ -95,9 +95,9 @@ class FeetypeController extends Controller
         // Check if the category already exists in the Category model
         $existingCategory = Feetype::where('type', $type)->first();
 
-        
 
-        
+
+
 
         if ($existingCategory) {
             return response()->json([
@@ -111,18 +111,18 @@ class FeetypeController extends Controller
         $category->is_system= 0;
         $category->type= $request->type;
         $category->feecategory_id= $request->feecategory_id ? $request->feecategory_id : null ;
-       
+
 
         $category->code= $request->code;
         $category->is_active = $request->is_active ?  $request->is_active  : 'no';
         $category->description= $request->description;
-      
 
-       
+
+
         $category->save();
 
 
-       
+
 
         return response()->json([
             'success' => true,
@@ -169,7 +169,7 @@ class FeetypeController extends Controller
             $is_active = $request->input('is_active');
             $type = $request->input('type');
 
-            
+
 
             // Merge the validated data with the description
             $updatedData = array_merge($validatedData, [
