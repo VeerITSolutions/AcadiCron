@@ -19,6 +19,8 @@ class VerifyCsrfToken extends Middleware
         '/api/register',          // Exclude registration form from CSRF verification
         '/',                  // Exclude login form from CSRF verification
         '/api/login',
+        '/api/*',
+        'api/*',
 
         'api/register',
         'api/login',
