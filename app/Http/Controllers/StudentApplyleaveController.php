@@ -23,6 +23,7 @@ class StudentApplyleaveController extends Controller
     $selectedClass = $request->input('selectedClass');
     $selectedSection = $request->input('selectedSection');
     $student = $request->input('student');  // Get student input from the request
+    $keyword = $request->input('keyword');
 
     // Validate form input
     $validator = Validator::make($request->all(), [
@@ -69,11 +70,23 @@ class StudentApplyleaveController extends Controller
     if (!empty($selectedSection)) {
         $query->where('student_session.section_id', $selectedSection);
     }
+    // Apply filtering based on keyword (searching in the 'firstname' field)
+    if (!empty($keyword)) {
+        $query->where('students.firstname', 'like', '%' . $keyword . '%');
+    }
 
+
+    if (!empty($keyword)) {
+        $query->where(function($q) use ($keyword) {
+            $q->where('students.firstname', 'like', '%' . $keyword . '%')
+            ->orWhereRaw('CONCAT(students.firstname, " ", students.lastname) like ?', ['%' . $keyword . '%']);
+        });
+    }
     // Apply filtering based on student
     if (!empty($student)) {
         $query->where('students.id', $student);  // Filter by student ID if provided
     }
+
 
     // Apply pagination
     $paginatedData = $query->paginate($perPage, ['*'], 'page', $page);
