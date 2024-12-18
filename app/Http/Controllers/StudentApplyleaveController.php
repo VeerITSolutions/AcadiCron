@@ -229,15 +229,15 @@ class StudentApplyleaveController extends Controller
          // Find the category by id
          $leaverequest = StudentApplyleave::findOrFail($validatedData['currentLeaveId']);
 
-         $category->student_session_id  = $validatedData['student_session_id'];
-         $category->from_date  = $validatedData['from_date'];
-         $category->to_date  = $validatedData['to_date'];
-         $category->apply_date  = $validatedData['apply_date'];
-         $category->created_at  = $validatedData['created_at'];
-         $category->reason  = $validatedData['reason'];
-         $category->approve_by  = $validatedData['approve_by'];
-         $category->request_type  = $validatedData['request_type'];
-         $category->status  = $validatedData['status'];
+         $leaverequest->student_session_id  = $validatedData['student_session_id'];
+         $leaverequest->from_date  = $validatedData['from_date'];
+         $leaverequest->to_date  = $validatedData['to_date'];
+         $leaverequest->apply_date  = $validatedData['apply_date'];
+         $leaverequest->created_at  = $validatedData['created_at'];
+         $leaverequest->reason  = $validatedData['reason'];
+         $leaverequest->approve_by  = $validatedData['approve_by'];
+         $leaverequest->request_type  = $validatedData['request_type'];
+         $leaverequest->status  = $validatedData['status'];
 
 
          // Handle file upload if present
