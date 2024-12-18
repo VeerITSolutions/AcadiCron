@@ -165,8 +165,20 @@ class FeesDiscountsController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy($id)
     {
-        //
+        try {
+            // Find the category by ID
+            $feetype = FeesDiscounts::findOrFail($id);
+
+            // Delete the feetype
+            $feetype->delete();
+
+            // Return success response
+            return response()->json(['success' => true, 'message' => 'Deleted successfully']);
+        } catch (\Exception $e) {
+            // Handle failure (e.g. if the feetype was not found)
+            return response()->json(['success' => false, 'message' => 'Deletion failed: ' . $e->getMessage()], 500);
+        }
     }
 }
