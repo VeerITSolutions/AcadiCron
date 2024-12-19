@@ -435,6 +435,7 @@ Route::post('/login', [SiteController::class, 'login'])->name('login');
         Route::delete('/classes/{id}', [classesController::class, 'destroy']);
         Route::post('/classes/{id}', [classesController::class, 'update']);
         Route::post('/classes-add', [classesController::class, 'add']);
+        Route::post('/classes-edit/{id}', [classesController::class, 'editclasses']);
         Route::get('/get-classes', [ClassesController::class, 'getClasses']);
 
 
