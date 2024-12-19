@@ -180,7 +180,7 @@ $paginatedData = $query->orderBy('id', 'desc')->paginate($perPage, ['*'], 'page'
             $sections = $request->input('sections');
 
             $data_array = [
-                'name' => $name
+                'class' => $name
             ];
 
             // Start a transaction manually
