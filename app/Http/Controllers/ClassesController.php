@@ -124,30 +124,37 @@ $paginatedData = $query->orderBy('id', 'desc')->paginate($perPage, ['*'], 'page'
     {
          // Extract data from the request
          $name = $request->input('name');
-         $id = $request->id;
+         $id = $request->input('id');
          $sections = $request->input('sections');
 
 
 
-         $data_array = [
-             'class' => $name
-         ];
+         $classSection = ClassSections::find($id);
 
 
-            $class = Classes::find($id);
+
+         $class = Classes::find($classSection->class_id);
             if ($class) {
+
+                $data_array = [
+                    'class' => $name
+                ];
+
                 $class->update($data_array);
 
                 $class_id = $class->id;
             }
 
-             $sections_array = [
-                'class_id' => $class_id,
-                'section_id' => $sections,
-            ];
 
-             // Insert batch data into class_sections table
-             ClassSections::insert($sections_array);
+
+         $sections_array = [
+            'class_id' => $class_id,
+            'section_id' => $sections,
+        ];
+
+         // Insert batch data into class_sections table
+         $classSection->update($sections_array);
+
 
              return response()->json(['success' => 'Record added/updated successfully']);
 
