@@ -42,6 +42,31 @@ public function index(Request $request, $id = null, $role = null)
 
 
 
+public function certificateView(Request $request)
+{
+    $id = $request->input('certificateid');
+
+    // Retrieve the certificate record
+    $certificate = DB::table('certificates')->where('id', $id)->first();
+
+    if (!$certificate) {
+        // Handle the case where no certificate is found
+        return response()->json(['error' => 'Certificate not found'], 404);
+    }
+
+    // Prepare data to pass to the view
+    $data = [
+        'certificate' => $certificate
+    ];
+
+    // Render the preview view
+    $preview = view('admin.certificate.preview_certificate', $data)->render();
+
+    return response($preview);
+}
+
+
+
     /**
      * Show the form for creating a new resource.
      */
