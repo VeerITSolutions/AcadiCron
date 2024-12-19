@@ -45,9 +45,13 @@ public function index(Request $request, $id = null, $role = null)
 public function certificateView(Request $request)
 {
     $id = $request->input('certificateid');
+    if($id)
+    {
+        $id = 79;
+    }
 
     // Retrieve the certificate record
-    $certificate = DB::table('certificates')->where('id', $id)->first();
+    $certificate = DB::table('certificates')->where('id', 78)->first();
 
     if (!$certificate) {
         // Handle the case where no certificate is found
