@@ -75,7 +75,7 @@ public function certificateView(Request $request)
 
 
     /**
-     * Show the form for creating a new resource.
+     * Show the form for creating a new resource.w
      */
     public function create(Request $request)
     {
