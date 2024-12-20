@@ -45,28 +45,31 @@ public function index(Request $request, $id = null, $role = null)
 public function certificateView(Request $request)
 {
     $id = $request->input('certificateid');
-    if($id)
-    {
-        $id = 79;
+
+    // Ensure you actually use the `$id` value from the request
+    if (!$id) {
+        return response()->json(['error' => 'Invalid certificate ID'], 400);
     }
 
     // Retrieve the certificate record
-    $certificate = DB::table('certificates')->where('id', 78)->first();
+    $certificate = DB::table('certificates')->where('id', $id)->first();
 
     if (!$certificate) {
-        // Handle the case where no certificate is found
         return response()->json(['error' => 'Certificate not found'], 404);
     }
 
     // Prepare data to pass to the view
     $data = [
-        'certificate' => $certificate
+        'certificate' => $certificate,
     ];
 
-    // Render the preview view
+    // Render the preview view and return it as a response
     $preview = view('admin.certificate.preview_certificate', $data)->render();
 
-    return response($preview);
+    return response()->json([
+        'success' => true,
+        'data' => $preview, // Return rendered HTML
+    ], 200);
 }
 
 
