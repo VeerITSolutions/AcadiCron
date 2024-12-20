@@ -42,9 +42,10 @@ public function index(Request $request, $id = null, $role = null)
 
 
 
-public function certificateView(Request $request)
+public function certificateView(Request $request, string $id)
 {
-    $id = $request->input('certificateid');
+
+
 
     // Ensure you actually use the `$id` value from the request
     if (!$id) {
