@@ -186,7 +186,7 @@ public function certificateView(Request $request, string $id)
 
          // Handle the file upload if provided
          if ($request->hasFile('background_image')) {
-            $file = $request->file('document');
+            $file = $request->file('background_image');
             $imageName = $certificate->staff_id . '_document_' . time(); // Example name
             $imageSubfolder = "/certificate/" . $certificate->staff_id; // Example subfolder
             $full_path = 0;
