@@ -192,6 +192,9 @@ public function certificateView(Request $request, string $id)
             $full_path = 0;
             $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
             $certificate->background_image = $imagePath; // Save the file path to the document field
+
+            $validatedData['background_image'] = $imagePath;
+
         }
 
         // Update the certificate
