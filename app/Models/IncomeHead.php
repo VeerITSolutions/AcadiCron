@@ -10,4 +10,5 @@ class IncomeHead extends Model
     use HasFactory;
 
     protected $table  = 'income_head';
+    protected $fillable = ['name', 'description'];
 }

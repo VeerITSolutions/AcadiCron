@@ -63,6 +63,7 @@ use App\Http\Controllers\StudentFeesController;
 use App\Http\Controllers\StudentApplyleaveController;
 use App\Http\Controllers\StudentDocController;
 use App\Http\Controllers\StudentTimelineController;
+use App\Http\Controllers\IncomeHeadController;
 
 
 /*
@@ -517,6 +518,11 @@ Route::post('/login', [SiteController::class, 'login'])->name('login');
         Route::post('/income', [IncomeController::class, 'create']);
         Route::delete('/income/{id}', [IncomeController::class, 'destroy']);
         Route::post('/income/{id}', [IncomeController::class, 'update']);
+
+        Route::get('/income-head', [IncomeHeadController::class, 'index']);
+        Route::post('/income-head', [IncomeHeadController::class, 'create']);
+        Route::delete('/income-head/{id}', [IncomeHeadController::class, 'destroy']);
+        Route::post('/income-head/{id}', [IncomeHeadController::class, 'update']);
 
         /* for content manangment  */
 
