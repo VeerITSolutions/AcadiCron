@@ -64,6 +64,7 @@ use App\Http\Controllers\StudentApplyleaveController;
 use App\Http\Controllers\StudentDocController;
 use App\Http\Controllers\StudentTimelineController;
 
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -511,14 +512,18 @@ Route::post('/login', [SiteController::class, 'login'])->name('login');
         Route::delete('/role/{id}', [RolesController::class, 'destroy']);
         Route::post('/role/{id}', [RolesController::class, 'update']);
 
+
+        Route::get('/income', [IncomeController::class, 'index']);
+        Route::post('/income', [IncomeController::class, 'create']);
+        Route::delete('/income/{id}', [IncomeController::class, 'destroy']);
+        Route::post('/income/{id}', [IncomeController::class, 'update']);
+
         /* for content manangment  */
 
         Route::get('/upload-content', [ContentsController::class, 'index']);
         Route::post('/upload-content', [ContentsController::class, 'create']);
         Route::delete('/upload-content/{id}', [ContentsController::class, 'destroy']);
         Route::post('/upload-content/{id}', [ContentsController::class, 'update']);
-
-
 
         Route::get('/content-section', [ContentSectionController::class, 'index']);
         Route::post('/content-section', [ContentSectionController::class, 'create']);
