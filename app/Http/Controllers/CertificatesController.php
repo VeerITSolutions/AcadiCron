@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Certificates;
+use App\Models\Students;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -79,9 +80,18 @@ public function certificateView(Request $request, string $id)
     $data = [
         'certificate' => $certificate,
     ];
+    $idsToGenerate = $request->idsToGenerate;
+    if($idsToGenerate){
 
-    // Render the preview view and return it as a response
+        $data['studentDatas']  = Students::whereIn('id', $idsToGenerate)->get();
+
+    $preview = view('admin.certificate.generate_certificate', $data)->render();
+    }else{
+         // Render the preview view and return it as a response
     $preview = view('admin.certificate.preview_certificate', $data)->render();
+
+    }
+
 
     return response()->json([
         'success' => true,
