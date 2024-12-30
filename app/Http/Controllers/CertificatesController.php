@@ -27,17 +27,33 @@ public function index(Request $request, $id = null, $role = null)
         ->select('certificates.*')
         ->where('certificates.status', '=', 1);
 
-    // Apply pagination to the query
-    $paginatedData = $query->orderBy('id', 'desc')->paginate($perPage, ['*'], 'page', $page);
+    if(empty($page))
+    {
+         // Apply pagination to the query
+    $paginatedData = $query->orderBy('id', 'desc')->get();
+     // Return the response with paginated data
+     return response()->json([
+        'success' => true,
+        'data' => $paginatedData
+    ], 200);
 
-    // Return the response with paginated data
-    return response()->json([
+    }else{
+         // Apply pagination to the query
+    $paginatedData = $query->orderBy('id', 'desc')->paginate($perPage, ['*'], 'page', $page);
+     // Return the response with paginated data
+     return response()->json([
         'success' => true,
         'data' => $paginatedData->items(), // Only return the current page data
         'current_page' => $paginatedData->currentPage(),
         'per_page' => $paginatedData->perPage(),
         'totalCount' => $paginatedData->total(),
     ], 200);
+
+    }
+
+
+
+
 }
 
 
