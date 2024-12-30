@@ -53,8 +53,10 @@
 
     <?php if (!empty($certificate->background_image)) { ?>
 
-    <img src="<?php //echo base_url('uploads/certificate/' . $certificate->background_image);
-    ?>" style="width: 100%; height: 100vh" />
+
+
+    <img src="{{ env('CUSTOM_APP_URL') . 'uploads/certificate/' . $certificate->background_image }}"
+        style="width: 100%; height: 100vh" />
 
     <?php } ?>
 
@@ -69,7 +71,7 @@
 
                 <?php if ($certificate->enable_student_image == 1) { ?>
 
-                <img style="position: relative; <?php echo 'top:' . $certificate->enable_image_height . 'px'; ?>;" src="<?php // echo base_url('uploads/student_images/no_image.png');
+                <img style="position: relative; <?php echo 'top:' . $certificate->enable_image_height . 'px'; ?>;" src="<?php echo asset('uploads/student_images/no_image.png');
                 ?>" width="100"
                     height="auto">
 
