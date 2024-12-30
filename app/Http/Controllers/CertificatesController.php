@@ -184,6 +184,9 @@ public function certificateView(Request $request, string $id)
         // Validate the request data
         $validatedData = $request->all();
 
+
+
+
          // Handle the file upload if provided
          if ($request->hasFile('background_image')) {
             $file = $request->file('background_image');
@@ -196,6 +199,22 @@ public function certificateView(Request $request, string $id)
             $validatedData['background_image'] = $imagePath;
 
         }
+
+
+        if ($request->enable_student_image == 'true') {
+
+
+            $validatedData['enable_student_image'] = 1;
+        } else {
+
+
+
+
+            $validatedData['enable_student_image'] = 0;
+        }
+
+
+
 
         // Update the certificate
         $certificate->update($validatedData);
