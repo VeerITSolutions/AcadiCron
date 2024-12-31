@@ -379,6 +379,7 @@ Route::post('/login', [SiteController::class, 'login'])->name('login');
 
         Route::get('/certificate', [CertificatesController::class, 'index']);
         Route::post('/certificate-view/{id}', [CertificatesController::class, 'certificateView']);
+        Route::post('/certificate-view-generate/{id}', [CertificatesController::class, 'generateMultiple']);
 
         Route::post('/certificate', [CertificatesController::class, 'create']);
         Route::delete('/certificate/{id}', [CertificatesController::class, 'destroy']);
