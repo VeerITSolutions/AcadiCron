@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Hostel;
+use App\Models\HostelRoom;
+use App\Models\HostelRoomRoom;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class HostelController extends Controller
+class HostelRoomRoomController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -26,7 +27,7 @@ class HostelController extends Controller
         }
 
         // Paginate the students data
-        $data = Hostel::orderBy('id', 'desc')->paginate($perPage, ['*'], 'page', $page);
+        $data = HostelRoom::orderBy('id', 'desc')->paginate($perPage, ['*'], 'page', $page);
 
         // Prepare the response message
         $message = '';
@@ -54,21 +55,21 @@ class HostelController extends Controller
         $validatedData = $request->all();
 
 
-        // Create a new Hostel
-        $Hostel = new Hostel();
-        $Hostel->hostel_name = $validatedData['hostel_name'];
-        $Hostel->type = $validatedData['type'];
-        $Hostel->address = $validatedData['address'];
-        $Hostel->intake = $validatedData['intake'];
-        $Hostel->description = $validatedData['description'];
+        // Create a new HostelRoom
+        $HostelRoom = new HostelRoom();
+        $HostelRoom->room_name = $validatedData['room_name'];
+        $HostelRoom->no_of_bed = $validatedData['no_of_bed'];
+        $HostelRoom->cost_per_bed = $validatedData['cost_per_bed'];
+        $HostelRoom->title = $validatedData['title'];
+        $HostelRoom->description = $validatedData['description'];
 
 
-        $Hostel->save();
+        $HostelRoom->save();
 
         return response()->json([
             'success' => true,
-            'message' => 'Hostel  saved successfully',
-            'Hostel' => $Hostel,
+            'message' => 'HostelRoom  saved successfully',
+            'HostelRoom' => $HostelRoom,
         ], 201); // 201 Created status code
     }
 
@@ -104,25 +105,25 @@ class HostelController extends Controller
 
     public function update(Request $request, string $id)
     {
-        // Find the Hostel by id
+        // Find the HostelRoom by id
         $validatedData = $request->all();
 
-        $Hostel = Hostel::findOrFail($id);
+        $HostelRoom = HostelRoom::findOrFail($id);
 
-        $Hostel->hostel_name = $validatedData['hostel_name'];
-        $Hostel->type = $validatedData['type'];
-        $Hostel->address = $validatedData['address'];
-        $Hostel->intake = $validatedData['intake'];
-        $Hostel->description = $validatedData['description'];
+        $HostelRoom->room_name = $validatedData['room_name'];
+        $HostelRoom->no_of_bed = $validatedData['no_of_bed'];
+        $HostelRoom->cost_per_bed = $validatedData['cost_per_bed'];
+        $HostelRoom->title = $validatedData['title'];
+        $HostelRoom->description = $validatedData['description'];
 
 
-        $Hostel->update();
+        $HostelRoom->update();
 
         return response()->json([
 
             'success' => true,
             'message' => 'Edit successfully',
-            'Hostel' => $Hostel,
+            'HostelRoom' => $HostelRoom,
         ], 200); // 200 OK status code
     }
 
@@ -133,16 +134,16 @@ class HostelController extends Controller
     public function destroy($id)
     {
         try {
-            // Find the Hostel by ID
-            $Hostel = Hostel::findOrFail($id);
+            // Find the HostelRoom by ID
+            $HostelRoom = HostelRoom::findOrFail($id);
 
-            // Delete the Hostel
-            $Hostel->delete();
+            // Delete the HostelRoom
+            $HostelRoom->delete();
 
             // Return success response
-            return response()->json(['success' => true, 'message' => 'Hostel  deleted successfully']);
+            return response()->json(['success' => true, 'message' => 'HostelRoom  deleted successfully']);
         } catch (\Exception $e) {
-            // Handle failure (e.g. if the Hostel was not found)
+            // Handle failure (e.g. if the HostelRoom was not found)
             return response()->json(['success' => false, 'message' => 'Leave type deletion failed: ' . $e->getMessage()], 500);
         }
     }
