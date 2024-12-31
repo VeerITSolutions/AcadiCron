@@ -342,7 +342,8 @@ public function certificateView(Request $request, string $id)
         // Render the certificate view
         $certificates = view('admin.certificate.generate_certificate', $data)->render();
 
-        return response()->json(['html' => $certificates]);
+        return response($certificates, 200)
+        ->header('Content-Type', 'text/html');
     }
 
     private function getFullName($student)
