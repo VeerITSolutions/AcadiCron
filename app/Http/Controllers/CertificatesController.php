@@ -336,7 +336,7 @@ public function certificateView(Request $request, string $id)
             $student->tc_no = $tcCertificate->tc_no ?? null;
 
             // Assuming a custom method exists to generate the full name
-            $student->name ='Pranay';
+            $student->name = $this->getFullName($student);
         }
 
         // Render the certificate view

@@ -75,32 +75,25 @@
                 </td>
             </tr>
             <tr>
-                <td valign="top"
-                    style="text-align: left; position: relative; top: {{ $certificate->header_height }}px">
-                    {{ $certificate->left_header }}</td>
-                <td valign="top"
-                    style="text-align: center; position: relative; top: {{ $certificate->header_height }}px">
-                    {{ $certificate->center_header }}</td>
-                <td valign="top"
-                    style="text-align: right; position: relative; top: {{ $certificate->header_height }}px">
-                    {{ $certificate->right_header }}</td>
+                <td valign="top" style="text-align: left; position: relative; top: {!! $certificate->header_height !!}px">
+                    {!! $certificate->left_header !!}</td>
+                <td valign="top" style="text-align: center; position: relative; top: {!! $certificate->header_height !!}px">
+                    {!! $certificate->center_header !!}</td>
+                <td valign="top" style="text-align: right; position: relative; top: {!! $certificate->header_height !!}px">
+                    {!! $certificate->right_header !!}</td>
             </tr>
             <tr>
-                <td colspan="3" valign="top"
-                    style="position: relative; top: {{ $certificate->content_height }}px">
+                <td colspan="3" valign="top" style="position: relative; top: {{ $certificate->content_height }}px">
                     <p style="font-size: 14px; line-height: 24px; text-align: center;">{!! $certificateText !!}</p>
                 </td>
             </tr>
             <tr>
-                <td valign="top"
-                    style="text-align: left; position: relative; top: {{ $certificate->footer_height }}px">
-                    {{ $certificate->left_footer }}</td>
-                <td valign="top"
-                    style="text-align: center; position: relative; top: {{ $certificate->footer_height }}px">
-                    {{ $certificate->center_footer }}</td>
-                <td valign="top"
-                    style="text-align: right; position: relative; top: {{ $certificate->footer_height }}px">
-                    {{ $certificate->right_footer }}</td>
+                <td valign="top" style="text-align: left; position: relative; top: {!! $certificate->footer_height !!}px">
+                    {!! $certificate->left_footer !!}</td>
+                <td valign="top" style="text-align: center; position: relative; top: {!! $certificate->footer_height !!}px">
+                    {!! $certificate->center_footer !!}</td>
+                <td valign="top" style="text-align: right; position: relative; top: {!! $certificate->footer_height !!}px">
+                    {!! $certificate->right_footer !!}</td>
             </tr>
         </table>
     </div>
