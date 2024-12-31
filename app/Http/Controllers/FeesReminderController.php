@@ -66,25 +66,31 @@ class FeesReminderController extends Controller
     */
    public function create(Request $request){
 
+        // Validate the incoming request
+        $validatedData = json_decode($request->getContent(), true);
 
-       // Validate the incoming request
-       $validatedData = $request->all();
+        // Iterate over the array of fee reminders and update each record
+        foreach ($validatedData as $value) {
+            // Find the FeesReminder record by ID
+            $feesreminder = FeesReminder::find($value['id']);
 
 
-       // Create a new category
-       $category = new FeesReminder();
-       $category->reminder_type = $validatedData['reminder_type'];
-       $category->day = $validatedData['day'];
+            if ($feesreminder) {
+                // Update the record with the new data
+                $feesreminder->reminder_type = $value['reminder_type'];
+                $feesreminder->day = $value['day'];
+                $feesreminder->is_active = $value['is_active'];
 
-       $category->is_active = 1;
+                // Save the changes
+                $feesreminder->update();
+            }
+        }
 
-       $category->save();
-
-       return response()->json([
-           'success' => true,
-           'message' => 'Fees Reminder saved successfully',
-           'category' => $category,
-       ], 201); // 201 Created status code
+        // Return a success response
+        return response()->json([
+            'success' => true,
+            'message' => 'Updated successfully',
+        ], 200); // Use 200 OK status code for successful updates
    }
 
 
