@@ -60,7 +60,7 @@
 
     <div class="tc-container" style="position: relative; text-align: center; font-family: 'arial';">
         @if (!empty($certificate->background_image))
-            <img src="{{ asset('uploads/certificate/' . $certificate->background_image) }}"
+            <img src="{{ env('CUSTOM_APP_URL') . 'uploads/certificate/' . $certificate->background_image }}"
                 style="width: 100%; height: 100vh" />
         @endif
 
