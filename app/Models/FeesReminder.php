@@ -9,7 +9,7 @@ class FeesReminder extends Model
 {
     protected $table = 'fees_reminder'; // Define the table name if it doesn't follow the convention
 
-    protected $fillable = ['type', 'is_active']; // Add other fillable fields as needed
+    protected $fillable = ['reminder_type',  'day' , 'is_active']; // Add other fillable fields as needed
 
     /**
      * Get the fee reminder by id or active status.
