@@ -55,6 +55,7 @@ use App\Http\Controllers\SubjectsController;
 use App\Http\Controllers\SearchPaymentController;
 use App\Http\Controllers\SearchDueFeesController;
 use App\Http\Controllers\LessonplanLessonController;
+use App\Http\Controllers\HostelController;
 use App\Http\Controllers\RoomTypesController;
 use App\Http\Controllers\SchSettingsController;
 use App\Http\Controllers\SessionsController;
@@ -64,6 +65,8 @@ use App\Http\Controllers\StudentFeesController;
 use App\Http\Controllers\StudentApplyleaveController;
 use App\Http\Controllers\StudentDocController;
 use App\Http\Controllers\StudentTimelineController;
+use App\Http\Controllers\IncomeHeadController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -77,7 +80,7 @@ use App\Http\Controllers\StudentTimelineController;
 */
 
 Route::get('/welcome', function () {
-    return view('welcome');
+        return view('welcome');
 });
 
 
@@ -381,6 +384,11 @@ Route::post('/roomtype', [RoomTypesController::class, 'create']);
 Route::delete('/roomtype/{id}', [RoomTypesController::class, 'destroy']);
 Route::post('/roomtype/{id}', [RoomTypesController::class, 'update']);
 
+Route::get('/hostel', [HostelController::class, 'index']);
+Route::post('/hostel', [HostelController::class, 'create']);
+Route::delete('/hostel/{id}', [HostelController::class, 'destroy']);
+Route::post('/hostel/{id}', [HostelController::class, 'update']);
+
 Route::get('/certificate', [CertificatesController::class, 'index']);
 Route::post('/certificate-view/{id}', [CertificatesController::class, 'certificateView']);
 
@@ -511,20 +519,24 @@ Route::delete('/staff-attendance/{id}', [StaffAttendanceController::class, 'dest
 Route::post('/staff-attendance/{id}', [StaffAttendanceController::class, 'update']);
 
 
+Route::get('/income', [IncomeController::class, 'index']);
+Route::post('/income', [IncomeController::class, 'create']);
+Route::delete('/income/{id}', [IncomeController::class, 'destroy']);
+Route::post('/income/{id}', [IncomeController::class, 'update']);
 
-Route::get('/role', [RolesController::class, 'index']);
-Route::post('/role', [RolesController::class, 'create']);
-Route::delete('/role/{id}', [RolesController::class, 'destroy']);
-Route::post('/role/{id}', [RolesController::class, 'update']);
+Route::get('/income-head', [IncomeHeadController::class, 'index']);
+Route::post('/income-head', [IncomeHeadController::class, 'create']);
+Route::delete('/income-head/{id}', [IncomeHeadController::class, 'destroy']);
+Route::post('/income-head/{id}', [IncomeHeadController::class, 'update']);
 
 /* for content manangment  */
 
-Route::get('/upload-content', [ContentsController::class, 'index']);
-Route::post('/upload-content', [ContentsController::class, 'create']);
-Route::delete('/upload-content/{id}', [ContentsController::class, 'destroy']);
-Route::post('/upload-content/{id}', [ContentsController::class, 'update']);
+/* for content manangment  */
 
-
+Route::get('/content-section', [ContentSectionController::class, 'index']);
+Route::post('/content-section', [ContentSectionController::class, 'create']);
+Route::delete('/content-section/{id}', [ContentSectionController::class, 'destroy']);
+Route::post('/content-section/{id}', [ContentSectionController::class, 'update']);
 
 Route::get('/content-section', [ContentSectionController::class, 'index']);
 Route::post('/content-section', [ContentSectionController::class, 'create']);

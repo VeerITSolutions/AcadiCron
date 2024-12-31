@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Certificates;
+use App\Models\Students;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -27,17 +28,33 @@ public function index(Request $request, $id = null, $role = null)
         ->select('certificates.*')
         ->where('certificates.status', '=', 1);
 
-    // Apply pagination to the query
-    $paginatedData = $query->orderBy('id', 'desc')->paginate($perPage, ['*'], 'page', $page);
+    if(empty($page))
+    {
+         // Apply pagination to the query
+    $paginatedData = $query->orderBy('id', 'desc')->get();
+     // Return the response with paginated data
+     return response()->json([
+        'success' => true,
+        'data' => $paginatedData
+    ], 200);
 
-    // Return the response with paginated data
-    return response()->json([
+    }else{
+         // Apply pagination to the query
+    $paginatedData = $query->orderBy('id', 'desc')->paginate($perPage, ['*'], 'page', $page);
+     // Return the response with paginated data
+     return response()->json([
         'success' => true,
         'data' => $paginatedData->items(), // Only return the current page data
         'current_page' => $paginatedData->currentPage(),
         'per_page' => $paginatedData->perPage(),
         'totalCount' => $paginatedData->total(),
     ], 200);
+
+    }
+
+
+
+
 }
 
 
@@ -63,9 +80,18 @@ public function certificateView(Request $request, string $id)
     $data = [
         'certificate' => $certificate,
     ];
+    $idsToGenerate = $request->idsToGenerate;
+    if($idsToGenerate){
 
-    // Render the preview view and return it as a response
+        $data['studentDatas']  = Students::whereIn('id', $idsToGenerate)->get();
+
+    $preview = view('admin.certificate.generate_certificate', $data)->render();
+    }else{
+         // Render the preview view and return it as a response
     $preview = view('admin.certificate.preview_certificate', $data)->render();
+
+    }
+
 
     return response()->json([
         'success' => true,
@@ -184,6 +210,9 @@ public function certificateView(Request $request, string $id)
         // Validate the request data
         $validatedData = $request->all();
 
+
+
+
          // Handle the file upload if provided
          if ($request->hasFile('background_image')) {
             $file = $request->file('background_image');
@@ -192,7 +221,26 @@ public function certificateView(Request $request, string $id)
             $full_path = 0;
             $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
             $certificate->background_image = $imagePath; // Save the file path to the document field
+
+            $validatedData['background_image'] = $imagePath;
+
         }
+
+
+        if ($request->enable_student_image == 'true') {
+
+
+            $validatedData['enable_student_image'] = 1;
+        } else {
+
+
+
+
+            $validatedData['enable_student_image'] = 0;
+        }
+
+
+
 
         // Update the certificate
         $certificate->update($validatedData);
