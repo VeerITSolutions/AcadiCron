@@ -114,7 +114,6 @@ class ExpensesController extends Controller
 
     public function update(Request $request, string $id)
     {
-        // Find the Expenses by id
         $validatedData = $request->all();
 
         $Expenses = Expenses::findOrFail($id);
@@ -127,6 +126,15 @@ class ExpensesController extends Controller
         $Expenses->note = $validatedData['note'];
         $Expenses->documents = $validatedData['documents'] ?? null;
 
+        // Handle file upload
+        if ($request->hasFile('documents')) {
+            $file = $request->file('documents');
+            $imageName = 'expense_' . time() . '.' . $file->getClientOriginalExtension(); 
+            $imageSubfolder = 'school_expense'; 
+            $full_path = 1; 
+            $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path); 
+            $Expenses->documents = $imagePath;
+        }
 
         $Expenses->update();
 
@@ -135,7 +143,7 @@ class ExpensesController extends Controller
             'success' => true,
             'message' => 'Edit successfully',
             'Expenses' => $Expenses,
-        ], 200); // 200 OK status code
+        ], 200);
     }
 
 
