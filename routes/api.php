@@ -57,6 +57,8 @@ use App\Http\Controllers\SearchDueFeesController;
 use App\Http\Controllers\LessonplanLessonController;
 use App\Http\Controllers\HostelController;
 use App\Http\Controllers\RoomTypesController;
+use App\Http\Controllers\TransportRouteController;
+
 use App\Http\Controllers\SchSettingsController;
 use App\Http\Controllers\SessionsController;
 use App\Http\Controllers\SubjectSyllabusController;
@@ -66,7 +68,7 @@ use App\Http\Controllers\StudentApplyleaveController;
 use App\Http\Controllers\StudentDocController;
 use App\Http\Controllers\StudentTimelineController;
 use App\Http\Controllers\IncomeHeadController;
-
+use App\Models\TransportRoute;
 
 /*
 |--------------------------------------------------------------------------
@@ -392,10 +394,11 @@ Route::post('/hostel', [HostelController::class, 'create']);
 Route::delete('/hostel/{id}', [HostelController::class, 'destroy']);
 Route::post('/hostel/{id}', [HostelController::class, 'update']);
 
-Route::get('/hostel-room', [HostelRoomController::class, 'index']);
-Route::post('/hostel-room', [HostelRoomController::class, 'create']);
-Route::delete('/hostel-room/{id}', [HostelRoomController::class, 'destroy']);
-Route::post('/hostel-room/{id}', [HostelRoomController::class, 'update']);
+Route::get('/transport-route', [TransportRouteController::class, 'index']);
+Route::post('/transport-route', [TransportRouteController::class, 'create']);
+Route::delete('/transport-route/{id}', [TransportRouteController::class, 'destroy']);
+Route::post('/transport-route/{id}', [TransportRouteController::class, 'update']);
+
 Route::get('/get-hostel', [HostelController::class, 'getHostel']);
 Route::get('/get-roomtype', [RoomTypesController::class, 'getRoomType']);
 
