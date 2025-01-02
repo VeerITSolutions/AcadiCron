@@ -6,6 +6,7 @@ use App\Models\SchSettings;
 use App\Models\Sessions;
 use App\Models\Students;
 use App\Models\StudentSession;
+use App\Services\StudentBalanceService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -14,6 +15,12 @@ class StudentsController extends Controller
    /**
      * Display a listing of the resource.
      */
+    protected $studentBalanceService;
+
+     public function __construct(StudentBalanceService $studentBalanceService)
+     {
+         $this->studentBalanceService = $studentBalanceService;
+     }
 
      public function index(Request $request, $id = null, $role = null)
      {
@@ -428,5 +435,18 @@ $paginatedData = $query->orderBy('id', 'desc')->paginate($perPage, ['*'], 'page'
             // Handle failure (e.g. if the category was not found)
             return response()->json(['success' => false, 'message' => 'Leave type deletion failed: ' . $e->getMessage()], 500);
         }
+    }
+
+
+
+
+    public function calculateBalances(Request $request)
+    {
+        $students = Students::get(); // Assuming students is passed as JSON
+        $balanceGroup = '48';
+
+        $studentsWithBalances = $this->studentBalanceService->calculateBalances(collect($students), $balanceGroup);
+
+        return response()->json($studentsWithBalances);
     }
 }

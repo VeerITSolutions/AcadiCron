@@ -522,6 +522,8 @@ Route::delete('/studentfees/{id}', [StudentFeesController::class, 'destroy']);
 Route::post('/studentfees/{id}', [StudentFeesController::class, 'update']);
 
 
+Route::post('/calculate-balances', [StudentsController::class, 'calculateBalances']);
+
 Route::get('/approve-leave', [StudentApplyleaveController::class, 'index']);
 Route::post('/approve-leave', [StudentApplyleaveController::class, 'create']);
 Route::get('/approve-leave-change-status/{id}/{role_id}', [StudentApplyleaveController::class, 'changeStatus']);
