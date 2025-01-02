@@ -442,11 +442,31 @@ $paginatedData = $query->orderBy('id', 'desc')->paginate($perPage, ['*'], 'page'
 
     public function calculateBalances(Request $request)
     {
-        $students = Students::get(); // Assuming students is passed as JSON
+        $class_id = $request->input('class_id');
+        $section_id =$request->input('section_id');
+
+
+
+
+        $students = Students::join('student_session', 'student_session.student_id', '=', 'students.id')
+        ->join('classes', 'student_session.class_id', '=', 'classes.id')
+        ->join('sections', 'student_session.section_id', '=', 'sections.id')
+
+        /*  ->where('student_session.session_id', '=', $current_session) */
+        ->where('students.is_active', '=', 'yes')
+        ->where('student_session.class_id', '=', $class_id)
+        ->where('student_session.section_id', '=', $section_id)
+        ->get(); // Assuming students is passed as JSON
         $balanceGroup = '48';
 
-        $studentsWithBalances = $this->studentBalanceService->calculateBalances(collect($students), $balanceGroup);
 
-        return response()->json($studentsWithBalances);
+        $studentsWithBalances = $this->studentBalanceService->calculateBalances(collect($students), $balanceGroup );
+
+
+
+        return response()->json([
+            'success' => true,
+            'data' => $studentsWithBalances
+        ], 200);
     }
 }
