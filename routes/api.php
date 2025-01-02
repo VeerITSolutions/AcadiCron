@@ -69,6 +69,8 @@ use App\Http\Controllers\StudentDocController;
 use App\Http\Controllers\StudentTimelineController;
 use App\Http\Controllers\IncomeHeadController;
 use App\Models\TransportRoute;
+use App\Http\Controllers\ExpensesController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -541,6 +543,11 @@ Route::get('/income-head', [IncomeHeadController::class, 'index']);
 Route::post('/income-head', [IncomeHeadController::class, 'create']);
 Route::delete('/income-head/{id}', [IncomeHeadController::class, 'destroy']);
 Route::post('/income-head/{id}', [IncomeHeadController::class, 'update']);
+
+Route::get('/expenses', [ExpensesController::class, 'index']);
+Route::post('/expenses', [ExpensesController::class, 'create']);
+Route::delete('/expenses/{id}', [ExpensesController::class, 'destroy']);
+Route::post('/expenses/{id}', [ExpensesController::class, 'update']);
 
 /* for content manangment  */
 
