@@ -13,35 +13,31 @@ class IncomeHeadController extends Controller
      */
     public function index(Request $request)
     {
-        // Set session data
+
         Session::put('top_menu', 'Income');
         Session::put('sub_menu', 'incomehead/index');
-    
-        // Pagination inputs from the request
-        $page = $request->input('page', 1); // Default to page 1 if not provided
-        $perPage = $request->input('perPage', 10); // Default to 10 records per page if not provided
-    
-        // Validate and ensure perPage is a valid integer
+
+        $page = $request->input('page', 1); 
+        $perPage = $request->input('perPage', 10); 
+
         $page = (int) $page;
         $perPage = (int) $perPage;
-    
-        // Ensure $perPage is within a reasonable range (1 to 100)
+   
         if ($perPage <= 0 || $perPage > 100) {
-            $perPage = 10; // Default to 10 if invalid
+            $perPage = 10; 
         }
-    
-        // Fetch paginated income head data
+
         $incomeHeads = IncomeHead::orderBy('id', 'desc')->paginate($perPage);
     
-        // Pass data to the view
         return response()->json([
             'title' => 'Income Head List',
-            'incomelist' => $incomeHeads,
-            'totalCount' => $incomeHeads->total(),
+            'incomelist' => $incomeHeads->items(), 
+            'totalCount' => $incomeHeads->total(), 
             'currentPage' => $incomeHeads->currentPage(),
             'rowsPerPage' => $perPage,
         ]);
     }
+    
 
 
     /**
