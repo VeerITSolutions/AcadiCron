@@ -3,11 +3,9 @@
 namespace App\Http\Controllers;
 
 
-use Illuminate\Http\Request;
 use App\Models\Income;
-use App\Models\IncomeHead;
-use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class IncomeController extends Controller
 {
@@ -16,79 +14,66 @@ class IncomeController extends Controller
      */
     public function index(Request $request)
     {
-        // Set session data
-        Session::put('top_menu', 'Income');
-        Session::put('sub_menu', 'income/index');
-    
-        // Pagination inputs from request
         $page = $request->input('page', 1); // Default to page 1 if not provided
         $perPage = $request->input('perPage', 10); // Default to 10 records per page if not provided
-    
-        // Validate and ensure perPage is a valid integer
+
+        // Validate the inputs (optional)
         $page = (int) $page;
         $perPage = (int) $perPage;
-    
-        // Ensure $perPage is within a reasonable range (1 to 100)
+
+        // Ensure $perPage is a positive integer and set a reasonable maximum value if needed
         if ($perPage <= 0 || $perPage > 100) {
-            $perPage = 10; // Default to 10 if invalid
+            $perPage = 10; // Default value if invalid
         }
-    
-        // Fetch paginated income data
-        $incomes = Income::orderBy('id', 'desc')->paginate($perPage, ['*'], 'page', $page);
-    
-        // Prepare the data for the response
-        $data = [
-            'title' => 'Add Income',
-            'title_list' => 'Recent Incomes',
-            'currency_symbol' => '$',
-            'language' => 'en', 
-            'incomelist' => $incomes->items(), 
-            'totalCount' => $incomes->total(), 
-            'rowsPerPage' => $incomes->lastPage(), 
-            'currentPage' => $incomes->currentPage(), 
-        ];
-    
+
+        // Paginate the students data
+        $data = Income::orderBy('id', 'desc')->paginate($perPage, ['*'], 'page', $page);
+
+        // Prepare the response message
+        $message = '';
+
+        // Return the paginated data with total count and pagination details
         return response()->json([
             'success' => true,
-            'data' => $data['incomelist'],
-            'totalCount' => $data['totalCount'],
-            'rowsPerPage' => $data['rowsPerPage'],
-            'currentPage' => $data['currentPage'],
-            'message' => '', 
+            'data' => $data->items(), // Only return the current page data
+            'totalCount' => $data->total(), // Total number of records
+            'rowsPerPage' => $data->lastPage(), // Total number of pages
+            'currentPage' => $data->currentPage(), // Current page
+            'message' => $message,
         ], 200);
     }
-    
+
+
+
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create(Request $request){
+    public function create(Request $request)
+    {
 
 
         // Validate the incoming request
         $validatedData = $request->all();
 
-        // Create a new income
-        $income = new Income();
-        $income->class_id = $validatedData['class_id'];
-        $income->section_id = $validatedData['section_id'];
-        $income->inc_head_id = $validatedData['inc_head_id'];
-        $income->name = $validatedData['name'];
-        $income->invoice_no = $validatedData['invoice_no'];
-        $income->date = $validatedData['date'];
-        $income->amount = $validatedData['amount'];
-        $income->note = $validatedData['note'];
-        $income->is_active = $validatedData['is_active'];
-        $income->is_deleted = $validatedData['is_deleted'];
-        $income->documents = $validatedData['documents'] ?? null;
+
+        // Create a new Income
+        $Income = new Income();
+        $Income->inc_head_id = $validatedData['inc_head_id'];
+        $Income->name = $validatedData['name'];
+        $Income->invoice_no = $validatedData['invoice_no'];
+        $Income->date = $validatedData['date'];
+        $Income->amount = $validatedData['amount'];
+        $Income->note = $validatedData['note'];
+        $Income->documents = $validatedData['documents'] ?? null;
 
 
-        $income->save();
+        $Income->save();
 
         return response()->json([
             'success' => true,
-            'message' => 'Saved Successfully',
-            'income' => $income,
+            'message' => 'Income  saved successfully',
+            'Income' => $Income,
         ], 201); // 201 Created status code
     }
 
@@ -120,25 +105,34 @@ class IncomeController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request,string $id)
+
+
+    public function update(Request $request, string $id)
     {
-
-        // Find the income by id
-        $income = Income::findOrFail($id);
-
-        // Validate the request data
+        // Find the Income by id
         $validatedData = $request->all();
 
-        // Update the income
-        $income->update($validatedData);
+        $Income = Income::findOrFail($id);
 
+        $Income->inc_head_id = $validatedData['inc_head_id'];
+        $Income->name = $validatedData['name'];
+        $Income->invoice_no = $validatedData['invoice_no'];
+        $Income->date = $validatedData['date'];
+        $Income->amount = $validatedData['amount'];
+        $Income->note = $validatedData['note'];
+        $Income->documents = $validatedData['documents'] ?? null;
+
+
+        $Income->update();
 
         return response()->json([
+
             'success' => true,
             'message' => 'Edit successfully',
-            'income' => $income,
-        ], 201); // 201 Created status code
+            'Income' => $Income,
+        ], 200); // 200 OK status code
     }
+
 
     /**
      * Remove the specified resource from storage.
@@ -146,14 +140,17 @@ class IncomeController extends Controller
     public function destroy($id)
     {
         try {
-            $income = Income::findOrFail($id);
+            // Find the Income by ID
+            $Income = Income::findOrFail($id);
 
-            $income->delete();
+            // Delete the Income
+            $Income->delete();
 
-            return response()->json(['success' => true, 'message' => 'income deleted successfully']);
+            // Return success response
+            return response()->json(['success' => true, 'message' => 'Income  deleted successfully']);
         } catch (\Exception $e) {
-           
-            return response()->json(['success' => false, 'message' => 'income deletion failed: ' . $e->getMessage()], 500);
+            // Handle failure (e.g. if the Income was not found)
+            return response()->json(['success' => false, 'message' => 'Leave type deletion failed: ' . $e->getMessage()], 500);
         }
     }
 }
