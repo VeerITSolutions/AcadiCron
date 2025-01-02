@@ -442,8 +442,8 @@ $paginatedData = $query->orderBy('id', 'desc')->paginate($perPage, ['*'], 'page'
 
     public function calculateBalances(Request $request)
     {
-        $class_id = $request->input('class_id');
-        $section_id =$request->input('section_id');
+        $class_id = $request->input('selectedClass');
+        $section_id =$request->input('selectedSection');
 
 
 
