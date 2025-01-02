@@ -3,11 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\HostelRoom;
-use App\Models\HostelRoomRoom;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class HostelRoomRoomController extends Controller
+class HostelRoomController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -57,7 +56,9 @@ class HostelRoomRoomController extends Controller
 
         // Create a new HostelRoom
         $HostelRoom = new HostelRoom();
-        $HostelRoom->room_name = $validatedData['room_name'];
+        $HostelRoom->room_id = $validatedData['room_type_id'];
+        $HostelRoom->hostel_id = $validatedData['hostel_id'];
+        $HostelRoom->room_type = $validatedData['room_type'];
         $HostelRoom->no_of_bed = $validatedData['no_of_bed'];
         $HostelRoom->cost_per_bed = $validatedData['cost_per_bed'];
         $HostelRoom->title = $validatedData['title'];
@@ -110,7 +111,9 @@ class HostelRoomRoomController extends Controller
 
         $HostelRoom = HostelRoom::findOrFail($id);
 
-        $HostelRoom->room_name = $validatedData['room_name'];
+        $HostelRoom->room_type_id = $validatedData['room_type_id'];
+        $HostelRoom->hostel_id = $validatedData['hostel_id'];
+        $HostelRoom->room_type = $validatedData['room_type'];
         $HostelRoom->no_of_bed = $validatedData['no_of_bed'];
         $HostelRoom->cost_per_bed = $validatedData['cost_per_bed'];
         $HostelRoom->title = $validatedData['title'];
