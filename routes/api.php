@@ -74,6 +74,7 @@ use App\Models\TransportRoute;
 use App\Http\Controllers\ExpensesController;
 use App\Http\Controllers\ExpenseHeadController;
 use App\Http\Controllers\VehiclesController;
+use App\Http\Controllers\VehicleRoutesController;
 
 
 /*
@@ -556,6 +557,11 @@ Route::get('/vehicles', [VehiclesController::class, 'index']);
 Route::post('/vehicles', [VehiclesController::class, 'create']);
 Route::delete('/vehicles/{id}', [VehiclesController::class, 'destroy']);
 Route::post('/vehicles/{id}', [VehiclesController::class, 'update']);
+
+Route::get('/vehicle-routes', [VehicleRoutesController::class, 'index']);
+Route::post('/vehicle-routes', [VehicleRoutesController::class, 'create']);
+Route::delete('/vehicle-routes/{id}', [VehicleRoutesController::class, 'destroy']);
+Route::post('/vehicle-routes/{id}', [VehicleRoutesController::class, 'update']);
 
 /* for content manangment  */
 
