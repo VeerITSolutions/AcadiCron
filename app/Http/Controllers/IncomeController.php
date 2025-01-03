@@ -27,10 +27,12 @@ class IncomeController extends Controller
         }
 
         // Paginate the students data
-        $data = Income::orderBy('id', 'desc')->paginate($perPage, ['*'], 'page', $page);
-
+        $data = Income::leftJoin('income_head', 'income.inc_head_id', '=', 'income_head.id')
+            ->orderBy('income.id', 'desc')
+            ->paginate($perPage, ['income.*', 'income_head.income_category as 	income_category'], 'page', $page);
         // Prepare the response message
         $message = '';
+        // Prepare the response message
 
         // Return the paginated data with total count and pagination details
         return response()->json([
@@ -65,8 +67,16 @@ class IncomeController extends Controller
         $Income->date = $validatedData['date'];
         $Income->amount = $validatedData['amount'];
         $Income->note = $validatedData['note'];
-        $Income->documents = $validatedData['documents'] ?? null;
 
+
+        if ($request->hasFile('documents')) {
+            $file = $request->file('documents');
+            $imageName = 'expense_' . time() . '.' . $file->getClientOriginalExtension(); // Example name
+            $imageSubfolder = 'school_expense'; // Example subfolder
+            $full_path = 1; // Flag for full path usage
+            $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path); // Custom uploadImage function
+            $Income->documents = $imagePath;
+        }
 
         $Income->save();
 
@@ -120,8 +130,15 @@ class IncomeController extends Controller
         $Income->date = $validatedData['date'];
         $Income->amount = $validatedData['amount'];
         $Income->note = $validatedData['note'];
-        $Income->documents = $validatedData['documents'] ?? null;
 
+        if ($request->hasFile('documents')) {
+            $file = $request->file('documents');
+            $imageName = 'expense_' . time() . '.' . $file->getClientOriginalExtension();
+            $imageSubfolder = 'school_expense';
+            $full_path = 1;
+            $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
+            $Income->documents = $imagePath;
+        }
 
         $Income->update();
 
