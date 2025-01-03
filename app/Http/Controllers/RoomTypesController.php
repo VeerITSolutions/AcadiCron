@@ -14,7 +14,7 @@ class RoomTypesController extends Controller
      */
     public function index(Request $request)
     {
-        $page = $request->input('page', 1); // Default to page 1 if not provided
+        $page = $request->input('page'); // Default to page 1 if not provided
         $perPage = $request->input('perPage', 10); // Default to 10 records per page if not provided
 
         // Validate the inputs (optional)
@@ -27,20 +27,30 @@ class RoomTypesController extends Controller
         }
 
         // Paginate the students data
-        $data = RoomTypes::orderBy('id', 'desc')->paginate($perPage, ['*'], 'page', $page);
 
-        // Prepare the response message
-        $message = '';
+        if ($page) {
+            $data = RoomTypes::orderBy('id', 'desc')->paginate($perPage, ['*'], 'page', $page);
+            $message = '';
 
-        // Return the paginated data with total count and pagination details
-        return response()->json([
-            'success' => true,
-            'data' => $data->items(), // Only return the current page data
-            'totalCount' => $data->total(), // Total number of records
-            'rowsPerPage' => $data->lastPage(), // Total number of pages
-            'currentPage' => $data->currentPage(), // Current page
-            'message' => $message,
-        ], 200);
+            // Return the paginated data with total count and pagination details
+            return response()->json([
+                'success' => true,
+                'data' => $data->items(), // Only return the current page data
+                'totalCount' => $data->total(), // Total number of records
+                'rowsPerPage' => $data->lastPage(), // Total number of pages
+                'currentPage' => $data->currentPage(), // Current page
+                'message' => $message,
+            ], 200);
+        } else {
+            $data = RoomTypes::orderBy('id', 'desc')->get();
+            $message = '';
+
+            // Return the paginated data with total count and pagination details
+            return response()->json([
+                'success' => true,
+                'data' => $data, // Only return the current page data
+            ], 200);
+        }
     }
 
 
