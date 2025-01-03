@@ -153,13 +153,32 @@ class VehicleRoutesController extends Controller
     public function update(Request $request, string $id)
     {
     
-        $validatedData = $request->all();
+      
 
-        $vehicleRoutes = VehicleRoutes::findOrFail($id);
-        $vehicleRoutes->route_id = $validatedData['route_id'];
-        $vehicleRoutes->vehicle_id = $validatedData['vehicle_id'];
+        
+        $validatedData = $request->all();
+        
+
+        $getSelectedVehicles =  $validatedData['selectedVehicles'];
+        $getSelectedVehiclesData =  $validatedData['data'];
+       
+        foreach($getSelectedVehiclesData as $getValue){
+         $getRoute_id = $getValue;
+        }
+ 
+        
      
-        $vehicleRoutes->update();
+        foreach($getSelectedVehicles as $vehicle){  
+            $vehicleRoutes = VehicleRoutes::findOrFail($id);
+      
+        
+         $vehicleRoutes->route_id = $getRoute_id;
+ 
+        
+         $vehicleRoutes->vehicle_id = $vehicle;
+ 
+         $vehicleRoutes->update();
+         }
 
         return response()->json([
             'success' => true,
