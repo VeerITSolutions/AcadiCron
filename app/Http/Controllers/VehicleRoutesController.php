@@ -33,7 +33,7 @@ class VehicleRoutesController extends Controller
         $routeList = TransportRoute::latest()->get(); 
         $vehRouteList = VehicleRoutes::all(); 
 
-        
+
     
         // Joins with proper table.column references
         $query = VehicleRoutes::join('vehicles', 'vehicle_routes.vehicle_id', '=', 'vehicles.id')
@@ -68,23 +68,14 @@ class VehicleRoutesController extends Controller
     
         return response()->json([
             'success' => true,
-            'data' => [
-                'vehicleList' => $vehicleList,
-                'routeList' => $routeList,
-                'vehRouteList' => $vehRouteList,
-                'vehRoutes' => $data->items(), 
-            ],
-            'totalCounts' => [
-                'vehicleCount' => $vehicleList->count(),
-                'routeCount' => $routeList->count(),
-                'vehRouteCount' => $vehRouteList->count(),
-                'vehRoutePaginatedCount' => $data->total(), 
-            ],
+            'data' => $data->items(), 
+            'totalCount' => $data->total(), 
             'rowsPerPage' => $data->perPage(), 
             'currentPage' => $data->currentPage(), 
             'totalPages' => $data->lastPage(), 
             'message' => 'Data retrieved successfully',
         ], 200);
+        
     }
     
     
@@ -98,13 +89,29 @@ class VehicleRoutesController extends Controller
     {
 
         $validatedData = $request->all();
+        
 
-        $vehicleRoutes = new VehicleRoutes();
+       $getSelectedVehicles =  $validatedData['selectedVehicles'];
+       $getSelectedVehiclesData =  $validatedData['data'];
+      
+       foreach($getSelectedVehiclesData as $getValue){
+        $getRoute_id = $getValue;
+       }
+
        
-        $vehicleRoutes->route_id = $validatedData['route_id'];
-        $vehicleRoutes->vehicle_id = $validatedData['vehicle_id'];
+       
+       foreach($getSelectedVehicles as $vehicle){  
+        $vehicleRoutes = new VehicleRoutes();
+     
+       
+        $vehicleRoutes->route_id = $getRoute_id;
+
+       
+        $vehicleRoutes->vehicle_id = $vehicle;
 
         $vehicleRoutes->save();
+        }
+       
 
         return response()->json([
             'success' => true,
