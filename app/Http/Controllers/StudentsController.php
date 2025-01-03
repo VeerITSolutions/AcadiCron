@@ -6,6 +6,7 @@ use App\Models\SchSettings;
 use App\Models\Sessions;
 use App\Models\Students;
 use App\Models\StudentSession;
+use App\Services\StudentBalanceService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -14,6 +15,12 @@ class StudentsController extends Controller
    /**
      * Display a listing of the resource.
      */
+    protected $studentBalanceService;
+
+     public function __construct(StudentBalanceService $studentBalanceService)
+     {
+         $this->studentBalanceService = $studentBalanceService;
+     }
 
      public function index(Request $request, $id = null, $role = null)
      {
@@ -428,5 +435,38 @@ $paginatedData = $query->orderBy('id', 'desc')->paginate($perPage, ['*'], 'page'
             // Handle failure (e.g. if the category was not found)
             return response()->json(['success' => false, 'message' => 'Leave type deletion failed: ' . $e->getMessage()], 500);
         }
+    }
+
+
+
+
+    public function calculateBalances(Request $request)
+    {
+        $class_id = $request->input('selectedClass');
+        $section_id =$request->input('selectedSection');
+
+
+
+
+        $students = Students::join('student_session', 'student_session.student_id', '=', 'students.id')
+        ->join('classes', 'student_session.class_id', '=', 'classes.id')
+        ->join('sections', 'student_session.section_id', '=', 'sections.id')
+
+        /*  ->where('student_session.session_id', '=', $current_session) */
+        ->where('students.is_active', '=', 'yes')
+        ->where('student_session.class_id', '=', $class_id)
+        ->where('student_session.section_id', '=', $section_id)
+        ->get(); // Assuming students is passed as JSON
+        $balanceGroup = '48';
+
+
+        $studentsWithBalances = $this->studentBalanceService->calculateBalances(collect($students), $balanceGroup );
+
+
+
+        return response()->json([
+            'success' => true,
+            'data' => $studentsWithBalances
+        ], 200);
     }
 }
