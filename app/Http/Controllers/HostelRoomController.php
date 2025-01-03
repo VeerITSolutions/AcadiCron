@@ -26,8 +26,10 @@ class HostelRoomController extends Controller
         }
 
         // Paginate the students data
-        $data = HostelRoom::orderBy('id', 'desc')->paginate($perPage, ['*'], 'page', $page);
-
+        $data = HostelRoom::leftJoin('room_types', 'hostel_rooms.room_type_id', '=', 'room_types.id')
+            ->leftJoin('hostel', 'hostel_rooms.hostel_id', '=', 'hostel.id')
+            ->orderBy('hostel_rooms.id', 'desc')
+            ->paginate($perPage, ['hostel_rooms.*', 'room_types.room_type as room_type', 'hostel.hostel_name as hostel_name'], 'page', $page);
         // Prepare the response message
         $message = '';
 
@@ -56,9 +58,9 @@ class HostelRoomController extends Controller
 
         // Create a new HostelRoom
         $HostelRoom = new HostelRoom();
-        $HostelRoom->room_id = $validatedData['room_type_id'];
+        $HostelRoom->room_type_id = $validatedData['room_type_id'];
         $HostelRoom->hostel_id = $validatedData['hostel_id'];
-        $HostelRoom->room_type = $validatedData['room_type'];
+        $HostelRoom->room_no = $validatedData['room_no'];
         $HostelRoom->no_of_bed = $validatedData['no_of_bed'];
         $HostelRoom->cost_per_bed = $validatedData['cost_per_bed'];
         $HostelRoom->title = $validatedData['title'];
@@ -113,7 +115,7 @@ class HostelRoomController extends Controller
 
         $HostelRoom->room_type_id = $validatedData['room_type_id'];
         $HostelRoom->hostel_id = $validatedData['hostel_id'];
-        $HostelRoom->room_type = $validatedData['room_type'];
+        $HostelRoom->room_no = $validatedData['room_no'];
         $HostelRoom->no_of_bed = $validatedData['no_of_bed'];
         $HostelRoom->cost_per_bed = $validatedData['cost_per_bed'];
         $HostelRoom->title = $validatedData['title'];

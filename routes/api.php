@@ -410,8 +410,6 @@ Route::get('/hostel-room', [HostelRoomController::class, 'index']);
 Route::post('/hostel-room', [HostelRoomController::class, 'create']);
 Route::delete('/hostel-room/{id}', [HostelRoomController::class, 'destroy']);
 Route::post('/hostel-room/{id}', [HostelRoomController::class, 'update']);
-Route::get('/get-hostel', [HostelController::class, 'getHostel']);
-Route::get('/get-roomtype', [RoomTypesController::class, 'getRoomType']);
 
 Route::get('/certificate', [CertificatesController::class, 'index']);
 Route::post('/certificate-view/{id}', [CertificatesController::class, 'certificateView']);
