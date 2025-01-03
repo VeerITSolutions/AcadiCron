@@ -99,7 +99,7 @@ class VehicleRoutesController extends Controller
        }
 
        
-       
+    
        foreach($getSelectedVehicles as $vehicle){  
         $vehicleRoutes = new VehicleRoutes();
      
