@@ -15,35 +15,35 @@ class HostelRoomController extends Controller
     {
         $page = $request->input('page', 1); // Default to page 1 if not provided
         $perPage = $request->input('perPage', 10); // Default to 10 records per page if not provided
-    
+
+        // Validate the inputs (optional)
         $page = (int) $page;
         $perPage = (int) $perPage;
-    
+
+        // Ensure $perPage is a positive integer and set a reasonable maximum value if needed
         if ($perPage <= 0 || $perPage > 100) {
-            $perPage = 10; 
+            $perPage = 10; // Default value if invalid
         }
-    
-        $data = VehicleRoutes::leftJoin('vehicles', 'vehicle_routes.vehicle_id', '=', 'vehicles.id')
-            ->leftJoin('transport_route', 'vehicle_routes.route_id', '=', 'transport_route.id')
-            ->orderBy('vehicle_routes.id', 'desc')
-            ->paginate(
-                $perPage,
-                ['vehicle_routes.*', 'vehicles.vehicle_no as vehicle_no', 'transport_route.route_title as route_title'],
-                'page',
-                $page
-            );
-    
+
+        // Paginate the students data
+        $data = HostelRoom::leftJoin('room_types', 'hostel_rooms.room_type_id', '=', 'room_types.id')
+            ->leftJoin('hostel', 'hostel_rooms.hostel_id', '=', 'hostel.id')
+            ->orderBy('hostel_rooms.id', 'desc')
+            ->paginate($perPage, ['hostel_rooms.*', 'room_types.room_type as room_type', 'hostel.hostel_name as hostel_name'], 'page', $page);
+        // Prepare the response message
+        $message = '';
+
+        // Return the paginated data with total count and pagination details
         return response()->json([
             'success' => true,
-            'data' => $data->items(), 
-            'totalCount' => $data->total(), 
-            'rowsPerPage' => $data->perPage(), 
-            'currentPage' => $data->currentPage(), 
-            'totalPages' => $data->lastPage(), 
-            'message' => 'Data retrieved successfully',
+            'data' => $data->items(), // Only return the current page data
+            'totalCount' => $data->total(), // Total number of records
+            'rowsPerPage' => $data->lastPage(), // Total number of pages
+            'currentPage' => $data->currentPage(), // Current page
+            'message' => $message,
         ], 200);
     }
-    
+
 
     /**
      * Show the form for creating a new resource.
