@@ -72,6 +72,8 @@ use App\Http\Controllers\StudentTimelineController;
 use App\Http\Controllers\IncomeHeadController;
 use App\Models\TransportRoute;
 use App\Http\Controllers\ExpensesController;
+use App\Http\Controllers\ExpenseHeadController;
+use App\Http\Controllers\VehiclesController;
 
 
 /*
@@ -433,12 +435,10 @@ Route::delete('/student-doc/{id}', [StudentDocController::class, 'destroy']);
 Route::post('/student-doc/{id}', [StudentDocController::class, 'update']);
 
 
-
 Route::get('/student-timeline/{id}', [StudentTimelineController::class, 'index']);
 Route::post('/student-timeline', [StudentTimelineController::class, 'create']);
 Route::delete('/student-timeline/{id}', [StudentTimelineController::class, 'destroy']);
 Route::post('/student-timeline/{id}', [StudentTimelineController::class, 'update']);
-
 
 Route::get('/student-exam/{id}', [ExamsController::class, 'searchStudentExams']);
 Route::post('/student-exam', [ExamsController::class, 'create']);
@@ -446,11 +446,7 @@ Route::delete('/student-exam/{id}', [ExamsController::class, 'destroy']);
 Route::post('/student-exam/{id}', [ExamsController::class, 'update']);
 
 
-
-
-
 Route::get('/student-none-promoted', [StudentsController::class, 'searchNonPromotedStudents']);
-
 
 Route::get('/class-teacher', [ClassTeacherController::class, 'index']);
 Route::post('/class-teacher', [ClassTeacherController::class, 'create']);
@@ -479,8 +475,6 @@ Route::post('/fees-remainder', [FeesReminderController::class, 'create']);
 Route::delete('/fees-remainder/{id}', [FeesReminderController::class, 'destroy']);
 Route::post('/fees-remainder/{id}', [FeesReminderController::class, 'update']);
 
-
-
 Route::get('/searchpayment', [SearchPaymentController::class, 'index']);
 Route::post('/searchpayment', [SearchPaymentController::class, 'create']);
 Route::delete('/searchpayment/{id}', [SearchPaymentController::class, 'destroy']);
@@ -498,7 +492,6 @@ Route::delete('/syllabus/{id}', [SubjectSyllabusController::class, 'destroy']);
 Route::post('/syllabus/{id}', [SubjectSyllabusController::class, 'update']);
 
 
-
 Route::get('/search-duefees', [SearchDueFeesController::class, 'getDueStudentFeesDefault']);
 Route::post('/search-duefees', [SearchDueFeesController::class, 'create']);
 Route::delete('/search-duefees/{id}', [SearchDueFeesController::class, 'destroy']);
@@ -509,7 +502,6 @@ Route::get('/lessonplan-lesson', [LessonplanLessonController::class, 'getLessonL
 Route::post('/lessonplan-lesson', [LessonplanLessonController::class, 'create']);
 Route::delete('/lessonplan-lesson/{id}', [LessonplanLessonController::class, 'destroy']);
 Route::post('/lessonplan-lesson/{id}', [LessonplanLessonController::class, 'update']);
-
 
 
 Route::get('/subject-groups', [SubjectGroupsController::class, 'index']);
@@ -554,6 +546,16 @@ Route::get('/expenses', [ExpensesController::class, 'index']);
 Route::post('/expenses', [ExpensesController::class, 'create']);
 Route::delete('/expenses/{id}', [ExpensesController::class, 'destroy']);
 Route::post('/expenses/{id}', [ExpensesController::class, 'update']);
+
+Route::get('/expense-head', [ExpenseHeadController::class, 'index']);
+Route::post('/expense-head', [ExpenseHeadController::class, 'create']);
+Route::delete('/expense-head/{id}', [ExpenseHeadController::class, 'destroy']);
+Route::post('/expense-head/{id}', [ExpenseHeadController::class, 'update']);
+
+Route::get('/vehicles', [VehiclesController::class, 'index']);
+Route::post('/vehicles', [VehiclesController::class, 'create']);
+Route::delete('/vehicles/{id}', [VehiclesController::class, 'destroy']);
+Route::post('/vehicles/{id}', [VehiclesController::class, 'update']);
 
 /* for content manangment  */
 

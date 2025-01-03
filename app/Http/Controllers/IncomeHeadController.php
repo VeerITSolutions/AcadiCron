@@ -13,40 +13,47 @@ class IncomeHeadController extends Controller
      */
     public function index(Request $request)
     {
-
-        Session::put('top_menu', 'Income');
-        Session::put('sub_menu', 'incomehead/index');
-
-        $page = $request->input('page', 1); 
+        $page = $request->input('page', 1);
         $perPage = $request->input('perPage', 10); 
-
         $page = (int) $page;
         $perPage = (int) $perPage;
-   
         if ($perPage <= 0 || $perPage > 100) {
             $perPage = 10; 
         }
+        $data = IncomeHead::orderBy('id', 'desc')->paginate($perPage, ['*'], 'page', $page);
+        $message = '';
 
-        $incomeHeads = IncomeHead::orderBy('id', 'desc')->paginate($perPage);
-    
         return response()->json([
-            'title' => 'Income Head List',
-            'incomelist' => $incomeHeads->items(), 
-            'totalCount' => $incomeHeads->total(), 
-            'currentPage' => $incomeHeads->currentPage(),
-            'rowsPerPage' => $perPage,
-        ]);
+            'success' => true,
+            'data' => $data->items(), 
+            'totalCount' => $data->total(),
+            'rowsPerPage' => $data->lastPage(), 
+            'currentPage' => $data->currentPage(), 
+            'message' => $message,
+        ], 200);
     }
-    
 
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Request $request)
     {
-        //
+
+        $validatedData = $request->all();
+        $incomeHeads = new IncomeHead();
+        $incomeHeads->income_category = $validatedData['income_category'];
+        $incomeHeads->description = $validatedData['description'];
+       
+        $incomeHeads->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Income  saved successfully',
+            'incomeHeads' => $incomeHeads,
+        ], 201); 
     }
+
 
     /**
      * Store a newly created resource in storage.
@@ -77,14 +84,31 @@ class IncomeHeadController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $validatedData = $request->all();
+        $incomeHeads = IncomeHead::findOrFail($id);
+        $incomeHeads->income_category = $validatedData['income_category'];
+        $incomeHeads->description = $validatedData['description'];
+        $incomeHeads->update();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Edit successfully',
+            'incomeHeads' => $incomeHeads,
+        ], 200); 
     }
+
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy($id)
     {
-        //
+        try {
+            $incomeHeads = IncomeHead::findOrFail($id);
+            $incomeHeads->delete();
+            return response()->json(['success' => true, 'message' => 'Income head deleted successfully']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Income head deletion failed: ' . $e->getMessage()], 500);
+        }
     }
 }

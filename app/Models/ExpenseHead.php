@@ -8,4 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 class ExpenseHead extends Model
 {
     use HasFactory;
+
+    protected $table  = 'expense_head';
+    protected $fillable = [
+        'exp_category',
+        'description',
+        'is_active',
+        'is_deleted',
+    ];
+    
 }

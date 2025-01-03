@@ -11,127 +11,108 @@ use Illuminate\Support\Facades\Response;
 class StudentListController extends Controller
 {
     public function searchdtByClassSection(Request $request)
-    {
-        $id = $request->input('id');
-        $selectedSessionId = $request->input('selectedSessionId');
-        $page = (int) $request->input('page', 1); // Default to page 1 if not provided
-        $perPage = (int) $request->input('perPage', 10); // Default to 10 records per page if not provided
-        $selectedClass = $request->input('selectedClass');
-        $selectedSection = $request->input('selectedSection');
-        $keyword = $request->input('keyword');
+{
+    // Extract request inputs with defaults
+    $id = $request->input('id');
+    $selectedSessionId = $request->input('selectedSessionId');
+    $page = $request->input('page'); // Check if page is present (null if not provided)
+    $perPage = (int) $request->input('perPage', 10); // Default to 10 records per page
+    $selectedClass = $request->input('selectedClass');
+    $selectedSection = $request->input('selectedSection');
+    $keyword = $request->input('keyword');
+    $bulkDelete = $request->input('bulkDelete', 0); // Default to 0 (no bulk delete)
 
-        $bulkDelete = $request->input('bulkDelete');
+    // Base query
+    $query = Students::join('student_session', 'student_session.student_id', '=', 'students.id')
+        ->join('classes', 'classes.id', '=', 'student_session.class_id')
+        ->join('sections', 'sections.id', '=', 'student_session.section_id')
+        ->leftJoin('categories', 'categories.id', '=', 'students.category_id')
+        ->select(
+            'students.*',
+            'student_session.class_id as class_id',
+            'student_session.section_id as section_id',
+            'classes.class as class_name',
+            'sections.section as section_name',
+            'categories.category as category_name'
+        );
 
-        if ($bulkDelete == 1) {
-            // Build the query
-            $query = Students::join('student_session', 'student_session.student_id', '=', 'students.id')
-                ->join('classes', 'classes.id', '=', 'student_session.class_id')
-                ->join('sections', 'sections.id', '=', 'student_session.section_id')
-                ->leftJoin('categories', 'categories.id', '=', 'students.category_id')
-                ->select(
-                    'students.*',
-                    'student_session.class_id as class_id',
-                    'student_session.section_id as section_id',
-                    'classes.class as class_name',
-                    'sections.section as section_name',
-                    'categories.category as category_name'
-                );
-
-            // Apply filtering based on selectedClass
-            if (!empty($selectedClass)) {
-                $query->where('student_session.class_id', $selectedClass);
-            }
-
-            // Apply filtering based on selectedSection
-            if (!empty($selectedSection)) {
-                $query->where('student_session.section_id', $selectedSection);
-            }
-
-            if (!empty($selectedSessionId)) {
-                $query->where('student_session.session_id', $selectedSessionId);
-            }
-
-            // Execute the query
-            $result = $query->get();
-
-            // Return the result as JSON
-            return response()->json([
-                'success' => true,
-                'data' => $result,
-            ], 200);
-        }
-
-        // Ensure $perPage is a positive integer and set a maximum limit
-        if ($perPage <= 0 || $perPage > 100) {
-            $perPage = 10;
-        }
-
-        // Build the query for students
-        $query = Students::join('student_session', 'student_session.student_id', '=', 'students.id')
-            ->join('classes', 'classes.id', '=', 'student_session.class_id')
-            ->join('sections', 'sections.id', '=', 'student_session.section_id')
-            ->leftjoin('categories', 'categories.id', '=', 'students.category_id')
-            ->select(
-                'students.*',
-                'student_session.class_id as class_id',
-                'student_session.section_id as section_id',
-                'classes.class as class_name',
-                'sections.section as section_name',
-                'categories.category as category_name'
-            );
-
-        // Apply filtering based on student ID
-        if (!empty($id)) {
-            $query->where('students.id', $id);
-            $student = $query->first(); // Fetch a single result without pagination
-
-            return response()->json([
-                'success' => true,
-                'data' => $student,
-            ], 200);
-        }
-
-        // Apply filtering based on selectedClass
+    // Bulk delete logic
+    if ($bulkDelete == 1) {
+        // Apply filters for class, section, and session
         if (!empty($selectedClass)) {
             $query->where('student_session.class_id', $selectedClass);
         }
-
-        // Apply filtering based on selectedSection
         if (!empty($selectedSection)) {
             $query->where('student_session.section_id', $selectedSection);
-        }
-
-        // Apply filtering based on keyword (searching in the 'firstname' field)
-        if (!empty($keyword)) {
-            $query->where('students.firstname', 'like', '%' . $keyword . '%');
-        }
-
-
-        if (!empty($keyword)) {
-            $query->where(function($q) use ($keyword) {
-                $q->where('students.firstname', 'like', '%' . $keyword . '%')
-                  ->orWhereRaw('CONCAT(students.firstname, " ", students.lastname) like ?', ['%' . $keyword . '%']);
-            });
         }
         if (!empty($selectedSessionId)) {
             $query->where('student_session.session_id', $selectedSessionId);
         }
 
-
-        // Paginate the filtered students data if id is not present
-
-
-        $data = $query->orderBy('students.id', 'desc')->paginate($perPage, ['*'], 'page', $page);
-
-        // Return the paginated data with total count and pagination details
         return response()->json([
             'success' => true,
-            'data' => $data->items(), // Only return the current page data
-            'totalCount' => $data->total(), // Total number of records
-            'rowsPerPage' => $data->perPage(), // Number of rows per page
-            'currentPage' => $data->currentPage(), // Current page
+            'data' => $query->get(),
         ], 200);
     }
+
+    // Apply filters based on request parameters
+    if (!empty($id)) {
+        $query->where('students.id', $id);
+        $student = $query->first(); // Fetch single record without pagination
+
+        return response()->json([
+            'success' => true,
+            'data' => $student,
+        ], 200);
+    }
+
+    if (!empty($selectedClass)) {
+        $query->where('student_session.class_id', $selectedClass);
+    }
+
+    if (!empty($selectedSection)) {
+        $query->where('student_session.section_id', $selectedSection);
+    }
+
+    if (!empty($selectedSessionId)) {
+        $query->where('student_session.session_id', $selectedSessionId);
+    }
+
+    // Apply keyword search filter
+    if (!empty($keyword)) {
+        $query->where(function ($q) use ($keyword) {
+            $q->where('students.firstname', 'like', '%' . $keyword . '%')
+                ->orWhereRaw('CONCAT(students.firstname, " ", students.lastname) LIKE ?', ['%' . $keyword . '%']);
+        });
+    }
+
+    // Order by students ID
+    $query->orderBy('students.id', 'desc');
+
+    // Check if pagination is required
+    if (is_null($page)) {
+        // No pagination; return all data
+        $data = $query->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $data,
+            'totalCount' => $data->count(),
+        ], 200);
+    }
+
+    // Paginated response
+    $perPage = max(1, min($perPage, 100)); // Ensure valid perPage value
+    $paginatedData = $query->paginate($perPage, ['*'], 'page', (int) $page);
+
+    return response()->json([
+        'success' => true,
+        'data' => $paginatedData->items(),
+        'totalCount' => $paginatedData->total(),
+        'rowsPerPage' => $paginatedData->perPage(),
+        'currentPage' => $paginatedData->currentPage(),
+    ], 200);
+}
 
 
     public function studentBlukDelete(Request $request)
