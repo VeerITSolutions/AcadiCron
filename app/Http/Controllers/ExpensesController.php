@@ -26,12 +26,15 @@ class ExpensesController extends Controller
             $perPage = 10; // Default value if invalid
         }
             if($request->selectedSearchType){
-                $searchType = $request->selectedSearchType;
+                $days = $request->selectedSearchType;
+
+                $endDate = now(); // Current date and time
+                $startDate = now()->subDays($days); // Calculate the date N days ago
 
                 $data = Expenses::leftJoin('expense_head', 'expenses.exp_head_id', '=', 'expense_head.id')
-                ->where('expenses.created_at',$searchType )
-                ->orderBy('expenses.id', 'desc')
-                ->get();
+                                ->whereBetween('expenses.created_at', [$startDate, $endDate])
+                                ->orderBy('expenses.id', 'desc')
+                                ->get();
 
                 return response()->json([
                     'success' => true,
