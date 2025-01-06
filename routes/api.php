@@ -75,6 +75,8 @@ use App\Http\Controllers\ExpensesController;
 use App\Http\Controllers\ExpenseHeadController;
 use App\Http\Controllers\VehiclesController;
 use App\Http\Controllers\VehicleRoutesController;
+use App\Http\Controllers\ItemCategoryController;
+use App\Http\Controllers\ItemStockController;
 
 
 /*
@@ -562,6 +564,16 @@ Route::get('/vehicle-routes', [VehicleRoutesController::class, 'index']);
 Route::post('/vehicle-routes', [VehicleRoutesController::class, 'create']);
 Route::delete('/vehicle-routes/{id}', [VehicleRoutesController::class, 'destroy']);
 Route::post('/vehicle-routes/{id}', [VehicleRoutesController::class, 'update']);
+
+Route::get('/item-stock', [ItemStockController::class, 'index']);
+Route::post('/item-stock', [ItemStockController::class, 'create']);
+Route::delete('/item-stock/{id}', [ItemStockController::class, 'destroy']);
+Route::post('/item-stock/{id}', [ItemStockController::class, 'update']);
+
+Route::get('/item_category', [ItemCategoryController::class, 'index']);
+Route::post('/item_category', [ItemCategoryController::class, 'create']);
+Route::delete('/item_category/{id}', [ItemCategoryController::class, 'destroy']);
+Route::post('/item_category/{id}', [ItemCategoryController::class, 'update']);
 
 /* for content manangment  */
 
