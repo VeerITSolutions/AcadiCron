@@ -34,7 +34,7 @@ class ItemController extends Controller
                 'message' => '',
             ], 200);
         }
-        // $data = Item::orderBy('id', 'desc')->paginate($perPage, ['*'], 'page', $page);
+     
 
         $data = Item::leftJoin('item_category', 'item.item_category_id', '=', 'item_category.id')
         ->orderBy('item.id', 'desc')
@@ -72,7 +72,7 @@ class ItemController extends Controller
         $Item->item_supplier_id = $validatedData['item_supplier_id'];
         $Item->quantity = $validatedData['quantity'] ?? 0;
         // Add the date field here if it is required
-        $Item->date = $validatedData['date'] ?? now(); // Provide a default date if needed
+        $Item->date = $validatedData['date'] ?? now();
     
         $Item->save();
     
@@ -124,7 +124,7 @@ class ItemController extends Controller
         $Item->updated_at = $validatedData['updated_at'];
         $Item->item_store_id = $validatedData['item_store_id'];
         $Item->item_supplier_id = $validatedData['item_supplier_id'];
-        $Item->quantity = $validatedData['quantity'];
+        $Item->quantity = $validatedData['quantity'] ?? 0;
         
      
         $Item->update();
