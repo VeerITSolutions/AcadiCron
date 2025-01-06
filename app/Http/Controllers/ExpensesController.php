@@ -25,8 +25,8 @@ class ExpensesController extends Controller
         if ($perPage <= 0 || $perPage > 100) {
             $perPage = 10; // Default value if invalid
         }
-            if($request->selectedSearchType){
-                $days = $request->selectedSearchType;
+            if($request->type){
+                $days = $request->type;
 
                 $endDate = now(); // Current date and time
                 $startDate = now()->subDays($days); // Calculate the date N days ago
