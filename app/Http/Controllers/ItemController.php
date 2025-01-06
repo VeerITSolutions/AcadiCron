@@ -34,7 +34,12 @@ class ItemController extends Controller
                 'message' => '',
             ], 200);
         }
-        $data = Item::orderBy('id', 'desc')->paginate($perPage, ['*'], 'page', $page);
+        // $data = Item::orderBy('id', 'desc')->paginate($perPage, ['*'], 'page', $page);
+
+        $data = Item::leftJoin('item_category', 'item.item_category_id', '=', 'item_category.id')
+        ->orderBy('item.id', 'desc')
+        ->paginate($perPage, ['item.*', 'item_category.item_category as item_category'], 'page', $page);
+
 
         $message = '';
 
