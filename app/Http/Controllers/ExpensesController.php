@@ -31,8 +31,11 @@ class ExpensesController extends Controller
                 $endDate = now(); // Current date and time
                 $startDate = now()->subDays($days); // Calculate the date N days ago
 
+                $startDateFormatted = $startDate->format('Y-m-d');
+                $endDateFormatted = $endDate->format('Y-m-d');
+
                 $data = Expenses::leftJoin('expense_head', 'expenses.exp_head_id', '=', 'expense_head.id')
-                                ->whereBetween('expenses.created_at', [$startDate, $endDate])
+                                ->whereBetween('expenses.date', [$startDateFormatted, $endDateFormatted])
                                 ->orderBy('expenses.id', 'desc')
                                 ->get();
 
