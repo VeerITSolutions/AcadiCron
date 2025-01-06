@@ -32,6 +32,8 @@ class ExpensesController extends Controller
                 $startDate = now()->subDays($days); // Calculate the date N days ago
 
                 $startDateFormatted = $startDate->format('Y-m-d');
+
+
                 $endDateFormatted = $endDate->format('Y-m-d');
 
                 $data = Expenses::leftJoin('expense_head', 'expenses.exp_head_id', '=', 'expense_head.id')
