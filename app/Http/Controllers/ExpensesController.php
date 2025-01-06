@@ -25,7 +25,19 @@ class ExpensesController extends Controller
         if ($perPage <= 0 || $perPage > 100) {
             $perPage = 10; // Default value if invalid
         }
+            if($request->selectedSearchType){
+                $searchType = $request->selectedSearchType;
 
+                $data = Expenses::leftJoin('expense_head', 'expenses.exp_head_id', '=', 'expense_head.id')
+                ->where('expenses.created_at',$searchType )
+                ->orderBy('expenses.id', 'desc')
+                ->get();
+
+                return response()->json([
+                    'success' => true,
+                    'data' => $data,
+                ], 200);
+            }
         // Paginate the students data
         // $data = Expenses::orderBy('id', 'desc')->paginate($perPage, ['*'], 'page', $page);
 
@@ -133,10 +145,10 @@ class ExpensesController extends Controller
         // Handle file upload
         if ($request->hasFile('documents')) {
             $file = $request->file('documents');
-            $imageName = 'expense_' . time() . '.' . $file->getClientOriginalExtension(); 
-            $imageSubfolder = 'school_expense'; 
-            $full_path = 1; 
-            $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path); 
+            $imageName = 'expense_' . time() . '.' . $file->getClientOriginalExtension();
+            $imageSubfolder = 'school_expense';
+            $full_path = 1;
+            $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
             $Expenses->documents = $imagePath;
         }
 
