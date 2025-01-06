@@ -31,6 +31,7 @@ use App\Http\Controllers\CustomFieldsController;
 use App\Models\FeeSessionGroups;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\api\StudentListController;
+use App\Http\Controllers\AttendenceTypeController;
 use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\CertificatesController;
 use App\Http\Controllers\ClassesController;
@@ -495,6 +496,12 @@ Route::get('/student-attendance-by-class-section', [StudentAttendencesController
 Route::post('/student-attendance', [StudentAttendencesController::class, 'create']);
 Route::delete('/student-attendance/{id}', [StudentAttendencesController::class, 'destroy']);
 Route::post('/student-attendance/{id}', [StudentAttendencesController::class, 'update']);
+
+Route::get('/attendence-type', [AttendenceTypeController::class, 'index']);
+Route::post('/attendence-type', [AttendenceTypeController::class, 'create']);
+Route::delete('/attendence-type/{id}', [AttendenceTypeController::class, 'destroy']);
+Route::post('/attendence-type/{id}', [AttendenceTypeController::class, 'update']);
+
 
 Route::get('/syllabus', [SubjectSyllabusController::class, 'index']);
 Route::post('/syllabus', [SubjectSyllabusController::class, 'create']);
