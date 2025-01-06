@@ -79,6 +79,7 @@ use App\Http\Controllers\VehicleRoutesController;
 use App\Http\Controllers\ItemCategoryController;
 use App\Http\Controllers\ItemStockController;
 use App\Http\Controllers\ItemStoreController;
+use App\Http\Controllers\ItemSupplierController;
 
 
 
@@ -596,6 +597,11 @@ Route::get('/item-store', [ItemStoreController::class, 'index']);
 Route::post('/item-store', [ItemStoreController::class, 'create']);
 Route::delete('/item-store/{id}', [ItemStoreController::class, 'destroy']);
 Route::post('/item-store/{id}', [ItemStoreController::class, 'update']);
+
+Route::get('/item-supplier', [ItemSupplierController::class, 'index']);
+Route::post('/item-supplier', [ItemSupplierController::class, 'create']);
+Route::delete('/item-supplier/{id}', [ItemSupplierController::class, 'destroy']);
+Route::post('/item-supplier/{id}', [ItemSupplierController::class, 'update']);
 
 /* for content manangment  */
 

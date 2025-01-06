@@ -56,7 +56,15 @@ class ItemStockController extends Controller
         $ItemStock->description = $validatedData['description'];
         $ItemStock->is_active = $validatedData['is_active'];
         
-     
+     // Handle file upload
+     if ($request->hasFile('documents')) {
+        $file = $request->file('documents');
+        $imageName = 'inventory_' . time() . '.' . $file->getClientOriginalExtension(); 
+        $imageSubfolder = 'inventory_items'; 
+        $full_path = 1; 
+        $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path); 
+        $ItemStock->documents = $imagePath;
+    }
     
         $ItemStock->save();
     
@@ -111,7 +119,17 @@ class ItemStockController extends Controller
         $ItemStock->description = $validatedData['description'];
         $ItemStock->is_active = $validatedData['is_active'];
         
-     
+        // Handle file upload
+        if ($request->hasFile('documents')) {
+            $file = $request->file('documents');
+            $imageName = 'inventory_' . time() . '.' . $file->getClientOriginalExtension(); 
+            $imageSubfolder = 'inventory_items'; 
+            $full_path = 1; 
+            $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path); 
+            $ItemStock->documents = $imagePath;
+        }
+
+
         $ItemStock->update();
 
         return response()->json([
