@@ -27,7 +27,11 @@ class ExpensesController extends Controller
         }
 
         // Paginate the students data
-        $data = Expenses::orderBy('id', 'desc')->paginate($perPage, ['*'], 'page', $page);
+        // $data = Expenses::orderBy('id', 'desc')->paginate($perPage, ['*'], 'page', $page);
+
+        $data = Expenses::leftJoin('expense_head', 'expenses.exp_head_id', '=', 'expense_head.id')
+        ->orderBy('expenses.id', 'desc')
+        ->paginate($perPage, ['expenses.*', 'expense_head.exp_category as exp_category'], 'page', $page);
 
         // Prepare the response message
         $message = '';
