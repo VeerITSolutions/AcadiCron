@@ -79,6 +79,7 @@ use App\Http\Controllers\ItemCategoryController;
 use App\Http\Controllers\ItemStockController;
 use App\Http\Controllers\ItemStoreController;
 use App\Http\Controllers\ItemSupplierController;
+use App\Http\Controllers\ItemIssueController;
 
 
 
@@ -595,6 +596,11 @@ Route::get('/item-supplier', [ItemSupplierController::class, 'index']);
 Route::post('/item-supplier', [ItemSupplierController::class, 'create']);
 Route::delete('/item-supplier/{id}', [ItemSupplierController::class, 'destroy']);
 Route::post('/item-supplier/{id}', [ItemSupplierController::class, 'update']);
+
+Route::get('/item-issue', [ItemIssueController::class, 'index']);
+Route::post('/item-issue', [ItemIssueController::class, 'create']);
+Route::delete('/item-issue/{id}', [ItemIssueController::class, 'destroy']);
+Route::post('/item-issue/{id}', [ItemIssueController::class, 'update']);
 
 /* for content manangment  */
 
