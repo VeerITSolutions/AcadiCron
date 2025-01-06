@@ -23,7 +23,11 @@ class ItemStockController extends Controller
             $perPage = 10; 
         }
 
-        $data = ItemStock::orderBy('id', 'desc')->paginate($perPage, ['*'], 'page', $page);
+        // $data = ItemStock::orderBy('id', 'desc')->paginate($perPage, ['*'], 'page', $page);
+
+        $data = ItemStock::leftJoin('item', 'item.item_category_id', '=', 'item_stock.item_id')
+        ->orderBy('item_stock.id', 'desc')
+        ->paginate($perPage, ['item_stock.*', 'item.name as item_name'], 'page', $page);
 
         $message = '';
 
