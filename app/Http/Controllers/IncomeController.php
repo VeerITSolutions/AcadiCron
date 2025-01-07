@@ -26,6 +26,46 @@ class IncomeController extends Controller
             $perPage = 10; // Default value if invalid
         }
 
+        if($request->type){
+            $days = $request->type;
+
+            $endDate = now(); // Current date and time
+            $startDate = now()->subDays($days); // Calculate the date N days ago
+
+            $startDateFormatted = $startDate->format('Y-m-d');
+
+
+            $endDateFormatted = $endDate->format('Y-m-d');
+
+            $data = Income::leftJoin('income_head', 'income.inc_head_id', '=', 'income_head.id')
+                            ->whereBetween('income.date', [$startDateFormatted, $endDateFormatted])
+                            ->orderBy('income.id', 'desc')
+                            ->get();
+
+            return response()->json([
+                'success' => true,
+                'data' => $data,
+            ], 200);
+        }
+
+
+        if($request->selectedStartDate && $request->selectedEndDate){
+            
+            $startDateFormatted = $request->selectedStartDate;
+
+            $endDateFormatted = $request->selectedEndDate;
+
+            $data = Income::leftJoin('income_head', 'income.inc_head_id', '=', 'income_head.id')
+                            ->whereBetween('income.date', [$startDateFormatted, $endDateFormatted])
+                            ->orderBy('income.id', 'desc')
+                            ->get();
+
+            return response()->json([
+                'success' => true,
+                'data' => $data,
+            ], 200);
+        }
+
         // Paginate the students data
         $data = Income::leftJoin('income_head', 'income.inc_head_id', '=', 'income_head.id')
             ->orderBy('income.id', 'desc')
