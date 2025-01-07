@@ -23,32 +23,14 @@ class ItemController extends Controller
             $perPage = 10; 
         }
 
-        if($page == null){
-            $data = Item::orderBy('id', 'desc')->get();
-            return response()->json([
-                'success' => true,
-                'data' => $data, 
-                'totalCount' => $data->count(), 
-                'rowsPerPage' => 1, 
-                'currentPage' => 1,
-                'message' => '',
-            ], 200);
-        }
-        if($request->selectedItemCategoryId){
+        
+        if(isset($request->selectedItemCategoryId)){
             $data = Item::leftJoin('item_category', 'item.item_category_id', '=', 'item_category.id')
-            ->where('item_category_id', $request->selectedItemCategoryId)
+            ->where('item.item_category_id', $request->selectedItemCategoryId)
             ->orderBy('item.id', 'desc')
             ->paginate($perPage, ['item.*', 'item_category.item_category as item_category'], 'page', $page);
-     
-        }else{
-            $data = Item::leftJoin('item_category', 'item.item_category_id', '=', 'item_category.id')
-            ->orderBy('item.id', 'desc')
-            ->paginate($perPage, ['item.*', 'item_category.item_category as item_category'], 'page', $page);
-        }
-       
-
-        $message = '';
-
+            $message = '';
+            
         return response()->json([
             'success' => true,
             'data' => $data->items(), 
@@ -57,6 +39,23 @@ class ItemController extends Controller
             'currentPage' => $data->currentPage(),
             'message' => $message,
         ], 200);
+
+        }else{
+            $data = Item::leftJoin('item_category', 'item.item_category_id', '=', 'item_category.id')
+            ->orderBy('item.id', 'desc')
+            ->paginate($perPage, ['item.*', 'item_category.item_category as item_category'], 'page', $page);
+            $message = '';
+            
+        return response()->json([
+            'success' => true,
+            'data' => $data->items(), 
+            'totalCount' => $data->total(), 
+            'rowsPerPage' => $data->lastPage(), 
+            'currentPage' => $data->currentPage(),
+            'message' => $message,
+        ], 200);
+        }
+
     }
 
     /**
