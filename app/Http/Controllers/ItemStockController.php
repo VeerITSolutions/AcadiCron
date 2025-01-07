@@ -121,7 +121,7 @@ class ItemStockController extends Controller
 
         $ItemStock->item_id = $validatedData['item_id'];
         $ItemStock->supplier_id = $validatedData['supplier_id'];
-        $ItemStock->symbol = $validatedData['symbol'];
+        $ItemStock->symbol = $validatedData['symbol'] ?? "+";
         $ItemStock->store_id = $validatedData['store_id'];
         $ItemStock->quantity = $validatedData['quantity'];
         $ItemStock->purchase_price = $validatedData['purchase_price'];
