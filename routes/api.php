@@ -609,6 +609,10 @@ Route::post('/item-issue', [ItemIssueController::class, 'create']);
 Route::delete('/item-issue/{id}', [ItemIssueController::class, 'destroy']);
 Route::post('/item-issue/{id}', [ItemIssueController::class, 'update']);
 
+Route::get('/front-event', [EventsController::class, 'index']);
+Route::post('/front-event', [EventsController::class, 'create']);
+Route::delete('/front-event/{id}', [EventsController::class, 'destroy']);
+Route::post('/front-event/{id}', [EventsController::class, 'update']);
 /* for content manangment  */
 
 /* for content manangment  */

@@ -13,14 +13,14 @@ class ItemStockController extends Controller
      */
     public function index(Request $request)
     {
-        $page = $request->input('page', 1); 
+        $page = $request->input('page', 1);
         $perPage = $request->input('perPage', 10);
 
         $page = (int) $page;
         $perPage = (int) $perPage;
 
         if ($perPage <= 0 || $perPage > 100) {
-            $perPage = 10; 
+            $perPage = 10;
         }
 
 
@@ -54,11 +54,11 @@ class ItemStockController extends Controller
     public function create(Request $request)
     {
         $validatedData = $request->all();
-    
+
         $ItemStock = new ItemStock();
         $ItemStock->item_id = $validatedData['item_id'];
         $ItemStock->supplier_id = $validatedData['supplier_id'];
-        $ItemStock->symbol = $validatedData['symbol'];
+        $ItemStock->symbol = $validatedData['symbol'] ?? "+";
         $ItemStock->store_id = $validatedData['store_id'];
         $ItemStock->quantity = $validatedData['quantity'];
         $ItemStock->purchase_price = $validatedData['purchase_price'];
@@ -66,19 +66,19 @@ class ItemStockController extends Controller
         $ItemStock->attachment = $validatedData['attachment'];
         $ItemStock->description = $validatedData['description'];
         $ItemStock->is_active = $validatedData['is_active'];
-        
+
      // Handle file upload
      if ($request->hasFile('documents')) {
         $file = $request->file('documents');
-        $imageName = 'inventory_' . time() . '.' . $file->getClientOriginalExtension(); 
-        $imageSubfolder = 'inventory_items'; 
-        $full_path = 1; 
-        $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path); 
+        $imageName = 'inventory_' . time() . '.' . $file->getClientOriginalExtension();
+        $imageSubfolder = 'inventory_items';
+        $full_path = 1;
+        $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
         $ItemStock->documents = $imagePath;
     }
-    
+
         $ItemStock->save();
-    
+
         return response()->json([
             'success' => true,
             'message' => 'Item Category saved successfully',
@@ -121,7 +121,7 @@ class ItemStockController extends Controller
 
         $ItemStock->item_id = $validatedData['item_id'];
         $ItemStock->supplier_id = $validatedData['supplier_id'];
-        $ItemStock->symbol = $validatedData['symbol'];
+        $ItemStock->symbol = $validatedData['symbol'] ?? "+";
         $ItemStock->store_id = $validatedData['store_id'];
         $ItemStock->quantity = $validatedData['quantity'];
         $ItemStock->purchase_price = $validatedData['purchase_price'];
@@ -129,14 +129,14 @@ class ItemStockController extends Controller
         $ItemStock->attachment = $validatedData['attachment'];
         $ItemStock->description = $validatedData['description'];
         $ItemStock->is_active = $validatedData['is_active'];
-        
+
         // Handle file upload
         if ($request->hasFile('documents')) {
             $file = $request->file('documents');
-            $imageName = 'inventory_' . time() . '.' . $file->getClientOriginalExtension(); 
-            $imageSubfolder = 'inventory_items'; 
-            $full_path = 1; 
-            $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path); 
+            $imageName = 'inventory_' . time() . '.' . $file->getClientOriginalExtension();
+            $imageSubfolder = 'inventory_items';
+            $full_path = 1;
+            $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
             $ItemStock->documents = $imagePath;
         }
 
@@ -165,7 +165,7 @@ class ItemStockController extends Controller
 
             return response()->json(['success' => true, 'message' => 'Item Category  deleted successfully']);
         } catch (\Exception $e) {
-        
+
             return response()->json(['success' => false, 'message' => 'Leave type deletion failed: ' . $e->getMessage()], 500);
         }
     }
