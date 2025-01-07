@@ -46,6 +46,24 @@ class ExpensesController extends Controller
                     'data' => $data,
                 ], 200);
             }
+
+            if($request->selectedStartDate && $request->selectedEndDate){
+               
+
+                $startDateFormatted = $request->selectedStartDate;
+
+                $endDateFormatted = $request->selectedEndDate;
+
+                $data = Expenses::leftJoin('expense_head', 'expenses.exp_head_id', '=', 'expense_head.id')
+                                ->whereBetween('expenses.date', [$startDateFormatted, $endDateFormatted])
+                                ->orderBy('expenses.id', 'desc')
+                                ->get();
+
+                return response()->json([
+                    'success' => true,
+                    'data' => $data,
+                ], 200);
+            }
         // Paginate the students data
         // $data = Expenses::orderBy('id', 'desc')->paginate($perPage, ['*'], 'page', $page);
 
