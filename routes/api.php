@@ -81,6 +81,8 @@ use App\Http\Controllers\ItemStockController;
 use App\Http\Controllers\ItemStoreController;
 use App\Http\Controllers\ItemSupplierController;
 use App\Http\Controllers\ItemIssueController;
+use App\Http\Controllers\EventsController;
+
 
 
 
