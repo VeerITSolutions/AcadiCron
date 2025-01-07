@@ -48,6 +48,24 @@ class IncomeController extends Controller
             ], 200);
         }
 
+
+        if($request->selectedStartDate && $request->selectedEndDate){
+            
+            $startDateFormatted = $request->selectedStartDate;
+
+            $endDateFormatted = $request->selectedEndDate;
+
+            $data = Income::leftJoin('income_head', 'income.inc_head_id', '=', 'income_head.id')
+                            ->whereBetween('income.date', [$startDateFormatted, $endDateFormatted])
+                            ->orderBy('income.id', 'desc')
+                            ->get();
+
+            return response()->json([
+                'success' => true,
+                'data' => $data,
+            ], 200);
+        }
+
         // Paginate the students data
         $data = Income::leftJoin('income_head', 'income.inc_head_id', '=', 'income_head.id')
             ->orderBy('income.id', 'desc')
