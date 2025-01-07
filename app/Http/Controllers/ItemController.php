@@ -34,12 +34,18 @@ class ItemController extends Controller
                 'message' => '',
             ], 200);
         }
+        if($request->selectedItemCategoryId){
+            $data = Item::leftJoin('item_category', 'item.item_category_id', '=', 'item_category.id')
+            ->where('item_category_id', $request->selectedItemCategoryId)
+            ->orderBy('item.id', 'desc')
+            ->paginate($perPage, ['item.*', 'item_category.item_category as item_category'], 'page', $page);
      
-
-        $data = Item::leftJoin('item_category', 'item.item_category_id', '=', 'item_category.id')
-        ->orderBy('item.id', 'desc')
-        ->paginate($perPage, ['item.*', 'item_category.item_category as item_category'], 'page', $page);
-
+        }else{
+            $data = Item::leftJoin('item_category', 'item.item_category_id', '=', 'item_category.id')
+            ->orderBy('item.id', 'desc')
+            ->paginate($perPage, ['item.*', 'item_category.item_category as item_category'], 'page', $page);
+        }
+       
 
         $message = '';
 

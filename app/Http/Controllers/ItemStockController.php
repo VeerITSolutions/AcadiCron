@@ -24,27 +24,27 @@ class ItemStockController extends Controller
         }
 
 
-        $data = ItemStock::leftJoin('item', 'item.id', '=', 'item_stock.item_id') 
-        ->leftJoin('item_supplier', 'item_supplier.id', '=', 'item_stock.supplier_id') 
-        ->leftJoin('item_store', 'item_store.id', '=', 'item_stock.store_id') 
-        ->orderBy('item_stock.id', 'desc') 
-        ->paginate($perPage, [
-            'item_stock.*', 
-            'item.name as item_name', 
+        $data = ItemStock::leftJoin('item', 'item.id', '=', 'item_stock.item_id')
+        ->leftJoin('item_category', 'item.item_category_id', '=', 'item_category.id')
+        ->leftJoin('item_supplier', 'item_stock.supplier_id', '=', 'item_supplier.id')
+        ->leftJoin('item_store', 'item_store.id', '=', 'item_stock.store_id')
+        ->select([
+            'item_stock.*',
+            'item.name as item_name',
+            'item.item_category_id as item_category_id',
+            'item.description as des',
+            'item_category.item_category',
             'item_supplier.item_supplier as supplier_name',
-            'item_store.item_store as store_name' 
-        ], 'page', $page);
+            'item_store.item_store as store_name'
+        ])
+        ->orderBy('item_stock.id', 'desc')->get();
 
 
         $message = '';
 
         return response()->json([
             'success' => true,
-            'data' => $data->items(), 
-            'totalCount' => $data->total(), 
-            'rowsPerPage' => $data->lastPage(), 
-            'currentPage' => $data->currentPage(),
-            'message' => $message,
+            'data' => $data
         ], 200);
     }
 
