@@ -82,6 +82,7 @@ use App\Http\Controllers\ItemStoreController;
 use App\Http\Controllers\ItemSupplierController;
 use App\Http\Controllers\ItemIssueController;
 use App\Http\Controllers\EventsController;
+use App\Http\Controllers\GradesController;
 
 
 
@@ -614,11 +615,15 @@ Route::delete('/item-issue/{id}', [ItemIssueController::class, 'destroy']);
 Route::post('/item-issue/{id}', [ItemIssueController::class, 'update']);
 Route::post('/item-stock', [ItemStockController::class, 'create']);
 
-
 Route::get('/front-event', [EventsController::class, 'index']);
 Route::post('/front-event', [EventsController::class, 'create']);
 Route::delete('/front-event/{id}', [EventsController::class, 'destroy']);
 Route::post('/front-event/{id}', [EventsController::class, 'update']);
+
+Route::get('/grades', [GradesController::class, 'index']);
+Route::post('/grades', [GradesController::class, 'create']);
+Route::delete('/grades/{id}', [GradesController::class, 'destroy']);
+Route::post('/grades/{id}', [GradesController::class, 'update']);
 /* for content manangment  */
 
 /* for content manangment  */
