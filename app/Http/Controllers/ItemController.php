@@ -61,6 +61,56 @@ class ItemController extends Controller
     /**
      * Show the form for creating a new resource.
      */
+
+
+     public function getItems(Request $request)
+{
+    $perPage = $request->input('perPage', 10); // Number of items per page
+    $page = $request->input('page', 1); // Current page
+    $id = $request->input('id'); // Optional item ID
+
+    $query = DB::table('item')
+        ->leftJoin('item_category', 'item.item_category_id', '=', 'item_category.id')
+        ->leftJoin('item_store', 'item.item_store_id', '=', 'item_store.id')
+        ->leftJoin('item_supplier', 'item.item_supplier_id', '=', 'item_supplier.id')
+        ->leftJoin(DB::raw('(SELECT item_stock.item_id, SUM(quantity) as item_stock_quantity FROM item_stock GROUP BY item_stock.item_id) as item_stock'), 'item_stock.item_id', '=', 'item.id')
+        ->leftJoin(DB::raw('(
+            SELECT 
+                m.item_id as issue_item_id, 
+                IFNULL((SELECT SUM(quantity) FROM item_issue WHERE item_issue.item_id = m.item_id AND item_issue.is_returned = 1), 0) as issued,
+                IFNULL((SELECT SUM(quantity) FROM item_issue WHERE item_issue.item_id = m.item_id AND item_issue.is_returned = 0), 0) as returned 
+            FROM item_issue m 
+            GROUP BY m.item_id
+        ) as item_issues'), 'item_issues.issue_item_id', '=', 'item.id')
+        ->select(
+            'item.*',
+            'item_category.item_category',
+            'item_store.item_store',
+            'item_store.code',
+            'item_supplier.item_supplier',
+            'item_supplier.phone',
+            'item_supplier.email',
+            'item_supplier.address',
+            DB::raw('IFNULL(item_issues.issued, 0) as issued'),
+            DB::raw('IFNULL(item_issues.returned, 0) as returned'),
+            DB::raw('IFNULL(item_stock.item_stock_quantity, 0) as added_stock')
+        );
+
+    if ($id) {
+        $query->where('item.id', $id);
+    }
+
+    $data = $query->orderBy('item.id', 'desc')->paginate($perPage, ['*'], 'page', $page);
+
+    return response()->json([
+        'success' => true,
+        'data' => $data->items(),
+        'totalCount' => $data->total(),
+        'rowsPerPage' => $data->perPage(),
+        'currentPage' => $data->currentPage(),
+        'message' => '',
+    ], 200);
+}
     public function create(Request $request)
     {
         $validatedData = $request->all();
