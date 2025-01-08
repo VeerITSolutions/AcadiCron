@@ -622,7 +622,7 @@ Route::get('/item-issue', [ItemIssueController::class, 'index']);
 Route::post('/item-issue', [ItemIssueController::class, 'create']);
 Route::delete('/item-issue/{id}', [ItemIssueController::class, 'destroy']);
 Route::post('/item-issue/{id}', [ItemIssueController::class, 'update']);
-Route::post('/item-stock', [ItemStockController::class, 'create']);
+
 
 Route::get('/front-event', [EventsController::class, 'index']);
 Route::post('/front-event', [EventsController::class, 'create']);
