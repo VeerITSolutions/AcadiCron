@@ -13,4 +13,9 @@ class User extends Authenticatable
     use HasFactory;
 
     use HasApiTokens;
+
+   public function myClasses()
+    {
+        return $this->hasMany(ClassModel::class); // Adjust this based on your relationship
+    }
 }
