@@ -23,9 +23,10 @@ class ItemIssueController extends Controller
             $perPage = 10;
         }
 
-        $data = ItemIssue::leftJoin('roles', 'item_issue.issue_type', '=', 'roles.id')
+        $data = ItemIssue::leftJoin('item', 'item_issue.item_id', '=', 'item.id')
+            ->leftJoin('item_category', 'item_issue.item_category_id', '=', 'item_category.id')
             ->orderBy('item_issue.id', 'desc')
-            ->paginate($perPage, ['item_issue.*', 'roles.name as name'], 'page', $page);
+            ->paginate($perPage, ['item_issue.*', 'item.name as name', 'item_category as item_category'], 'page', $page);
         $message = '';
 
         return response()->json([
@@ -56,7 +57,7 @@ class ItemIssueController extends Controller
         $ItemIssue->issue_by = $validatedData['issue_by'];
         $ItemIssue->issue_date = $validatedData['issue_date'];
         $ItemIssue->return_date = $validatedData['return_date'];
-        $ItemIssue->item_category_id = $validatedData[''];
+        $ItemIssue->item_category_id = $validatedData['item_category_id'];
         $ItemIssue->item_id = $validatedData['item_id'];
         $ItemIssue->quantity = $validatedData['quantity'];
         $ItemIssue->note = $validatedData['note'];
@@ -109,7 +110,7 @@ class ItemIssueController extends Controller
         $ItemIssue->issue_by = $validatedData['issue_by'];
         $ItemIssue->issue_date = $validatedData['issue_date'];
         $ItemIssue->return_date = $validatedData['return_date'];
-        $ItemIssue->item_category_id = $validatedData[''];
+        $ItemIssue->item_category_id = $validatedData['item_category_id'];
         $ItemIssue->item_id = $validatedData['item_id'];
         $ItemIssue->quantity = $validatedData['quantity'];
         $ItemIssue->note = $validatedData['note'];
