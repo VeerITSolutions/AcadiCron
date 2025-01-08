@@ -2,6 +2,10 @@
     .attachment-block .text-green {
         color: #3498db !important;
     }
+
+    .fa-angle-left:before {
+        content: "\f104";
+    }
 </style>
 
 @php
@@ -11,7 +15,7 @@
 @endphp
 
 <div class="box-header text-center">
-    <i class="fa fa-angle-left datearrow"
+    <i class="fa fa-angle-left datearrow btn btn-primary"
         onclick="get_weekdates('pre_week', '{{ $prev_week_start }}', '{{ $staffId }}')"></i>
     <h3 class="box-title bmedium">
         {{ $this_week_start . ' ' . __('to') . ' ' . $this_week_end }}
