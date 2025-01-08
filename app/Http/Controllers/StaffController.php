@@ -57,7 +57,7 @@ $paginatedData = $query->orderBy('id', 'desc')->paginate($perPage, ['*'], 'page'
          $leave_role_id = $request->selectedRoleLeave;
 
          // Get pagination inputs, default to page 1 and 10 records per page if not provided
-         $page = (int) $request->input('page', 1);
+         $page = (int) $request->input('page');
          $perPage = (int) $request->input('perPage', 10);
          $keyword = $request->input('keyword');
 
@@ -287,6 +287,10 @@ $paginatedData = $query->orderBy('id', 'desc')->paginate($perPage, ['*'], 'page'
             'message' => 'Created successfully',
             'category' => $staff,
         ], 201); // 201 Created status code
+    }
+
+    public function getStaffSyllabusHTML(Request $request){
+        return 'Hello';
     }
 
 
