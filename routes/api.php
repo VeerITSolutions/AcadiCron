@@ -159,7 +159,7 @@ Route::get('/admin/enquiry', [EnquiryController::class, 'adminEnquiry']);
 
 Route::get('/admin/complaint', [ComplaintController::class, 'adminComplaint']);
 
-Route::get('/admin/content', [ContentsController::class, 'adminContent']);
+
 
 Route::get('/admin/itemstock', [ItemController::class, 'adminItemStock']);
 
@@ -638,15 +638,20 @@ Route::post('/content-section', [ContentSectionController::class, 'create']);
 Route::delete('/content-section/{id}', [ContentSectionController::class, 'destroy']);
 Route::post('/content-section/{id}', [ContentSectionController::class, 'update']);
 
-Route::get('/content-section', [ContentSectionController::class, 'index']);
-Route::post('/content-section', [ContentSectionController::class, 'create']);
-Route::delete('/content-section/{id}', [ContentSectionController::class, 'destroy']);
-Route::post('/content-section/{id}', [ContentSectionController::class, 'update']);
+
 
 Route::get('/content-for-upload', [ContentForController::class, 'index']);
 Route::post('/content-for-upload', [ContentForController::class, 'create']);
 Route::delete('/content-for-upload/{id}', [ContentForController::class, 'destroy']);
 Route::post('/content-for-upload/{id}', [ContentForController::class, 'update']);
+
+
+Route::get('/content', [ContentsController::class, 'index']);
+Route::post('/content', [ContentsController::class, 'create']);
+Route::delete('/content/{id}', [ContentsController::class, 'destroy']);
+Route::post('/content/{id}', [ContentsController::class, 'update']);
+
+
 
 /* for content manangment  end */
 
