@@ -37,29 +37,36 @@ class RolesController extends Controller
 
 
         // Validate the incoming request
-        $validatedData = $request->validate([
-            'category' => 'required|string|max:255',
-        ]);
+        $validatedData = $request->all();
 
-        // Check if the category already exists in the Category model
-        $existingCategory = Roles::where('name', $validatedData['name'])->first();
+        // Check if the roles already exists in the roles model
+        $existingroles = Roles::where('name', $validatedData['name'])->first();
 
-        if ($existingCategory) {
+        if ($existingroles) {
             return response()->json([
                 'success' => false,
                 'message' => 'already exists',
             ], 409); // 409 Conflict status code
         }
 
-        // Create a new category
-        $category = new Categories();
-        $category->category = $validatedData['name'];
-        $category->save();
+
+
+
+
+
+        // Create a new roles
+        $roles = new Roles();
+        $roles->name = $validatedData['name'];
+        $roles->slug = $validatedData['slug'];
+        $roles->is_active = $validatedData['is_active'];
+        $roles->is_system = $validatedData['is_system'];
+        $roles->is_superadmin = $validatedData['is_superadmin'];
+        $roles->save();
 
         return response()->json([
             'success' => true,
             'message' => '== saved successfully',
-            'category' => $category,
+            'roles' => $roles,
         ], 201); // 201 Created status code
     }
 
@@ -96,25 +103,21 @@ class RolesController extends Controller
     public function update(Request $request,string $id)
     {
 
-        // Find the category by id
-        $category = Roles::findOrFail($id);
+        // Find the roles by id
+        $roles = Roles::findOrFail($id);
 
         // Validate the request data
-        $validatedData = $request->validate([
-            'name' => 'required',
+        $validatedData = $request->all();
 
-        ]);
-
-        // Update the category
-        $category->update($validatedData);
-
+        // Update the roles
+        $roles->update($validatedData);
 
 
 
         return response()->json([
             'success' => true,
             'message' => 'Edit successfully',
-            'category' => $category,
+            'roles' => $roles,
         ], 201); // 201 Created status code
     }
 
@@ -124,17 +127,17 @@ class RolesController extends Controller
     public function destroy($id)
     {
         try {
-            // Find the category by ID
-            $category = Roles::findOrFail($id);
+            // Find the roles by ID
+            $roles = Roles::findOrFail($id);
 
-            // Delete the category
-            $category->delete();
+            // Delete the roles
+            $roles->delete();
 
             // Return success response
-            return response()->json(['success' => true, 'message' => 'Category deleted successfully']);
+            return response()->json(['success' => true, 'message' => 'roles deleted successfully']);
         } catch (\Exception $e) {
-            // Handle failure (e.g. if the category was not found)
-            return response()->json(['success' => false, 'message' => 'Category deletion failed: ' . $e->getMessage()], 500);
+            // Handle failure (e.g. if the roles was not found)
+            return response()->json(['success' => false, 'message' => 'roles deletion failed: ' . $e->getMessage()], 500);
         }
     }
 }

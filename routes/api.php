@@ -314,6 +314,11 @@ Route::post('/fees-master', [FeemastersController::class, 'create']);
 Route::delete('/fees-master/{id}', [FeemastersController::class, 'destroy']);
 Route::post('/fees-master/{id}', [FeemastersController::class, 'update']);
 
+Route::get('/role', [RolesController::class, 'index']);
+Route::post('/role', [RolesController::class, 'create']);
+Route::delete('/role/{id}', [RolesController::class, 'destroy']);
+Route::post('/role/{id}', [RolesController::class, 'update']);
+
 
 Route::get('/fees-group', [FeeGroupsController::class, 'index']);
 Route::post('/fees-group', [FeeGroupsController::class, 'create']);
