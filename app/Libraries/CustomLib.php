@@ -8,6 +8,7 @@ use Carbon\Carbon;
 use App\Models\Setting;
 use DateTime;
 use DateTimeZone;
+use Illuminate\Support\Facades\Session;
 
 class CustomLib
 {
@@ -1285,23 +1286,28 @@ class CustomLib
 
 
 
+
     public function getStaffRole()
-
     {
+        // Retrieve the roles from the session
+        $admin = Session::get('admin');
 
-        $admin = $this->CI->session->userdata('admin');
-
-        $roles = $admin['roles'];
-
-        if ($admin) {
-
+        if ($admin && isset($admin['roles'])) {
+            // Get the first role from the roles array
+            $roles = $admin['roles'];
             $role_key = key($roles);
 
-            return json_encode(array('id' => $roles[$role_key], 'name' => $role_key));
-
+            // Return the role details as JSON
+            return response()->json([
+                'id' => $roles[$role_key],
+                'name' => $role_key
+            ]);
         }
 
+        // Return false or any default response if no admin or roles are found
+        return response()->json(['error' => 'No roles found'], 404);
     }
+
 
 
 

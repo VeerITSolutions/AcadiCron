@@ -327,15 +327,16 @@ $paginatedData = $query->orderBy('id', 'desc')->paginate($perPage, ['*'], 'page'
             $concate = 'no';
 
             if (isset($roleId) && $roleId == 2 /* && $userData['class_teacher'] == 'yes' */) {
-                $myClassSubjects = SubjectTimetable::getByStaffClassTeacherAndDay($staffId, $dayKey);
+                $subjectTimetable = new SubjectTimetable();
+                $myClassSubjects = $subjectTimetable->getByStaffClassTeacherAndDay($staffId, $dayKey);
 
                 if (!empty($myClassSubjects[0]->timetable_id)) {
                     $timetableId = $myClassSubjects[0]->timetable_id;
                     $concate = 'yes';
                 }
             }
-
-            $mySubjects = SubjectTimetable::getByTeacherSubjectAndDay($staffId, $dayKey);
+            $subjectTimetable = new SubjectTimetable();
+            $mySubjects = $subjectTimetable->getByTeacherSubjectandDay($staffId, $dayKey);
 
             if (!empty($mySubjects[0]->timetable_id)) {
                 $timetableId = $concate == 'yes' ? $timetableId . ',' . $mySubjects[0]->timetable_id : $mySubjects[0]->timetable_id;
@@ -343,7 +344,9 @@ $paginatedData = $query->orderBy('id', 'desc')->paginate($perPage, ['*'], 'page'
 
             $condition = empty($timetableId) ? " and subject_timetable.id in(0) " : " and subject_timetable.id in(" . $timetableId . ") ";
 
-            $data['timetable'][$dayKey] = SubjectTimetable::getSyllabusSubject($staffId, $dayKey, $condition);
+            $subjectTimetable = new SubjectTimetable();
+
+            $data['timetable'][$dayKey] = $subjectTimetable->getSyllabusSubject($staffId, $dayKey, $condition);
         }
 
         $data['staff_id'] = $staffId;

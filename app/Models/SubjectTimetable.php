@@ -91,4 +91,54 @@ public function getByStaffClassTeacherandDay($staff_id, $day_value)
         return false;
     }
 }
+
+public function getByTeacherSubjectandDay($staff_id, $day_value)
+{
+    $timetableIds = DB::table('subject_timetable')
+        ->where('staff_id', $staff_id)
+        ->where('session_id', $this->current_session)
+        ->where('day', $day_value)
+        ->orderBy('start_time')
+        ->pluck('id'); // Retrieves an array of IDs
+
+    if ($timetableIds->isEmpty()) {
+        return false;
+    }
+
+    return $timetableIds->implode(','); // Concatenates the IDs with a comma, similar to GROUP_CONCAT in MySQL
+}
+
+public function getSyllabussubject($staff_id, $day_value, $condition)
+{
+    // Build the query using Laravel's query builder
+    $query = DB::table('subject_timetable')
+        ->join('classes', 'classes.id', '=', 'subject_timetable.class_id')
+        ->join('sections', 'sections.id', '=', 'subject_timetable.section_id')
+        ->join('subject_group_subjects', 'subject_group_subjects.id', '=', 'subject_timetable.subject_group_subject_id')
+        ->join('subjects as sub', 'sub.id', '=', 'subject_group_subjects.subject_id')
+        ->join('class_sections', function($join) {
+            $join->on('class_sections.class_id', '=', 'subject_timetable.class_id')
+                 ->on('class_sections.section_id', '=', 'subject_timetable.section_id');
+        })
+        ->whereRaw("1 {$condition}")
+        ->where('subject_timetable.day', $day_value)
+        ->orderBy('subject_timetable.start_time', 'asc')
+        ->select(
+            'classes.class',
+            'sections.section',
+            'subject_group_subjects.subject_id',
+            'sub.name as subject_name',
+            'sub.code as subject_code',
+            'subject_timetable.*',
+            'class_sections.id as class_section_id'
+        )
+        ->get();
+
+    // Check if any results are found
+    if ($query->isNotEmpty()) {
+        return $query;
+    } else {
+        return false;
+    }
+}
 }
