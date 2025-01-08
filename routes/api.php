@@ -477,6 +477,10 @@ Route::post('/staff', [StaffController::class, 'create']);
 Route::delete('/staff/{id}', [StaffController::class, 'destroy']);
 Route::post('/staff/{id}', [StaffController::class, 'update']);
 
+
+
+Route::post('/staff-syllabus', [StaffController::class, 'getStaffSyllabusHTML']);
+
 Route::get('/staff-by-role', [StaffController::class, 'getStaffbyrole']);
 
 Route::get('/classes', [ClassesController::class, 'index']);
