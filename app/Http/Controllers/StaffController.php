@@ -322,29 +322,29 @@ $paginatedData = $query->orderBy('id', 'desc')->paginate($perPage, ['*'], 'page'
         $roleId =   2; //$userData['role_id'];
         $condition = '';
 
-        // foreach ($days as $dayKey => $dayValue) {
-        //     $timetableId = '';
-        //     $concate = 'no';
+        foreach ($days as $dayKey => $dayValue) {
+            $timetableId = '';
+            $concate = 'no';
 
-        //     if (isset($roleId) && $roleId == 2 /* && $userData['class_teacher'] == 'yes' */) {
-        //         $myClassSubjects = SubjectTimetable::getByStaffClassTeacherAndDay($staffId, $dayKey);
+            if (isset($roleId) && $roleId == 2 /* && $userData['class_teacher'] == 'yes' */) {
+                $myClassSubjects = SubjectTimetable::getByStaffClassTeacherAndDay($staffId, $dayKey);
 
-        //         if (!empty($myClassSubjects[0]->timetable_id)) {
-        //             $timetableId = $myClassSubjects[0]->timetable_id;
-        //             $concate = 'yes';
-        //         }
-        //     }
+                if (!empty($myClassSubjects[0]->timetable_id)) {
+                    $timetableId = $myClassSubjects[0]->timetable_id;
+                    $concate = 'yes';
+                }
+            }
 
-        //     $mySubjects = SubjectTimetable::getByTeacherSubjectAndDay($staffId, $dayKey);
+            $mySubjects = SubjectTimetable::getByTeacherSubjectAndDay($staffId, $dayKey);
 
-        //     if (!empty($mySubjects[0]->timetable_id)) {
-        //         $timetableId = $concate == 'yes' ? $timetableId . ',' . $mySubjects[0]->timetable_id : $mySubjects[0]->timetable_id;
-        //     }
+            if (!empty($mySubjects[0]->timetable_id)) {
+                $timetableId = $concate == 'yes' ? $timetableId . ',' . $mySubjects[0]->timetable_id : $mySubjects[0]->timetable_id;
+            }
 
-        //     $condition = empty($timetableId) ? " and subject_timetable.id in(0) " : " and subject_timetable.id in(" . $timetableId . ") ";
+            $condition = empty($timetableId) ? " and subject_timetable.id in(0) " : " and subject_timetable.id in(" . $timetableId . ") ";
 
-        //     $data['timetable'][$dayKey] = SubjectTimetable::getSyllabusSubject($staffId, $dayKey, $condition);
-        // }
+            $data['timetable'][$dayKey] = SubjectTimetable::getSyllabusSubject($staffId, $dayKey, $condition);
+        }
 
         $data['staff_id'] = $staffId;
 

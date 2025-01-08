@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class SubjectTimetable extends Model
 {
@@ -68,5 +69,26 @@ class SubjectTimetable extends Model
         ->get();
 
     return $query;
+}
+
+public function getByStaffClassTeacherandDay($staff_id, $day_value)
+{
+    // Retrieve timetable ids for the given staff, class, and session
+    $query = DB::table('class_teacher')
+        ->join('subject_timetable', function($join) {
+            $join->on('class_teacher.class_id', '=', 'subject_timetable.class_id')
+                 ->on('class_teacher.section_id', '=', 'subject_timetable.section_id');
+        })
+        ->where('class_teacher.staff_id', $staff_id)
+        ->where('subject_timetable.session_id', $this->current_session)
+        ->orderBy('subject_timetable.start_time')
+        ->selectRaw('GROUP_CONCAT(subject_timetable.id) as timetable_id')
+        ->get();
+
+    if ($query->isNotEmpty()) {
+        return $query;
+    } else {
+        return false;
+    }
 }
 }
