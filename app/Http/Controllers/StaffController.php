@@ -39,6 +39,8 @@ class StaffController extends Controller
     );
 
 
+    
+
 // Apply pagination
 $paginatedData = $query->orderBy('id', 'desc')->paginate($perPage, ['*'], 'page', $page);
 
@@ -52,6 +54,21 @@ $paginatedData = $query->orderBy('id', 'desc')->paginate($perPage, ['*'], 'page'
     ], 200);
      }
 
+     public function getInventoryStaff()
+     {
+         $data = DB::table('staff')
+             ->selectRaw("CONCAT_WS(' ', staff.name, staff.surname) as name, staff.employee_id")
+             ->where('staff.is_active', 1)
+             ->get()
+             ->toArray();
+     
+             return response()->json([
+                 'success' => true,
+                 'data' => $data
+            
+             ], 200);
+     }
+     
 
      public function getStaffbyrole(Request $request)
      {

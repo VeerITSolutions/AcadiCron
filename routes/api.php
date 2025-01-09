@@ -477,6 +477,7 @@ Route::get('/staff/{id}', [StaffController::class, 'getSingleData']);
 Route::post('/staff', [StaffController::class, 'create']);
 Route::delete('/staff/{id}', [StaffController::class, 'destroy']);
 Route::post('/staff/{id}', [StaffController::class, 'update']);
+Route::get('/inventory-staff', [StaffController::class, 'getInventoryStaff']);
 
 
 
