@@ -25,6 +25,7 @@ use App\Http\Controllers\StaffAttendanceController;
 use App\Http\Controllers\StaffController;
 use App\Http\Controllers\StudentAttendencesController;
 use App\Http\Controllers\TimetablesController;
+// use App\Http\Controllers\LessonplanLessonController;
 
 use App\Http\Controllers\CustomFieldsController;
 
@@ -537,6 +538,7 @@ Route::post('/lessonplan-lesson', [LessonplanLessonController::class, 'create'])
 Route::delete('/lessonplan-lesson/{id}', [LessonplanLessonController::class, 'destroy']);
 Route::post('/lessonplan-lesson/{id}', [LessonplanLessonController::class, 'update']);
 
+Route::post('/get-lessonplan-by-subjectid', [LessonplanLessonController::class, 'getLessonBySubjectId']);
 
 Route::get('/subject-groups', [SubjectGroupsController::class, 'index']);
 Route::post('/subject-groups', [SubjectGroupsController::class, 'create']);
