@@ -464,6 +464,8 @@ Route::post('/student-exam', [ExamsController::class, 'create']);
 Route::delete('/student-exam/{id}', [ExamsController::class, 'destroy']);
 Route::post('/student-exam/{id}', [ExamsController::class, 'update']);
 
+Route::get('/exam-type', [ExamsController::class, 'examType']);
+
 
 Route::get('/student-none-promoted', [StudentsController::class, 'searchNonPromotedStudents']);
 
