@@ -81,6 +81,18 @@ class ExamsController extends Controller
         }
 
 
+
+        public function examType(){
+            $data = $examType = config('custom.exam_type');
+        return response()->json([
+            'status' => 200,
+            'message' => 'Student Exam Fetched',
+            'data' => $examType,
+        ], 200); // 201 Created status code
+
+        }
+
+        
     /**
      * Show the form for creating a new resource.
      */

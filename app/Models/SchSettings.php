@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class SchSettings extends Model
 {
@@ -131,4 +132,37 @@ class SchSettings extends Model
 'created_at',
 'updated_at',
     ];
+
+    public function getSchoolDetail($id = null)
+{
+    return DB::table('sch_settings')
+        ->select(
+            'sch_settings.id',
+            'sch_settings.lang_id',
+            'sch_settings.is_rtl',
+            'sch_settings.timezone',
+            'sch_settings.name',
+            'sch_settings.email',
+            'sch_settings.biometric',
+            'sch_settings.biometric_device',
+            'sch_settings.phone',
+            'languages.language',
+            'sch_settings.address',
+            'sch_settings.dise_code',
+            'sch_settings.date_format',
+            'sch_settings.currency',
+            'sch_settings.currency_symbol',
+            'sch_settings.start_month',
+            'sch_settings.start_week',
+            'sch_settings.session_id',
+            'sch_settings.image',
+            'sch_settings.theme',
+            'sessions.session'
+        )
+        ->join('sessions', 'sessions.id', '=', 'sch_settings.session_id')
+        ->join('languages', 'languages.id', '=', 'sch_settings.lang_id')
+        ->orderBy('sch_settings.id')
+        ->first();
+}
+
 }

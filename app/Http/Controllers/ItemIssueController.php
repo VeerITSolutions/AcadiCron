@@ -13,30 +13,51 @@ class ItemIssueController extends Controller
      */
     public function index(Request $request)
     {
-        $page = $request->input('page');
-        $perPage = $request->input('perPage', 10);
-
-        $page = (int) $page;
+        // Get current page and items per page from the request
+        $page = $request->input('page', 1); // Default to page 1
+        $perPage = $request->input('perPage', 10); // Default items per page to 10
+    
+        // Validate the perPage value
         $perPage = (int) $perPage;
-
+        $page = (int) $page;
         if ($perPage <= 0 || $perPage > 100) {
             $perPage = 10;
         }
-
-        $data = ItemIssue::leftJoin('roles', 'item_issue.issue_type', '=', 'roles.id')
+    
+        // Query the database using Eloquent and relationships
+        $data = DB::table('item_issue')
+            ->join('item', 'item.id', '=', 'item_issue.item_id')
+            ->join('item_category', 'item_category.id', '=', 'item.item_category_id')
+            ->join('staff', 'staff.id', '=', 'item_issue.issue_to')
+            ->join('staff_roles', 'staff_roles.staff_id', '=', 'staff.id')
+            ->join('roles', 'roles.id', '=', 'staff_roles.role_id')
+            ->select(
+                'item_issue.*',
+                'item.name as name',
+                'item.item_category_id',
+                'item_category.item_category',
+                'staff.employee_id',
+                'staff.name as staff_name',
+                'staff.surname',
+                'roles.name as role_name'
+            )
             ->orderBy('item_issue.id', 'desc')
-            ->paginate($perPage, ['item_issue.*', 'roles.name as name'], 'page', $page);
-        $message = '';
-
+            ->paginate($perPage, ['*'], 'page', $page);
+    
+        // Return the paginated response
         return response()->json([
             'success' => true,
-            'data' => $data->items(),
-            'totalCount' => $data->total(),
-            'rowsPerPage' => $data->lastPage(),
-            'currentPage' => $data->currentPage(),
-            'message' => $message,
+            'data' => $data->items(), // Data for the current page
+            'totalCount' => $data->total(), // Total items in the database
+            'rowsPerPage' => $data->perPage(), // Items per page
+            'currentPage' => $data->currentPage(), // Current page number
+            'lastPage' => $data->lastPage(), // Total number of pages
         ], 200);
     }
+    
+
+
+
 
     /**
      * Show the form for creating a new resource.
@@ -56,7 +77,7 @@ class ItemIssueController extends Controller
         $ItemIssue->issue_by = $validatedData['issue_by'];
         $ItemIssue->issue_date = $validatedData['issue_date'];
         $ItemIssue->return_date = $validatedData['return_date'];
-        $ItemIssue->item_category_id = $validatedData[''];
+        $ItemIssue->item_category_id = $validatedData['item_category_id'];
         $ItemIssue->item_id = $validatedData['item_id'];
         $ItemIssue->quantity = $validatedData['quantity'];
         $ItemIssue->note = $validatedData['note'];
@@ -109,7 +130,7 @@ class ItemIssueController extends Controller
         $ItemIssue->issue_by = $validatedData['issue_by'];
         $ItemIssue->issue_date = $validatedData['issue_date'];
         $ItemIssue->return_date = $validatedData['return_date'];
-        $ItemIssue->item_category_id = $validatedData[''];
+        $ItemIssue->item_category_id = $validatedData['item_category_id'];
         $ItemIssue->item_id = $validatedData['item_id'];
         $ItemIssue->quantity = $validatedData['quantity'];
         $ItemIssue->note = $validatedData['note'];

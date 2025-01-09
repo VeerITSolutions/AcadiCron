@@ -41,40 +41,40 @@ class ContentForController extends Controller
         $query->where(function($query) use ($id) {
             $query->where('content_for.role',
             'student')
-            ->where(function ($query) use ($id) {
-                $query->where('content_for.created_by', $id)
-                      ->orWhere('content_for.created_by', 0);
-            });
-    });
-} elseif ($role === "Teacher") {
-    $query->where(function($query) use ($id) {
-        $query->where('content_for.role', 'Teacher')
-            ->where(function ($query) use ($id) {
-                $query->where('content_for.created_by', $id)
-                      ->orWhere('content_for.created_by', 0);
-            });
-    });
-}
+                ->where(function ($query) use ($id) {
+                    $query->where('content_for.created_by', $id)
+                        ->orWhere('content_for.created_by', 0);
+                });
+        });
+    } elseif ($role === "Teacher") {
+        $query->where(function($query) use ($id) {
+            $query->where('content_for.role', 'Teacher')
+                ->where(function ($query) use ($id) {
+                    $query->where('content_for.created_by', $id)
+                        ->orWhere('content_for.created_by', 0);
+                });
+        });
+    }
 
-// Group by content ID
-$query->groupBy('contents.id');
+    // Group by content ID
+    $query->groupBy('contents.id');
 
-// Count the total number of records before applying pagination
-$total = $query->count();
+    // Count the total number of records before applying pagination
+    $total = $query->count();
 
-// Apply pagination
-$paginatedQuery = $query->forPage($page, $perPage)->get();
+    // Apply pagination
+    $paginatedQuery = $query->forPage($page, $perPage)->get();
 
-// Return paginated data with total count and pagination details
-return response()->json([
-    'success' => true,
-    'data' => $paginatedQuery, // Only return the current page data
-    'totalCount' => $total,    // Total number of records
-    'rowsPerPage' => $perPage, // Number of rows per page
-    'currentPage' => $page,    // Current page
-    'lastPage' => ceil($total / $perPage), // Total number of pages
-], 200);
-}
+        // Return paginated data with total count and pagination details
+        return response()->json([
+            'success' => true,
+            'data' => $paginatedQuery, // Only return the current page data
+            'totalCount' => $total,    // Total number of records
+            'rowsPerPage' => $perPage, // Number of rows per page
+            'currentPage' => $page,    // Current page
+            'lastPage' => ceil($total / $perPage), // Total number of pages
+        ], 200);
+    }
 
 
 

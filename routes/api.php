@@ -82,6 +82,9 @@ use App\Http\Controllers\ItemStoreController;
 use App\Http\Controllers\ItemSupplierController;
 use App\Http\Controllers\ItemIssueController;
 use App\Http\Controllers\EventsController;
+use App\Http\Controllers\GradesController;
+use App\Http\Controllers\FrontCmsMenusController;
+use App\Http\Controllers\AlumniEventsController;
 
 
 
@@ -158,7 +161,7 @@ Route::get('/admin/enquiry', [EnquiryController::class, 'adminEnquiry']);
 
 Route::get('/admin/complaint', [ComplaintController::class, 'adminComplaint']);
 
-Route::get('/admin/content', [ContentsController::class, 'adminContent']);
+
 
 Route::get('/admin/itemstock', [ItemController::class, 'adminItemStock']);
 
@@ -314,6 +317,11 @@ Route::post('/fees-master', [FeemastersController::class, 'create']);
 Route::delete('/fees-master/{id}', [FeemastersController::class, 'destroy']);
 Route::post('/fees-master/{id}', [FeemastersController::class, 'update']);
 
+Route::get('/role', [RolesController::class, 'index']);
+Route::post('/role', [RolesController::class, 'create']);
+Route::delete('/role/{id}', [RolesController::class, 'destroy']);
+Route::post('/role/{id}', [RolesController::class, 'update']);
+
 
 Route::get('/fees-group', [FeeGroupsController::class, 'index']);
 Route::post('/fees-group', [FeeGroupsController::class, 'create']);
@@ -458,6 +466,8 @@ Route::post('/student-exam', [ExamsController::class, 'create']);
 Route::delete('/student-exam/{id}', [ExamsController::class, 'destroy']);
 Route::post('/student-exam/{id}', [ExamsController::class, 'update']);
 
+Route::get('/exam-type', [ExamsController::class, 'examType']);
+
 
 Route::get('/student-none-promoted', [StudentsController::class, 'searchNonPromotedStudents']);
 
@@ -471,6 +481,11 @@ Route::get('/staff/{id}', [StaffController::class, 'getSingleData']);
 Route::post('/staff', [StaffController::class, 'create']);
 Route::delete('/staff/{id}', [StaffController::class, 'destroy']);
 Route::post('/staff/{id}', [StaffController::class, 'update']);
+Route::get('/inventory-staff', [StaffController::class, 'getInventoryStaff']);
+
+
+
+Route::post('/staff-syllabus', [StaffController::class, 'getStaffSyllabusHTML']);
 
 Route::get('/staff-by-role', [StaffController::class, 'getStaffbyrole']);
 
@@ -582,9 +597,11 @@ Route::delete('/vehicle-routes/{id}', [VehicleRoutesController::class, 'destroy'
 Route::post('/vehicle-routes/{id}', [VehicleRoutesController::class, 'update']);
 
 Route::get('/item', [ItemController::class, 'index']);
+Route::get('/get-item', [ItemController::class, 'getItems']);
 Route::post('/item', [ItemController::class, 'create']);
 Route::delete('/item/{id}', [ItemController::class, 'destroy']);
 Route::post('/item/{id}', [ItemController::class, 'update']);
+
 
 Route::get('/item-stock', [ItemStockController::class, 'index']);
 Route::post('/item-stock', [ItemStockController::class, 'create']);
@@ -610,13 +627,27 @@ Route::get('/item-issue', [ItemIssueController::class, 'index']);
 Route::post('/item-issue', [ItemIssueController::class, 'create']);
 Route::delete('/item-issue/{id}', [ItemIssueController::class, 'destroy']);
 Route::post('/item-issue/{id}', [ItemIssueController::class, 'update']);
-Route::post('/item-stock', [ItemStockController::class, 'create']);
 
 
 Route::get('/front-event', [EventsController::class, 'index']);
 Route::post('/front-event', [EventsController::class, 'create']);
 Route::delete('/front-event/{id}', [EventsController::class, 'destroy']);
 Route::post('/front-event/{id}', [EventsController::class, 'update']);
+
+Route::get('/grades', [GradesController::class, 'index']);
+Route::post('/grades', [GradesController::class, 'create']);
+Route::delete('/grades/{id}', [GradesController::class, 'destroy']);
+Route::post('/grades/{id}', [GradesController::class, 'update']);
+
+Route::get('/frontcms-menus', [FrontCmsMenusController::class, 'index']);
+Route::post('/frontcms-menus', [FrontCmsMenusController::class, 'create']);
+Route::delete('/frontcms-menus/{id}', [FrontCmsMenusController::class, 'destroy']);
+Route::post('/frontcms-menus/{id}', [FrontCmsMenusController::class, 'update']);
+
+Route::get('/alumni-event', [AlumniEventsController::class, 'index']);
+Route::post('/alumni-event', [AlumniEventsController::class, 'create']);
+Route::delete('/alumni-event/{id}', [AlumniEventsController::class, 'destroy']);
+Route::post('/alumni-event/{id}', [AlumniEventsController::class, 'update']);
 /* for content manangment  */
 
 /* for content manangment  */
@@ -626,15 +657,20 @@ Route::post('/content-section', [ContentSectionController::class, 'create']);
 Route::delete('/content-section/{id}', [ContentSectionController::class, 'destroy']);
 Route::post('/content-section/{id}', [ContentSectionController::class, 'update']);
 
-Route::get('/content-section', [ContentSectionController::class, 'index']);
-Route::post('/content-section', [ContentSectionController::class, 'create']);
-Route::delete('/content-section/{id}', [ContentSectionController::class, 'destroy']);
-Route::post('/content-section/{id}', [ContentSectionController::class, 'update']);
+
 
 Route::get('/content-for-upload', [ContentForController::class, 'index']);
 Route::post('/content-for-upload', [ContentForController::class, 'create']);
 Route::delete('/content-for-upload/{id}', [ContentForController::class, 'destroy']);
 Route::post('/content-for-upload/{id}', [ContentForController::class, 'update']);
+
+
+Route::get('/content', [ContentsController::class, 'index']);
+Route::post('/content', [ContentsController::class, 'create']);
+Route::delete('/content/{id}', [ContentsController::class, 'destroy']);
+Route::post('/content/{id}', [ContentsController::class, 'update']);
+
+
 
 /* for content manangment  end */
 

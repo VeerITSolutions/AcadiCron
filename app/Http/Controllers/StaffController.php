@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Libraries\CustomLib;
 use App\Models\Staff;
+use App\Models\SubjectTimetable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 
 class StaffController extends Controller
 {
@@ -36,6 +39,8 @@ class StaffController extends Controller
     );
 
 
+
+
 // Apply pagination
 $paginatedData = $query->orderBy('id', 'desc')->paginate($perPage, ['*'], 'page', $page);
 
@@ -49,6 +54,21 @@ $paginatedData = $query->orderBy('id', 'desc')->paginate($perPage, ['*'], 'page'
     ], 200);
      }
 
+     public function getInventoryStaff()
+     {
+         $data = DB::table('staff')
+             ->selectRaw("CONCAT_WS(' ', staff.name, staff.surname) as name, staff.employee_id")
+             ->where('staff.is_active', 1)
+             ->get()
+             ->toArray();
+
+             return response()->json([
+                 'success' => true,
+                 'data' => $data
+
+             ], 200);
+     }
+
 
      public function getStaffbyrole(Request $request)
      {
@@ -57,7 +77,7 @@ $paginatedData = $query->orderBy('id', 'desc')->paginate($perPage, ['*'], 'page'
          $leave_role_id = $request->selectedRoleLeave;
 
          // Get pagination inputs, default to page 1 and 10 records per page if not provided
-         $page = (int) $request->input('page', 1);
+         $page = (int) $request->input('page');
          $perPage = (int) $request->input('perPage', 10);
          $keyword = $request->input('keyword');
 
@@ -288,6 +308,73 @@ $paginatedData = $query->orderBy('id', 'desc')->paginate($perPage, ['*'], 'page'
             'category' => $staff,
         ], 201); // 201 Created status code
     }
+
+    public function getStaffSyllabusHTML(Request $request)
+    {
+        $notificationModel = new \App\Models\NotificationSetting();
+        $settingModel = new \App\Models\SchSettings();
+        $NotificationSetting = new \App\Models\NotificationSetting();
+        $customLib = new CustomLib($notificationModel, $settingModel, $NotificationSetting); // Assuming you have a similar custom library
+        $startWeekday = 'Monday'; // Replace with your logic to get the start weekday
+
+        $thisWeekStart = $customLib->dateFormatToYYYYMMDD($request->input('date'));
+
+        $prevWeekStart = date("Y-m-d", strtotime('last ' . $startWeekday, strtotime($thisWeekStart)));
+        $nextWeekStart = date("Y-m-d", strtotime('next ' . $startWeekday, strtotime($thisWeekStart)));
+        $thisWeekEnd = date("Y-m-d", strtotime($thisWeekStart . " +6 day"));
+
+        $data = [
+            'this_week_start' => $customLib->dateformat($thisWeekStart),
+            'this_week_end' => $customLib->dateformat($thisWeekEnd),
+            'prev_week_start' => $customLib->dateformat($prevWeekStart),
+            'next_week_start' => $customLib->dateformat($nextWeekStart),
+        ];
+
+        Session::put('top_menu', 'Time_table');
+
+        $staffId = $request->input('staff_id');
+        $data['timetable'] = [];
+        $days = $customLib->getDaysname();
+        $userData = $customLib->getUserData();
+        $roleId =   2; //$userData['role_id'];
+        $condition = '';
+
+        foreach ($days as $dayKey => $dayValue) {
+            $timetableId = '';
+            $concate = 'no';
+
+            if (isset($roleId) && $roleId == 2 /* && $userData['class_teacher'] == 'yes' */) {
+                $subjectTimetable = new SubjectTimetable();
+                $myClassSubjects = $subjectTimetable->getByStaffClassTeacherAndDay($staffId, $dayKey);
+
+                if (!empty($myClassSubjects[0]->timetable_id)) {
+                    $timetableId = $myClassSubjects[0]->timetable_id;
+                    $concate = 'yes';
+                }
+            }
+            $subjectTimetable = new SubjectTimetable();
+            $mySubjects = $subjectTimetable->getByTeacherSubjectandDay($staffId, $dayKey);
+
+            if (!empty($mySubjects[0]->timetable_id)) {
+                $timetableId = $concate == 'yes' ? $timetableId . ',' . $mySubjects[0]->timetable_id : $mySubjects[0]->timetable_id;
+            }
+
+            $condition = empty($timetableId) ? " and subject_timetable.id in(0) " : " and subject_timetable.id in(" . $timetableId . ") ";
+
+            $subjectTimetable = new SubjectTimetable();
+
+            $data['timetable'][$dayKey] = $subjectTimetable->getSyllabusSubject($staffId, $dayKey, $condition);
+        }
+
+        $data['staff_id'] = $staffId;
+        return response()->json([
+            'success' => true,
+            'data' => $data,
+        ], 200);
+
+
+
+}
 
 
     /**
