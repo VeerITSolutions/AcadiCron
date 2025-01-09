@@ -109,13 +109,13 @@ class FeemastersController extends Controller
         if ($existingCategory) {
             return response()->json([
                 'success' => false,
-                'message' => 'house name already exists',
+                'message' => 'Fees already exists',
             ], 409); // 409 Conflict status code
         }
 
         // Create a new category
         $category = new Feemasters();
-        $category->fees_group = $validatedData['fees_group'];
+        $category->fee_session_group_id = $validatedData['fee_session_group_id'];
         $category->fees_type = $request->fees_type;
         $category->due_date = $request->due_date;
         $category->amount = $request->amount;
@@ -129,7 +129,7 @@ class FeemastersController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'house name saved successfully',
+            'message' => 'Fees saved successfully',
             'category' => $category,
         ], 201); // 201 Created status code
     }
@@ -172,7 +172,7 @@ class FeemastersController extends Controller
 
        // Validate only the fields you need to validate
             $validatedData = $request->validate([
-                'house_name' => 'required',
+                'fees_group' => 'required',
             ]);
 
             // Get the description from the request without validation
@@ -191,7 +191,7 @@ class FeemastersController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Edit successfully',
+            'message' => 'Edit successful',
             'category' => $category,
         ], 201); // 201 Created status code
     }
@@ -209,10 +209,10 @@ class FeemastersController extends Controller
             $category->delete();
 
             // Return success response
-            return response()->json(['success' => true, 'message' => 'house name deleted successfully']);
+            return response()->json(['success' => true, 'message' => 'Fees deleted successfully']);
         } catch (\Exception $e) {
             // Handle failure (e.g. if the category was not found)
-            return response()->json(['success' => false, 'message' => 'house name deletion failed: ' . $e->getMessage()], 500);
+            return response()->json(['success' => false, 'message' => 'Fees deletion failed: ' . $e->getMessage()], 500);
         }
     }
 }

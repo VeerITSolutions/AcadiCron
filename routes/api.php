@@ -85,6 +85,7 @@ use App\Http\Controllers\ItemIssueController;
 use App\Http\Controllers\EventsController;
 use App\Http\Controllers\GradesController;
 use App\Http\Controllers\FrontCmsMenusController;
+use App\Http\Controllers\AlumniEventsController;
 
 
 
@@ -644,6 +645,11 @@ Route::get('/frontcms-menus', [FrontCmsMenusController::class, 'index']);
 Route::post('/frontcms-menus', [FrontCmsMenusController::class, 'create']);
 Route::delete('/frontcms-menus/{id}', [FrontCmsMenusController::class, 'destroy']);
 Route::post('/frontcms-menus/{id}', [FrontCmsMenusController::class, 'update']);
+
+Route::get('/alumni-event', [AlumniEventsController::class, 'index']);
+Route::post('/alumni-event', [AlumniEventsController::class, 'create']);
+Route::delete('/alumni-event/{id}', [AlumniEventsController::class, 'destroy']);
+Route::post('/alumni-event/{id}', [AlumniEventsController::class, 'update']);
 /* for content manangment  */
 
 /* for content manangment  */
