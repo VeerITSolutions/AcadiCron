@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\AlumniAlumniEvents;
+use App\Models\AlumniEvents;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -23,17 +23,6 @@ class AlumniEventsController extends Controller
             $perPage = 10; 
         }
 
-        if($page == null){
-            $data = AlumniEvents::orderBy('id', 'desc')->get();
-            return response()->json([
-                'success' => true,
-                'data' => $data, 
-                'totalCount' => $data->count(), 
-                'rowsPerPage' => 1, 
-                'currentPage' => 1,
-                'message' => '',
-            ], 200);
-        }
      
         $data = AlumniEvents::orderBy('id', 'desc')->paginate($perPage, ['*'], 'page', $page);
 
@@ -78,7 +67,7 @@ class AlumniEventsController extends Controller
     
         return response()->json([
             'success' => true,
-            'message' => 'AlumniEvents saved successfully',
+            'message' => 'Alumni Events saved successfully',
             'AlumniEvents' => $AlumniEvents,
         ], 201); // 201 Created status code
     }
@@ -151,10 +140,10 @@ class AlumniEventsController extends Controller
 
             $AlumniEvents->delete();
 
-            return response()->json(['success' => true, 'message' => 'AlumniEvents Category  deleted successfully']);
+            return response()->json(['success' => true, 'message' => 'Alumni events deleted successfully']);
         } catch (\Exception $e) {
         
-            return response()->json(['success' => false, 'message' => 'Leave type deletion failed: ' . $e->getMessage()], 500);
+            return response()->json(['success' => false, 'message' => 'Alumni events deletion failed: ' . $e->getMessage()], 500);
         }
     }
 }
