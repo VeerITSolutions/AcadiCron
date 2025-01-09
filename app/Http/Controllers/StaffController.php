@@ -39,7 +39,7 @@ class StaffController extends Controller
     );
 
 
-    
+
 
 // Apply pagination
 $paginatedData = $query->orderBy('id', 'desc')->paginate($perPage, ['*'], 'page', $page);
@@ -61,14 +61,14 @@ $paginatedData = $query->orderBy('id', 'desc')->paginate($perPage, ['*'], 'page'
              ->where('staff.is_active', 1)
              ->get()
              ->toArray();
-     
+
              return response()->json([
                  'success' => true,
                  'data' => $data
-            
+
              ], 200);
      }
-     
+
 
      public function getStaffbyrole(Request $request)
      {
@@ -367,8 +367,12 @@ $paginatedData = $query->orderBy('id', 'desc')->paginate($perPage, ['*'], 'page'
         }
 
         $data['staff_id'] = $staffId;
+        return response()->json([
+            'success' => true,
+            'data' => $data,
+        ], 200);
 
-        return view('admin.syllabus._get_weekdates', $data);
+
 
 }
 
