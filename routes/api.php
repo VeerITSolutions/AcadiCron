@@ -25,6 +25,7 @@ use App\Http\Controllers\StaffAttendanceController;
 use App\Http\Controllers\StaffController;
 use App\Http\Controllers\StudentAttendencesController;
 use App\Http\Controllers\TimetablesController;
+// use App\Http\Controllers\LessonplanLessonController;
 
 use App\Http\Controllers\CustomFieldsController;
 
@@ -85,7 +86,7 @@ use App\Http\Controllers\EventsController;
 use App\Http\Controllers\GradesController;
 use App\Http\Controllers\FrontCmsMenusController;
 use App\Http\Controllers\OnlineexamController;
-
+use App\Http\Controllers\AlumniEventsController;
 
 
 
@@ -548,6 +549,7 @@ Route::post('/lessonplan-lesson', [LessonplanLessonController::class, 'create'])
 Route::delete('/lessonplan-lesson/{id}', [LessonplanLessonController::class, 'destroy']);
 Route::post('/lessonplan-lesson/{id}', [LessonplanLessonController::class, 'update']);
 
+Route::post('/get-lessonplan-by-subjectid', [LessonplanLessonController::class, 'getLessonBySubjectId']);
 
 Route::get('/subject-groups', [SubjectGroupsController::class, 'index']);
 Route::post('/subject-groups', [SubjectGroupsController::class, 'create']);
@@ -654,6 +656,11 @@ Route::get('/frontcms-menus', [FrontCmsMenusController::class, 'index']);
 Route::post('/frontcms-menus', [FrontCmsMenusController::class, 'create']);
 Route::delete('/frontcms-menus/{id}', [FrontCmsMenusController::class, 'destroy']);
 Route::post('/frontcms-menus/{id}', [FrontCmsMenusController::class, 'update']);
+
+Route::get('/alumni-event', [AlumniEventsController::class, 'index']);
+Route::post('/alumni-event', [AlumniEventsController::class, 'create']);
+Route::delete('/alumni-event/{id}', [AlumniEventsController::class, 'destroy']);
+Route::post('/alumni-event/{id}', [AlumniEventsController::class, 'update']);
 /* for content manangment  */
 
 /* for content manangment  */
