@@ -83,6 +83,7 @@ use App\Http\Controllers\ItemSupplierController;
 use App\Http\Controllers\ItemIssueController;
 use App\Http\Controllers\EventsController;
 use App\Http\Controllers\GradesController;
+use App\Http\Controllers\FrontCmsMenusController;
 
 
 
@@ -636,6 +637,11 @@ Route::get('/grades', [GradesController::class, 'index']);
 Route::post('/grades', [GradesController::class, 'create']);
 Route::delete('/grades/{id}', [GradesController::class, 'destroy']);
 Route::post('/grades/{id}', [GradesController::class, 'update']);
+
+Route::get('/frontcms-menus', [FrontCmsMenusController::class, 'index']);
+Route::post('/frontcms-menus', [FrontCmsMenusController::class, 'create']);
+Route::delete('/frontcms-menus/{id}', [FrontCmsMenusController::class, 'destroy']);
+Route::post('/frontcms-menus/{id}', [FrontCmsMenusController::class, 'update']);
 /* for content manangment  */
 
 /* for content manangment  */
