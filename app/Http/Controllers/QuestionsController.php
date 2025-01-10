@@ -2,13 +2,11 @@
 
 namespace App\Http\Controllers;
 
-
 use App\Models\Questions;
-
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class QuestionsControlller extends Controller
+class QuestionsController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -29,6 +27,20 @@ class QuestionsControlller extends Controller
 
         // Paginate the students data
 
+        if ($page) {
+            $data = Questions::orderBy('id', 'desc')->paginate($perPage, ['*'], 'page', $page);
+            $message = '';
+
+            // Return the paginated data with total count and pagination details
+            return response()->json([
+                'success' => true,
+                'data' => $data->items(), // Only return the current page data
+                'totalCount' => $data->total(), // Total number of records
+                'rowsPerPage' => $data->lastPage(), // Total number of pages
+                'currentPage' => $data->currentPage(), // Current page
+                'message' => $message,
+            ], 200);
+        } else {
             $data = Questions::orderBy('id', 'desc')->get();
             $message = '';
 
@@ -37,11 +49,9 @@ class QuestionsControlller extends Controller
                 'success' => true,
                 'data' => $data, // Only return the current page data
             ], 200);
-        
+        }
         // Prepare the response message
     }
-    
-
 
 
     /**
@@ -50,44 +60,27 @@ class QuestionsControlller extends Controller
     public function create(Request $request)
     {
 
+
+        // Validate the incoming request
         $validatedData = $request->all();
 
-          // Create a new Question
-          $question = new question();
-          $question->subject_id = $validatedData['subject_id'];
-          $question->question_type = $validatedData['question_type'];
-          $question->level = $validatedData['level'];
-          $question->class_id = $validatedData['class_id'];
-          $question->section_id = $validatedData['section_id'];
-  
 
-       $getQuestion =  $validatedData['Question'];
-       $getQuestionData =  $validatedData['data'];
-      
-       foreach($getQuestionData as $getValue){
-        $getRoute_id = $getValue;
-       }
+        // Create a new Questions
+        $Questions = new Questions();
+        $Questions->subject_id = $validatedData['subject_id'];
+        $Questions->question_type = $validatedData['question_type'];
+        $Questions->level = $validatedData['level'];
+        $Questions->class_id = $validatedData['class_id'];
+        $Questions->section_id = $validatedData['section_id'];
 
-       
-    
-       foreach($getQuestion as $question){  
-        $questiontype = new questiontype();
-     
-       
-        $questiontype->question_id = $getquestion_id;
 
-       
-        $question_Type->question_type = $question;
-
-        $question_Type->save();
-        }
-       
+        $Questions->save();
 
         return response()->json([
             'success' => true,
-            'message' => 'Question saved successfully',
-            'Questions' => $questiontype,
-        ], 201);
+            'message' => 'Questions  saved successfully',
+            'Questions' => $Questions,
+        ], 201); // 201 Created status code
     }
 
 
@@ -115,6 +108,8 @@ class QuestionsControlller extends Controller
         //
     }
 
+
+
     /**
      * Update the specified resource in storage.
      */
@@ -122,37 +117,25 @@ class QuestionsControlller extends Controller
 
     public function update(Request $request, string $id)
     {
-
+        // Find the Questions by id
         $validatedData = $request->all();
-        
 
-       $getQuestion =  $validatedData['Question'];
-       $getQuestionData =  $validatedData['data'];
-      
-       foreach($getQuestionData as $getValue){
-        $getRoute_id = $getValue;
-       }
+        $Questions = Questions::findOrFail($id);
 
-       
-    
-       foreach($getQuestion as $question){  
-        $questiontype = new questiontype();
-     
-       
-        $questiontype->question_id = $getquestion_id;
+        $Questions->subject_id = $validatedData['subject_id'];
+        $Questions->question_type = $validatedData['question_type'];
+        $Questions->level = $validatedData['level'];
+        $Questions->class_id = $validatedData['class_id'];
+        $Questions->section_id = $validatedData['section_id'];
 
-       
-        $question_Type->question_type = $question;
-
-        $question_Type->save();
-        }
-       
+        $Questions->update();
 
         return response()->json([
+
             'success' => true,
-            'message' => 'Question saved successfully',
-            'Questions' => $questiontype,
-        ], 201);
+            'message' => 'Edit successfully',
+            'Questions' => $Questions,
+        ], 200); // 200 OK status code
     }
 
 
@@ -162,14 +145,17 @@ class QuestionsControlller extends Controller
     public function destroy($id)
     {
         try {
-     
-            $question = Question::findOrFail($id);
+            // Find the Questions by ID
+            $Questions = Questions::findOrFail($id);
 
-            $question->delete();
+            // Delete the Questions
+            $Questions->delete();
 
-            return response()->json(['success' => true, 'message' => 'question  deleted successfully']);
+            // Return success response
+            return response()->json(['success' => true, 'message' => 'Questions  deleted successfully']);
         } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => 'question deletion failed: ' . $e->getMessage()], 500);
+            // Handle failure (e.g. if the Questions was not found)
+            return response()->json(['success' => false, 'message' => 'Leave type deletion failed: ' . $e->getMessage()], 500);
         }
     }
 }

@@ -25,6 +25,7 @@ use App\Http\Controllers\StaffAttendanceController;
 use App\Http\Controllers\StaffController;
 use App\Http\Controllers\StudentAttendencesController;
 use App\Http\Controllers\TimetablesController;
+use App\Http\Controllers\QuestionsController;
 // use App\Http\Controllers\LessonplanLessonController;
 
 use App\Http\Controllers\CustomFieldsController;
@@ -87,7 +88,6 @@ use App\Http\Controllers\GradesController;
 use App\Http\Controllers\FrontCmsMenusController;
 use App\Http\Controllers\OnlineexamController;
 use App\Http\Controllers\AlumniEventsController;
-use App\Http\Controllers\QuestionsController;
 
 
 
@@ -403,9 +403,9 @@ Route::post('/notification', [NotificationSettingController::class, 'create']);
 Route::delete('/notification/{id}', [NotificationSettingController::class, 'destroy']);
 Route::post('/notification/{id}', [NotificationSettingController::class, 'update']);
 
-Route::get('/question/{id?}', [QuestionsController::class, 'index']);
+Route::get('/question', [QuestionsController::class, 'index']);
 Route::post('/question', [QuestionsController::class, 'create']);
-Route::delete('/question/{id}', [QuestionsControllerr::class, 'destroy']);
+Route::delete('/question/{id}', [QuestionsController::class, 'destroy']);
 Route::post('/question/{id}', [QuestionsController::class, 'update']);
 
 
