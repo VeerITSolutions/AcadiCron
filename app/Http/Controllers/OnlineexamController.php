@@ -67,11 +67,22 @@ class OnlineexamController extends Controller
 
         // Create a new Onlineexam
         $Onlineexam = new Onlineexam();
-        $Onlineexam->Onlineexam_name = $validatedData['Onlineexam_name'];
-        $Onlineexam->type = $validatedData['type'];
-        $Onlineexam->address = $validatedData['address'];
-        $Onlineexam->intake = $validatedData['intake'];
+        $Onlineexam->exam = $validatedData['exam'];
+        $Onlineexam->is_quiz = $validatedData['is_quiz'] ?? 0;
+        $Onlineexam->attempt = $validatedData['attempt'];
+        $Onlineexam->exam_from = $validatedData['exam_from'];
+        $Onlineexam->exam_to = $validatedData['exam_to'];
+        $Onlineexam->auto_publish_date = $validatedData['auto_publish_date'];
+        $Onlineexam->duration = $validatedData['duration'];
+        $Onlineexam->passing_percentage = $validatedData['passing_percentage'];
         $Onlineexam->description = $validatedData['description'];
+        $Onlineexam->is_active = $validatedData['is_active'] ?? 0;
+        $Onlineexam->publish_result = $validatedData['publish_result'] ?? 0;
+        $Onlineexam->is_neg_marking = $validatedData['is_neg_marking'] ?? 0;
+        $Onlineexam->is_marks_display = $validatedData['is_marks_display'] ?? 0;
+        $Onlineexam->is_random_question = $validatedData['is_random_question'] ?? 0;
+        $Onlineexam->publish_exam_notification = $validatedData['publish_exam_notification'] ?? 0;
+        $Onlineexam->publish_result_notification = $validatedData['publish_result_notification'] ?? 0;
 
 
         $Onlineexam->save();
@@ -122,12 +133,22 @@ class OnlineexamController extends Controller
 
         $Onlineexam = Onlineexam::findOrFail($id);
 
-        $Onlineexam->Onlineexam_name = $validatedData['Onlineexam_name'];
-        $Onlineexam->type = $validatedData['type'];
-        $Onlineexam->address = $validatedData['address'];
-        $Onlineexam->intake = $validatedData['intake'];
+        $Onlineexam->exam = $validatedData['exam'];
+        $Onlineexam->is_quiz = $validatedData['is_quiz'] ?? 0;
+        $Onlineexam->attempt = $validatedData['attempt'];
+        $Onlineexam->exam_from = $validatedData['exam_from'];
+        $Onlineexam->exam_to = $validatedData['exam_to'];
+        $Onlineexam->auto_publish_date = $validatedData['auto_publish_date'];
+        $Onlineexam->duration = $validatedData['duration'];
+        $Onlineexam->passing_percentage = $validatedData['passing_percentage'];
         $Onlineexam->description = $validatedData['description'];
-
+        $Onlineexam->is_active = $validatedData['is_active'] ?? 0;
+        $Onlineexam->publish_result = $validatedData['publish_result'] ?? 0;
+        $Onlineexam->is_neg_marking = $validatedData['is_neg_marking'] ?? 0;
+        $Onlineexam->is_marks_display = $validatedData['is_marks_display'] ?? 0;
+        $Onlineexam->is_random_question = $validatedData['is_random_question'] ?? 0;
+        $Onlineexam->publish_exam_notification = $validatedData['publish_exam_notification'] ?? 0;
+        $Onlineexam->publish_result_notification = $validatedData['publish_result_notification'] ?? 0;
 
         $Onlineexam->update();
 
