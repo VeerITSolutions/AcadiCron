@@ -16,35 +16,31 @@ class AlumniEventsController extends Controller
      */
     public function index(Request $request)
     {
-        // Get page and perPage from the request, set default values if not provided
+      
         $page = $request->input('page', 1);
         $perPage = $request->input('perPage', 10);
         
         $page = (int) $page;
         $perPage = (int) $perPage;
 
-        // Ensure perPage is within valid bounds (1-100)
         if ($perPage <= 0 || $perPage > 100) {
             $perPage = 10;
         }
 
-        // Fetch paginated events from the database
         $data = AlumniEvents::orderBy('id', 'desc')->paginate($perPage, ['*'], 'page', $page);
 
-        // Initialize empty arrays for event details
         $eventclass = [];
         $eventsection = [];
         $eventsession = [];
 
-        // Process event details with pagination
         foreach ($data as $key => $event) {
             if (!empty($event->class_id)) {
-                // Fetch class details
+        
                 $eventclasslist = Classes::find($event->class_id);
-                $eventclass[$key] = $eventclasslist->class_name;  // Adjust according to your class field
-                $eventsection[$key] = $eventclasslist->sections;  // Adjust according to your sections field
+                $eventclass[$key] = $eventclasslist->class_name;  
+                $eventsection[$key] = $eventclasslist->sections;  
                 $sessionlist = Sessions::find($event->session_id);
-                $eventsession[$key] = $sessionlist->session_name; // Adjust according to your session field
+                $eventsession[$key] = $sessionlist->session_name;
             } else {
                 $eventclass[$key] = '';
                 $eventsection[$key] = '';
@@ -52,16 +48,14 @@ class AlumniEventsController extends Controller
             }
         }
 
-        // Prepare response data
         $message = '';
-        
-        // Return paginated response
+
         return response()->json([
             'success' => true,
-            'data' => $data->items(), // Return the actual data from the paginated result
-            'totalCount' => $data->total(), // Total number of items
-            'rowsPerPage' => $data->perPage(), // Items per page
-            'currentPage' => $data->currentPage(), // Current page
+            'data' => $data->items(),
+            'totalCount' => $data->total(), 
+            'rowsPerPage' => $data->perPage(),
+            'currentPage' => $data->currentPage(), 
             'message' => $message,
             'eventclass' => $eventclass,
             'eventsection' => $eventsection,
@@ -78,21 +72,19 @@ class AlumniEventsController extends Controller
     
         $AlumniEvents = new AlumniEvents();
         $AlumniEvents->title = $validatedData['title'];
-        $AlumniEvents->event_for = $validatedData['event_for'];
-        $AlumniEvents->session_id = $validatedData['session_id'];
-        $AlumniEvents->class_id = $validatedData['class_id'];
-        $AlumniEvents->section = $validatedData['section'];
+        $AlumniEvents->event_for = $validatedData['event_for'] ?? "";
+        $AlumniEvents->session_id = $validatedData['session_id'] ?? 1;
+        $AlumniEvents->class_id = $validatedData['class_id'] ?? "";
+        $AlumniEvents->section = $validatedData['section'] ?? "";
         $AlumniEvents->from_date = $validatedData['from_date'];
         $AlumniEvents->to_date = $validatedData['to_date'];
         $AlumniEvents->note = $validatedData['note'];
-        $AlumniEvents->photo = $validatedData['photo'];
-        $AlumniEvents->is_active = $validatedData['is_active'];
+        $AlumniEvents->photo = $validatedData['photo'] ?? "";
+        $AlumniEvents->is_active = $validatedData['is_active'] ? 1 : 0;
         $AlumniEvents->event_notification_message = $validatedData['event_notification_message'];
-        $AlumniEvents->show_onwebsite = $validatedData['show_onwebsite'];
-       
+        $AlumniEvents->show_onwebsite = $validatedData['show_onwebsite'] ? 1 : 0;
 
 
-    
         $AlumniEvents->save();
     
         return response()->json([
@@ -135,17 +127,17 @@ class AlumniEventsController extends Controller
 
         $AlumniEvents = AlumniEvents::findOrFail($id);
         $AlumniEvents->title = $validatedData['title'];
-        $AlumniEvents->event_for = $validatedData['event_for'];
-        $AlumniEvents->session_id = $validatedData['session_id'];
-        $AlumniEvents->class_id = $validatedData['class_id'];
-        $AlumniEvents->section = $validatedData['section'];
+        $AlumniEvents->event_for = $validatedData['event_for'] ?? "";
+        $AlumniEvents->session_id = $validatedData['session_id'] ?? 1;
+        $AlumniEvents->class_id = $validatedData['class_id'] ?? "";
+        $AlumniEvents->section = $validatedData['section'] ?? "";
         $AlumniEvents->from_date = $validatedData['from_date'];
         $AlumniEvents->to_date = $validatedData['to_date'];
         $AlumniEvents->note = $validatedData['note'];
-        $AlumniEvents->photo = $validatedData['photo'];
-        $AlumniEvents->is_active = $validatedData['is_active'];
+        $AlumniEvents->photo = $validatedData['photo'] ?? "";
+        $AlumniEvents->is_active = $validatedData['is_active'] ? 1 : 0;
         $AlumniEvents->event_notification_message = $validatedData['event_notification_message'];
-        $AlumniEvents->show_onwebsite = $validatedData['show_onwebsite'];
+        $AlumniEvents->show_onwebsite = $validatedData['show_onwebsite'] ? 1 : 0;
         
      
         $AlumniEvents->update();
