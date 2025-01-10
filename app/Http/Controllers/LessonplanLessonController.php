@@ -157,6 +157,24 @@ class LessonplanLessonController extends Controller
     ]);
 }
 
+public function getLessonBySubjectId(Request $request)
+{
+
+    $subId = $request->input('subId');
+    $classSectionId = $request->input('classSectionId');
+    $data =  DB::table('lesson')
+        ->where('subject_group_subject_id', $subId)
+        ->where('subject_group_class_sections_id', $classSectionId)
+        ->get()
+        ->toArray();
+
+        return response()->json([
+            "status" => true,
+
+            "data" => $data
+        ]);
+}
+
 
     public function getLessonListData($session)
     {

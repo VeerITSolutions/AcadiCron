@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\AlumniAlumniEvents;
+use App\Http\Controllers\Controller;
+use App\Models\Classes;
+use App\Models\AlumniEvents;
+use App\Models\Sessions;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session as FacadeSession;
 
 class AlumniEventsController extends Controller
 {
@@ -13,40 +16,50 @@ class AlumniEventsController extends Controller
      */
     public function index(Request $request)
     {
-        $page = $request->input('page'); 
+      
+        $page = $request->input('page', 1);
         $perPage = $request->input('perPage', 10);
-
+        
         $page = (int) $page;
         $perPage = (int) $perPage;
 
         if ($perPage <= 0 || $perPage > 100) {
-            $perPage = 10; 
+            $perPage = 10;
         }
 
-        if($page == null){
-            $data = AlumniEvents::orderBy('id', 'desc')->get();
-            return response()->json([
-                'success' => true,
-                'data' => $data, 
-                'totalCount' => $data->count(), 
-                'rowsPerPage' => 1, 
-                'currentPage' => 1,
-                'message' => '',
-            ], 200);
-        }
-     
         $data = AlumniEvents::orderBy('id', 'desc')->paginate($perPage, ['*'], 'page', $page);
 
+        $eventclass = [];
+        $eventsection = [];
+        $eventsession = [];
+
+        foreach ($data as $key => $event) {
+            if (!empty($event->class_id)) {
+        
+                $eventclasslist = Classes::find($event->class_id);
+                $eventclass[$key] = $eventclasslist->class_name;  
+                $eventsection[$key] = $eventclasslist->sections;  
+                $sessionlist = Sessions::find($event->session_id);
+                $eventsession[$key] = $sessionlist->session_name;
+            } else {
+                $eventclass[$key] = '';
+                $eventsection[$key] = '';
+                $eventsession[$key] = '';
+            }
+        }
 
         $message = '';
 
         return response()->json([
             'success' => true,
-            'data' => $data->AlumniEvents(), 
+            'data' => $data->items(),
             'totalCount' => $data->total(), 
-            'rowsPerPage' => $data->lastPage(), 
-            'currentPage' => $data->currentPage(),
+            'rowsPerPage' => $data->perPage(),
+            'currentPage' => $data->currentPage(), 
             'message' => $message,
+            'eventclass' => $eventclass,
+            'eventsection' => $eventsection,
+            'eventsession' => $eventsession
         ], 200);
     }
 
@@ -59,26 +72,24 @@ class AlumniEventsController extends Controller
     
         $AlumniEvents = new AlumniEvents();
         $AlumniEvents->title = $validatedData['title'];
-        $AlumniEvents->event_for = $validatedData['event_for'];
-        $AlumniEvents->session_id = $validatedData['session_id'];
-        $AlumniEvents->class_id = $validatedData['class_id'];
-        $AlumniEvents->section = $validatedData['section'];
+        $AlumniEvents->event_for = $validatedData['event_for'] ?? "";
+        $AlumniEvents->session_id = $validatedData['session_id'] ?? 1;
+        $AlumniEvents->class_id = $validatedData['class_id'] ?? "";
+        $AlumniEvents->section = $validatedData['section'] ?? "";
         $AlumniEvents->from_date = $validatedData['from_date'];
         $AlumniEvents->to_date = $validatedData['to_date'];
         $AlumniEvents->note = $validatedData['note'];
-        $AlumniEvents->photo = $validatedData['photo'];
-        $AlumniEvents->is_active = $validatedData['is_active'];
+        $AlumniEvents->photo = $validatedData['photo'] ?? "";
+        $AlumniEvents->is_active = $validatedData['is_active'] ? 1 : 0;
         $AlumniEvents->event_notification_message = $validatedData['event_notification_message'];
-        $AlumniEvents->show_onwebsite = $validatedData['show_onwebsite'];
-       
+        $AlumniEvents->show_onwebsite = $validatedData['show_onwebsite'] ? 1 : 0;
 
 
-    
         $AlumniEvents->save();
     
         return response()->json([
             'success' => true,
-            'message' => 'AlumniEvents saved successfully',
+            'message' => 'Alumni Events saved successfully',
             'AlumniEvents' => $AlumniEvents,
         ], 201); // 201 Created status code
     }
@@ -116,17 +127,17 @@ class AlumniEventsController extends Controller
 
         $AlumniEvents = AlumniEvents::findOrFail($id);
         $AlumniEvents->title = $validatedData['title'];
-        $AlumniEvents->event_for = $validatedData['event_for'];
-        $AlumniEvents->session_id = $validatedData['session_id'];
-        $AlumniEvents->class_id = $validatedData['class_id'];
-        $AlumniEvents->section = $validatedData['section'];
+        $AlumniEvents->event_for = $validatedData['event_for'] ?? "";
+        $AlumniEvents->session_id = $validatedData['session_id'] ?? 1;
+        $AlumniEvents->class_id = $validatedData['class_id'] ?? "";
+        $AlumniEvents->section = $validatedData['section'] ?? "";
         $AlumniEvents->from_date = $validatedData['from_date'];
         $AlumniEvents->to_date = $validatedData['to_date'];
         $AlumniEvents->note = $validatedData['note'];
-        $AlumniEvents->photo = $validatedData['photo'];
-        $AlumniEvents->is_active = $validatedData['is_active'];
+        $AlumniEvents->photo = $validatedData['photo'] ?? "";
+        $AlumniEvents->is_active = $validatedData['is_active'] ? 1 : 0;
         $AlumniEvents->event_notification_message = $validatedData['event_notification_message'];
-        $AlumniEvents->show_onwebsite = $validatedData['show_onwebsite'];
+        $AlumniEvents->show_onwebsite = $validatedData['show_onwebsite'] ? 1 : 0;
         
      
         $AlumniEvents->update();
@@ -151,10 +162,10 @@ class AlumniEventsController extends Controller
 
             $AlumniEvents->delete();
 
-            return response()->json(['success' => true, 'message' => 'AlumniEvents Category  deleted successfully']);
+            return response()->json(['success' => true, 'message' => 'Alumni events deleted successfully']);
         } catch (\Exception $e) {
         
-            return response()->json(['success' => false, 'message' => 'Leave type deletion failed: ' . $e->getMessage()], 500);
+            return response()->json(['success' => false, 'message' => 'Alumni events deletion failed: ' . $e->getMessage()], 500);
         }
     }
 }

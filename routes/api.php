@@ -25,6 +25,7 @@ use App\Http\Controllers\StaffAttendanceController;
 use App\Http\Controllers\StaffController;
 use App\Http\Controllers\StudentAttendencesController;
 use App\Http\Controllers\TimetablesController;
+// use App\Http\Controllers\LessonplanLessonController;
 
 use App\Http\Controllers\CustomFieldsController;
 
@@ -84,6 +85,7 @@ use App\Http\Controllers\ItemIssueController;
 use App\Http\Controllers\EventsController;
 use App\Http\Controllers\GradesController;
 use App\Http\Controllers\FrontCmsMenusController;
+use App\Http\Controllers\OnlineexamController;
 use App\Http\Controllers\AlumniEventsController;
 use App\Http\Controllers\QuestionsController;
 
@@ -436,6 +438,16 @@ Route::post('/hostel-room', [HostelRoomController::class, 'create']);
 Route::delete('/hostel-room/{id}', [HostelRoomController::class, 'destroy']);
 Route::post('/hostel-room/{id}', [HostelRoomController::class, 'update']);
 
+Route::get('/hostel-room', [HostelRoomController::class, 'index']);
+Route::post('/hostel-room', [HostelRoomController::class, 'create']);
+Route::delete('/hostel-room/{id}', [HostelRoomController::class, 'destroy']);
+Route::post('/hostel-room/{id}', [HostelRoomController::class, 'update']);
+
+Route::get('/online-exam', [OnlineexamController::class, 'index']);
+Route::post('/online-exam', [OnlineexamController::class, 'create']);
+Route::delete('/online-exam/{id}', [OnlineexamController::class, 'destroy']);
+Route::post('/online-exam/{id}', [OnlineexamController::class, 'update']);
+
 Route::get('/certificate', [CertificatesController::class, 'index']);
 Route::post('/certificate-view/{id}', [CertificatesController::class, 'certificateView']);
 
@@ -454,6 +466,8 @@ Route::get('/student', [StudentsController::class, 'index']);
 Route::post('/student', [StudentsController::class, 'create']);
 Route::delete('/student/{id}', [StudentsController::class, 'destroy']);
 Route::post('/student/{id}', [StudentsController::class, 'update']);
+
+Route::get('/admission-year', [StudentsController::class, 'admissionYear']);
 
 Route::get('/student-doc/{id}', [StudentDocController::class, 'index']);
 Route::post('/student-doc', [StudentDocController::class, 'create']);
@@ -542,6 +556,7 @@ Route::post('/lessonplan-lesson', [LessonplanLessonController::class, 'create'])
 Route::delete('/lessonplan-lesson/{id}', [LessonplanLessonController::class, 'destroy']);
 Route::post('/lessonplan-lesson/{id}', [LessonplanLessonController::class, 'update']);
 
+Route::post('/get-lessonplan-by-subjectid', [LessonplanLessonController::class, 'getLessonBySubjectId']);
 
 Route::get('/subject-groups', [SubjectGroupsController::class, 'index']);
 Route::post('/subject-groups', [SubjectGroupsController::class, 'create']);
