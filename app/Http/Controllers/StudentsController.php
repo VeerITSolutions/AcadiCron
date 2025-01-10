@@ -50,6 +50,19 @@ $paginatedData = $query->orderBy('id', 'desc')->paginate($perPage, ['*'], 'page'
      }
 
 
+     public function admissionYear()
+     {
+         $result = DB::table('students')
+             ->select(DB::raw('distinct(year(admission_date)) as year'))
+             ->whereNotIn('admission_date', ['0000-00-00', '1970-01-01'])
+             ->get();
+     
+         return response()->json([
+             'success' => true,
+             'data' => $result, 
+         ], 200);
+     }
+
      public function searchNonPromotedStudents(Request $request,$promoted_session_id , $promoted_class_id, $promoted_section_id, $class_id, $section_id, $current_session)
      {
           // Get pagination inputs, default to page 1 and 10 records per page if not provided
