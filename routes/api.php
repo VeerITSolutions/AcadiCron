@@ -462,6 +462,8 @@ Route::post('/student', [StudentsController::class, 'create']);
 Route::delete('/student/{id}', [StudentsController::class, 'destroy']);
 Route::post('/student/{id}', [StudentsController::class, 'update']);
 
+Route::get('/admission-year', [StudentsController::class, 'admissionYear']);
+
 Route::get('/student-doc/{id}', [StudentDocController::class, 'index']);
 Route::post('/student-doc', [StudentDocController::class, 'create']);
 Route::delete('/student-doc/{id}', [StudentDocController::class, 'destroy']);
