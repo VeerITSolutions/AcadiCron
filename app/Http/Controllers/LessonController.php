@@ -46,43 +46,38 @@ class LessonController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create(Request $request){
+    public function create(Request $request)
+{
+    // Validate the incoming request
+    $validatedData = $request->all();
 
+    $class_id = $validatedData['selectedClass'];
+    $section_id = $validatedData['selectedSection'];
+    $subject_group_id = $validatedData['selectedSubjectGroup'];
+    $current_session = $validatedData['currentSessionId'];
 
-        // Validate the incoming request
-        $validatedData = $request->all();
+    // Create a new lesson
+    foreach ($validatedData['name'] as $day) {
+        $lesson = new Lesson();
 
-        $class_id = $validatedData['selectedClass'];
-        $section_id = $validatedData['selectedSection'];
-        $subject_group_id = $validatedData['selectedSubjectGroup'];
-        $current_session = $validatedData['currentSessionId'];
+        // Ensure getSubjectGroupClassSectionsId returns a valid ID
+        $lessonLastId = $lesson->getSubjectGroupClassSectionsId($class_id, $section_id, $subject_group_id, $current_session);
 
-        // Create a new lesson
-
-
-
-        foreach ($validatedData['name'] as $day) {
-
-            $lesson = new Lesson();
-
-             $lessonLastId =    $lesson->getSubjectGroupClassSectionsId($class_id, $section_id, $subject_group_id , $current_session);
-
-
-
-            $lesson->session_id= $current_session;
+        if ($lessonLastId) {
+            $lesson->session_id = $current_session;
             $lesson->subject_group_subject_id = $subject_group_id;
-            $lesson->subject_group_class_sections_id = $lessonLastId;
+            $lesson->subject_group_class_sections_id = $lessonLastId;  // Ensure this is an integer
             $lesson->name = $day;
             $lesson->save();
         }
-
-
-        return response()->json([
-            'success' => true,
-            'message' => 'lesson saved successfully',
-            'lesson' => $lesson,
-        ], 201); // 201 Created status code
     }
+
+    return response()->json([
+        'success' => true,
+        'message' => 'lesson saved successfully',
+        'lesson' => $lesson,
+    ], 201); // 201 Created status code
+}
 
 
     /**
