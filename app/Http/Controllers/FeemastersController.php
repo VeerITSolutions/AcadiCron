@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\DB;
 
 class FeemastersController extends Controller
 {
-   /**
+    /**
      * Display a listing of the resource.
      */
 
@@ -40,20 +40,20 @@ class FeemastersController extends Controller
 
         // Initialize the query for paginated fee data
         $query = DB::table('feemasters')
-                    ->join('classes', 'feemasters.class_id', '=', 'classes.id')
-                    ->join('feetype', 'feemasters.feetype_id', '=', 'feetype.id')
-                    ->select(
-                        'feemasters.feetype_id',
-                        'feemasters.id',
-                        'feemasters.class_id',
-                        'feemasters.session_id',
-                        'feemasters.amount',
-                        'feemasters.description',
-                        'classes.class',
-                        'feetype.type',
-                        'feetype.feecategory_id'
-                    )
-                    ->where('feemasters.session_id', $current_session);
+            ->join('classes', 'feemasters.class_id', '=', 'classes.id')
+            ->join('feetype', 'feemasters.feetype_id', '=', 'feetype.id')
+            ->select(
+                'feemasters.feetype_id',
+                'feemasters.id',
+                'feemasters.class_id',
+                'feemasters.session_id',
+                'feemasters.amount',
+                'feemasters.description',
+                'classes.class',
+                'feetype.type',
+                'feetype.feecategory_id'
+            )
+            ->where('feemasters.session_id', $current_session);
 
 
         // If an ID is provided, fetch single record
@@ -96,7 +96,8 @@ class FeemastersController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create(Request $request){
+    public function create(Request $request)
+    {
 
         // Validate the incoming request
         $validatedData = $request->validate([
@@ -164,24 +165,24 @@ class FeemastersController extends Controller
      */
 
 
-    public function update(Request $request,string $id)
+    public function update(Request $request, string $id)
     {
 
         // Find the house_name by id
         $category = Feemasters::findOrFail($id);
 
-       // Validate only the fields you need to validate
-            $validatedData = $request->validate([
-                'fees_group' => 'required',
-            ]);
+        // Validate only the fields you need to validate
+        $validatedData = $request->validate([
+            'fees_group' => 'required',
+        ]);
 
-            // Get the description from the request without validation
-            $description = $request->input('description');
+        // Get the description from the request without validation
+        $description = $request->input('description');
 
-            // Merge the validated data with the description
-            $updatedData = array_merge($validatedData, [
-                'description' => $description,
-            ]);
+        // Merge the validated data with the description
+        $updatedData = array_merge($validatedData, [
+            'description' => $description,
+        ]);
 
         // Update the category
         $category->update($updatedData);

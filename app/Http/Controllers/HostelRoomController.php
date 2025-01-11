@@ -63,7 +63,6 @@ class HostelRoomController extends Controller
         $HostelRoom->room_no = $validatedData['room_no'];
         $HostelRoom->no_of_bed = $validatedData['no_of_bed'];
         $HostelRoom->cost_per_bed = $validatedData['cost_per_bed'];
-        $HostelRoom->title = $validatedData['title'];
         $HostelRoom->description = $validatedData['description'];
 
 
@@ -118,7 +117,6 @@ class HostelRoomController extends Controller
         $HostelRoom->room_no = $validatedData['room_no'];
         $HostelRoom->no_of_bed = $validatedData['no_of_bed'];
         $HostelRoom->cost_per_bed = $validatedData['cost_per_bed'];
-        $HostelRoom->title = $validatedData['title'];
         $HostelRoom->description = $validatedData['description'];
 
 
