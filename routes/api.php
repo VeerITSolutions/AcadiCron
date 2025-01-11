@@ -88,13 +88,7 @@ use App\Http\Controllers\GradesController;
 use App\Http\Controllers\FrontCmsMenusController;
 use App\Http\Controllers\OnlineexamController;
 use App\Http\Controllers\AlumniEventsController;
-
-
-
-
-
-
-
+use App\Http\Controllers\LessonController;
 
 /*
 |--------------------------------------------------------------------------
@@ -440,11 +434,6 @@ Route::post('/hostel-room', [HostelRoomController::class, 'create']);
 Route::delete('/hostel-room/{id}', [HostelRoomController::class, 'destroy']);
 Route::post('/hostel-room/{id}', [HostelRoomController::class, 'update']);
 
-Route::get('/hostel-room', [HostelRoomController::class, 'index']);
-Route::post('/hostel-room', [HostelRoomController::class, 'create']);
-Route::delete('/hostel-room/{id}', [HostelRoomController::class, 'destroy']);
-Route::post('/hostel-room/{id}', [HostelRoomController::class, 'update']);
-
 Route::get('/online-exam', [OnlineexamController::class, 'index']);
 Route::post('/online-exam', [OnlineexamController::class, 'create']);
 Route::delete('/online-exam/{id}', [OnlineexamController::class, 'destroy']);
@@ -557,6 +546,11 @@ Route::get('/lessonplan-lesson', [LessonplanLessonController::class, 'getLessonL
 Route::post('/lessonplan-lesson', [LessonplanLessonController::class, 'create']);
 Route::delete('/lessonplan-lesson/{id}', [LessonplanLessonController::class, 'destroy']);
 Route::post('/lessonplan-lesson/{id}', [LessonplanLessonController::class, 'update']);
+
+Route::get('/lesson', [LessonController::class, 'index']);
+Route::post('/lesson', [LessonController::class, 'create']);
+Route::delete('/lesson/{id}', [LessonController::class, 'destroy']);
+Route::post('/lesson/{id}', [LessonController::class, 'update']);
 
 Route::post('/get-lessonplan-by-subjectid', [LessonplanLessonController::class, 'getLessonBySubjectId']);
 

@@ -147,7 +147,7 @@ class HostelRoomController extends Controller
             return response()->json(['success' => true, 'message' => 'HostelRoom  deleted successfully']);
         } catch (\Exception $e) {
             // Handle failure (e.g. if the HostelRoom was not found)
-            return response()->json(['success' => false, 'message' => 'Leave type deletion failed: ' . $e->getMessage()], 500);
+            return response()->json(['success' => false, 'message' => 'HostelRoom deletion failed: ' . $e->getMessage()], 500);
         }
     }
 }

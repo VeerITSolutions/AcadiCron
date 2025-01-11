@@ -218,7 +218,7 @@ public function getLessonBySubjectId(Request $request)
        // Validate the incoming request
        $validatedData = $request->all();
 
-
+    
        // Create a new category
        $category = new FeesReminder();
        $category->reminder_type = $validatedData['reminder_type'];
