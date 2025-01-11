@@ -56,10 +56,10 @@ $paginatedData = $query->orderBy('id', 'desc')->paginate($perPage, ['*'], 'page'
              ->select(DB::raw('distinct(year(admission_date)) as year'))
              ->whereNotIn('admission_date', ['0000-00-00', '1970-01-01'])
              ->get();
-     
+
          return response()->json([
              'success' => true,
-             'data' => $result, 
+             'data' => $result,
          ], 200);
      }
 
@@ -226,16 +226,27 @@ $paginatedData = $query->orderBy('id', 'desc')->paginate($perPage, ['*'], 'page'
 
         $student->save();
 
-        $newdata = array(
-            'student_id' => $student->id,
-            'section_id' => $validatedData['section_id'],
-            'session_id' => $get_year->session_id,
-            'class_id' => $validatedData['class_id'],
-            'route_id' => $validatedData['route_id'] ?? 0,
-            'hostel_room_id' => $validatedData['hostel_room_id'] ?? 0,
-            'vehroute_id' => $validatedData['vehroute_id'] ?? 0,
-            'is_alumni' => 0,
-        );
+        $sectionExists = DB::table('sections')->where('id', $validatedData['section_id'])->exists();
+if (!$sectionExists) {
+    return response()->json([
+        'status' => 400,
+        'message' => 'Invalid section ID. Please provide a valid section.',
+    ], 400);
+}
+
+// Prepare the data for student_session
+$newdata = array(
+    'student_id' => $student->id,
+    'section_id' => $validatedData['section_id'],
+    'session_id' => $get_year->session_id,
+    'class_id' => $validatedData['class_id'],
+    'route_id' => $validatedData['route_id'] ?? 0,
+    'hostel_room_id' => $validatedData['hostel_room_id'] ?? 0,
+    'vehroute_id' => $validatedData['vehroute_id'] ?? 0,
+    'is_alumni' => 0,
+);
+
+
 
 
 

@@ -89,6 +89,123 @@ class HomeworkController extends Controller
 
 
 
+public function searchHomework(Request $request)
+
+{
+    $class_id = $request->selectedClass;
+    $section_id = $request->selectedSection;
+    $subject_group_id = $request->selectedSubjectGroup;
+    $subject_id = $request->selectedSubject;
+
+    $query = DB::table('homework')
+        ->select(
+            'homework.*',
+            'classes.class',
+            'sections.section',
+            'subject_group_subjects.subject_id',
+            'subject_group_subjects.id as subject_group_subject_id',
+            'subjects.name as subject_name',
+            'subject_groups.id as subject_groups_id',
+            'subject_groups.name',
+            DB::raw('(select count(*) as total from submit_assignment where submit_assignment.homework_id = homework.id) as assignments')
+        )
+        ->join('classes', 'classes.id', '=', 'homework.class_id')
+        ->join('sections', 'sections.id', '=', 'homework.section_id')
+        ->join('subject_group_subjects', 'subject_group_subjects.id', '=', 'homework.subject_group_subject_id')
+        ->join('subjects', 'subjects.id', '=', 'subject_group_subjects.subject_id')
+        ->join('subject_groups', 'subject_group_subjects.subject_group_id', '=', 'subject_groups.id');
+        // ->where('subject_groups.session_id', $this->current_session);
+
+    // Add conditional filters
+    if (!empty($class_id) && !empty($section_id) && !empty($subject_id) && !empty($subject_group_id)) {
+        $query->where([
+            ['homework.class_id', '=', $class_id],
+            ['homework.section_id', '=', $section_id],
+            ['subject_groups.id', '=', $subject_group_id],
+            ['subject_group_subjects.id', '=', $subject_id],
+        ]);
+    } elseif (!empty($class_id) && !empty($section_id) && !empty($subject_group_id)) {
+        $query->where([
+            ['homework.class_id', '=', $class_id],
+            ['homework.section_id', '=', $section_id],
+            ['subject_groups.id', '=', $subject_group_id],
+        ]);
+    } elseif (!empty($class_id) && empty($section_id) && empty($subject_id)) {
+        $query->where('homework.class_id', '=', $class_id);
+    } elseif (!empty($class_id) && !empty($section_id) && empty($subject_id)) {
+        $query->where([
+            ['homework.class_id', '=', $class_id],
+            ['homework.section_id', '=', $section_id],
+        ]);
+    }
+
+    $query->orderBy('homework.homework_date', 'DESC');
+    $homeworks = $query->get();
+
+    // Add count_percentage logic
+    $resultlist = [];
+    foreach ($homeworks as $homework) {
+        $report = $this->countPercentage($homework->id, $homework->class_id, $homework->section_id);
+        $homework->report = $report;
+        $resultlist[] = $homework;
+    }
+
+    return response()->json([
+        'success' => true,
+        'data' => $resultlist
+    ], 200);
+}
+
+public function countPercentage($id, $class_id, $section_id)
+{
+    $data = [];
+
+    $total_students = $this->countStudents($class_id, $section_id);
+    $count_evalstudents = $this->countEvalStudents($id, $class_id, $section_id);
+
+    if ($total_students > 0) {
+        $completed = $count_evalstudents->total; // Use object syntax
+        $percentage = ($completed / $total_students) * 100;
+
+        $data['total'] = $total_students;
+        $data['completed'] = $completed;
+        $data['percentage'] = round($percentage, 2);
+    }
+
+    return $data;
+}
+
+public function countStudents($class_id, $section_id)
+{
+    return DB::table('students')
+        ->join('student_session', 'students.id', '=', 'student_session.student_id')
+        ->where([
+            ['student_session.class_id', '=', $class_id],
+            ['student_session.section_id', '=', $section_id],
+            ['students.is_active', '=', 'yes'],
+            // ['student_session.session_id', '=', $this->current_session],
+        ])
+        ->groupBy('student_session.student_id')
+        ->count();
+}
+
+public function countEvalStudents($id, $class_id, $section_id)
+{
+    return DB::table('homework')
+        ->select(DB::raw('count(*) as total'))
+        ->join('homework_evaluation', 'homework_evaluation.homework_id', '=', 'homework.id')
+        ->join('student_session', 'student_session.id', '=', 'homework_evaluation.student_session_id')
+        ->join('students', 'students.id', '=', 'student_session.student_id')
+        ->where([
+            ['homework.id', '=', $id],
+            // ['homework.session_id', '=', $this->current_session],
+            ['students.is_active', '=', 'yes'],
+        ])
+        ->first();
+}
+
+
+
 
     /**
      * Show the form for creating a new resource.
