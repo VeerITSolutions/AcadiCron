@@ -415,6 +415,8 @@ Route::post('/homework', [HomeworkController::class, 'create']);
 Route::delete('/homework/{id}', [HomeworkController::class, 'destroy']);
 Route::post('/homework/{id}', [HomeworkController::class, 'update']);
 
+Route::post('/search-homework', [HomeworkController::class, 'searchHomework']);
+
 Route::get('/roomtype', [RoomTypesController::class, 'index']);
 Route::post('/roomtype', [RoomTypesController::class, 'create']);
 Route::delete('/roomtype/{id}', [RoomTypesController::class, 'destroy']);
