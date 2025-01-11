@@ -438,11 +438,6 @@ Route::post('/hostel-room', [HostelRoomController::class, 'create']);
 Route::delete('/hostel-room/{id}', [HostelRoomController::class, 'destroy']);
 Route::post('/hostel-room/{id}', [HostelRoomController::class, 'update']);
 
-Route::get('/hostel-room', [HostelRoomController::class, 'index']);
-Route::post('/hostel-room', [HostelRoomController::class, 'create']);
-Route::delete('/hostel-room/{id}', [HostelRoomController::class, 'destroy']);
-Route::post('/hostel-room/{id}', [HostelRoomController::class, 'update']);
-
 Route::get('/online-exam', [OnlineexamController::class, 'index']);
 Route::post('/online-exam', [OnlineexamController::class, 'create']);
 Route::delete('/online-exam/{id}', [OnlineexamController::class, 'destroy']);
