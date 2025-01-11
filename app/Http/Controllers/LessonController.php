@@ -52,14 +52,30 @@ class LessonController extends Controller
         // Validate the incoming request
         $validatedData = $request->all();
 
+        $class_id = $validatedData['selectedClass'];
+        $section_id = $validatedData['selectedSection'];
+        $subject_group_id = $validatedData['selectedSubjectGroup'];
+        $current_session = $validatedData['currentSessionId'];
 
         // Create a new lesson
-        $lesson = new Lesson();
-        $lesson->session_id= $validatedData['session_id'];
-        $lesson->subject_group_subject_id = $validatedData['subject_group_subject_id'];
-        $lesson->subject_group_class_sections_id = $validatedData['subject_group_class_sections_id'];
-        $lesson->name = $validatedData['name'];
-        $lesson->save();
+
+
+
+        foreach ($validatedData['name'] as $day) {
+
+            $lesson = new Lesson();
+
+             $lessonLastId =    $lesson->getSubjectGroupClassSectionsId($class_id, $section_id, $subject_group_id , $current_session);
+
+
+
+            $lesson->session_id= $current_session;
+            $lesson->subject_group_subject_id = $subject_group_id;
+            $lesson->subject_group_class_sections_id = $lessonLastId;
+            $lesson->name = $day;
+            $lesson->save();
+        }
+
 
         return response()->json([
             'success' => true,
