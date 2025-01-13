@@ -72,47 +72,57 @@ $data = $query->paginate($perPage, ['*'], 'page', $page);
      * Show the form for creating a new resource.
      */
     public function create(Request $request)
-{
-    // Validate the incoming request
-    $validatedData = $request->all();
+    {
+        // Validate the incoming request
+        $validatedData = $request->all();
 
-    $class_id = $validatedData['selectedClass'];
-    $section_id = $validatedData['selectedSection'];
-    $subject_group_id = $validatedData['selectedSubjectGroup'];
-    $current_session = $validatedData['currentSessionId'];
+        $class_id = $validatedData['selectedClass'];
+        $section_id = $validatedData['selectedSection'];
+        $subject_group_id = $validatedData['selectedSubjectGroup'];
+        $current_session = $validatedData['currentSessionId'];
 
-    $lesson = new Lesson();
+        $lesson = new Lesson();
 
-    // Retrieve the ID for the subject group class section
-    $lessonLastId = $lesson->getSubjectGroupClassSectionsId($class_id, $section_id, $subject_group_id, $current_session);
+        // Retrieve the ID for the subject group class section
+        $lessonLastId = $lesson->getSubjectGroupClassSectionsId($class_id, $section_id, $subject_group_id, $current_session);
 
-    if (!$lessonLastId) {
+        if (!$lessonLastId) {
+            return response()->json([
+                'data' => $lessonLastId,
+                'success' => false,
+                'message' => 'Invalid subject group class sections ID. Please check the input data.',
+            ], 400); // 400 Bad Request
+        }
+
+        // Verify that the subject_group_class_sections_id exists in the database
+        $exists = DB::table('subject_group_class_sections')->where('id', $lessonLastId)->exists();
+        if (!$exists) {
+            return response()->json([
+                'success' => false,
+                'message' => 'The subject group class sections ID does not exist in the database.',
+            ], 400);
+        }
+
+        // Initialize an array to track created lessons
+        $createdLessons = [];
+        foreach ($validatedData['name'] as $day) {
+            $newLesson = new Lesson();
+            $newLesson->session_id = $current_session;
+            $newLesson->subject_group_subject_id = $subject_group_id;
+            $newLesson->subject_group_class_sections_id = $lessonLastId; // Ensure this is valid
+            $newLesson->name = $day;
+
+            // Save the new lesson
+            $newLesson->save();
+            $createdLessons[] = $newLesson; // Keep track of created lessons for response
+        }
+
         return response()->json([
-            'success' => false,
-            'message' => 'Invalid subject group class sections ID. Please check the input data.',
-        ], 400); // 400 Bad Request
+            'success' => true,
+            'message' => 'Lessons saved successfully',
+            'lessons' => $createdLessons,
+        ], 201); // 201 Created status code
     }
-
-    $createdLessons = [];
-    foreach ($validatedData['name'] as $day) {
-        $newLesson = new Lesson();
-        $newLesson->session_id = $current_session;
-        $newLesson->subject_group_subject_id = $subject_group_id;
-        $newLesson->subject_group_class_sections_id = $lessonLastId; // Ensure this is valid
-        $newLesson->name = $day;
-
-        // Save the new lesson
-        $newLesson->save();
-        $createdLessons[] = $newLesson; // Keep track of created lessons for response
-    }
-
-    return response()->json([
-        'success' => true,
-        'message' => 'Lessons saved successfully',
-        'lessons' => $createdLessons,
-    ], 201); // 201 Created status code
-}
-
 
     /**
      * Store a newly created resource in storage.
