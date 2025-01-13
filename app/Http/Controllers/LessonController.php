@@ -51,8 +51,8 @@ class LessonController extends Controller
     ->join('class_sections', 'class_sections.id', '=', 'subject_group_class_sections.class_section_id')
     ->join('sections', 'sections.id', '=', 'class_sections.section_id')
     ->join('classes', 'classes.id', '=', 'class_sections.class_id')
-    ->where('lesson.session_id', $sessinoId)
-    ->groupBy('lesson.subject_group_subject_id', 'lesson.subject_group_class_sections_id');
+    ->where('lesson.session_id', $sessinoId);
+    /* ->groupBy('lesson.subject_group_subject_id', 'lesson.subject_group_class_sections_id'); */
 
 $data = $query->paginate($perPage, ['*'], 'page', $page);
 
