@@ -32,6 +32,8 @@ class LessonController extends Controller
     ->select(
         'lesson.id',
         'lesson.name',
+        'lesson.subject_group_subject_id',
+        'lesson.subject_group_class_sections_id',
         'subject_groups.name as sgname',
         'subjects.name as subname',
         'sections.section as sname',
@@ -79,6 +81,7 @@ $data = $query->paginate($perPage, ['*'], 'page', $page);
         $class_id = $validatedData['selectedClass'];
         $section_id = $validatedData['selectedSection'];
         $subject_group_id = $validatedData['selectedSubjectGroup'];
+        $selectedSubject = $validatedData['selectedSubject'];
         $current_session = $validatedData['currentSessionId'];
 
         $lesson = new Lesson();
@@ -108,7 +111,7 @@ $data = $query->paginate($perPage, ['*'], 'page', $page);
         foreach ($validatedData['name'] as $day) {
             $newLesson = new Lesson();
             $newLesson->session_id = $current_session;
-            $newLesson->subject_group_subject_id = $subject_group_id;
+            $newLesson->subject_group_subject_id = $selectedSubject;
             $newLesson->subject_group_class_sections_id = $lessonLastId; // Ensure this is valid
             $newLesson->name = $day;
 
