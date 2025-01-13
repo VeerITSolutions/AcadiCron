@@ -74,7 +74,7 @@ class HomeworkController extends Controller
     }
 
     // Apply sorting
-    $paginatedData = $query->orderBy('homework.id', 'asc')->paginate($perPage, ['*'], 'page', $page);
+    $paginatedData = $query->orderBy('homework.id', 'desc')->paginate($perPage, ['*'], 'page', $page);
 
 
     // Return paginated data with total count and pagination details
