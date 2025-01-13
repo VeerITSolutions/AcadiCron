@@ -64,33 +64,27 @@ $paginatedData = $query->orderBy('id', 'desc')->paginate($perPage, ['*'], 'page'
         $validatedData = $request->all();
 
 
-        // Create a new category
-        $category = new ClassTeacher();
-        $category->class_id = $validatedData['class_id'];
-        $category->section_id = $validatedData['section_id'];
-        $category->session_id = $validatedData['session_id'];
-        $category->ClassTeacher_date = $validatedData['ClassTeacher_date'];
-        $category->submit_date = $validatedData['submit_date'];
-        $category->staff_id = $validatedData['staff_id'];
-        $category->subject_group_subject_id = $validatedData['subject_group_subject_id'];
-        $category->subject_id = $validatedData['subject_id'];
-        $category->description = $validatedData['description'];
-        $category->create_date = $validatedData['create_date'];
-        $category->evaluation_date = $validatedData['evaluation_date'];
-        $category->document = $validatedData['document'];
-        $category->created_by = $validatedData['created_by'];
-        $category->evaluated_by = $validatedData['evaluated_by'];
-        $category->subject_name = $validatedData['subject_name'];
-        $category->subject_groups_id = $validatedData['subject_groups_id'];
-        $category->name = $validatedData['name'];
-        $category->assignments = $validatedData['assignments'];
+        // Create a new classteacher
+       
+       
+       foreach($validatedData['staff_id'] as $value){
 
-        $category->save();
+        $classteacher = new ClassTeacher();
+        $classteacher->class_id = $validatedData['class_id'];
+        $classteacher->staff_id = $value;
+        $classteacher->section_id = $validatedData['section_id'];
+        $classteacher->session_id = $validatedData['session_id'];
+
+        $classteacher->save();
+       }
+       
+
+       
 
         return response()->json([
             'success' => true,
             'message' => 'Class Teacher saved successfully',
-            'category' => $category,
+            'classteacher' => $classteacher,
         ], 201); // 201 Created status code
     }
 
@@ -127,14 +121,14 @@ $paginatedData = $query->orderBy('id', 'desc')->paginate($perPage, ['*'], 'page'
     public function update(Request $request,string $id)
     {
 
-        // Find the category by id
-        $category = ClassTeacher::findOrFail($id);
+        // Find the classteacher by id
+        $classteacher = ClassTeacher::findOrFail($id);
 
         // Validate the request data
         $validatedData = $request->all();
 
-        // Update the category
-        $category->update($validatedData);
+        // Update the classteacher
+        $classteacher->update($validatedData);
 
 
 
@@ -142,7 +136,7 @@ $paginatedData = $query->orderBy('id', 'desc')->paginate($perPage, ['*'], 'page'
         return response()->json([
             'success' => true,
             'message' => 'Edit successfully',
-            'category' => $category,
+            'classteacher' => $classteacher,
         ], 201); // 201 Created status code
     }
 
@@ -152,16 +146,16 @@ $paginatedData = $query->orderBy('id', 'desc')->paginate($perPage, ['*'], 'page'
     public function destroy($id)
     {
         try {
-            // Find the category by ID
-            $category = ClassTeacher::findOrFail($id);
+            // Find the classteacher by ID
+            $classteacher = ClassTeacher::findOrFail($id);
 
-            // Delete the category
-            $category->delete();
+            // Delete the classteacher
+            $classteacher->delete();
 
             // Return success response
             return response()->json(['success' => true, 'message' => 'class teacher  deleted successfully']);
         } catch (\Exception $e) {
-            // Handle failure (e.g. if the category was not found)
+            // Handle failure (e.g. if the classteacher was not found)
             return response()->json(['success' => false, 'message' => 'class teacher deletion failed: ' . $e->getMessage()], 500);
         }
     }
