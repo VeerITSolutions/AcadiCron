@@ -30,19 +30,17 @@ class LessonController extends Controller
     // Query using Eloquent with joins and relationships
     $query = DB::table('lesson')
     ->select(
-        DB::raw('
-            MAX(lesson.id) as id,
-            MAX(lesson.name) as name,
-            MAX(subject_groups.name) as sgname,
-            MAX(subjects.name) as subname,
-            MAX(sections.section) as sname,
-            MAX(sections.id) as sectionid,
-            MAX(subject_groups.id) as subjectgroupsid,
-            MAX(subjects.id) as subjectid,
-            MAX(class_sections.id) as csectionid,
-            MAX(classes.class) as cname,
-            MAX(classes.id) as classid
-        ')
+        'lesson.id',
+        'lesson.name',
+        'subject_groups.name as sgname',
+        'subjects.name as subname',
+        'sections.section as sname',
+        'sections.id as sectionid',
+        'subject_groups.id as subjectgroupsid',
+        'subjects.id as subjectid',
+        'class_sections.id as csectionid',
+        'classes.class as cname',
+        'classes.id as classid'
     )
     ->join('subject_group_subjects', 'subject_group_subjects.id', '=', 'lesson.subject_group_subject_id')
     ->join('subject_groups', 'subject_groups.id', '=', 'subject_group_subjects.subject_group_id')
