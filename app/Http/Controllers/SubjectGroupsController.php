@@ -20,7 +20,7 @@ class SubjectGroupsController extends Controller
     // Initialize pagination variables
     $page = (int) $request->input('page', 1);
     $perPage = (int) $request->input('perPage', 10);
-
+    $getselectedSessionId = (int) $request->input('getselectedSessionId');
 
     $section_id = $request->input('section_id');
     $class_id = $request->input('class_id');
@@ -30,7 +30,7 @@ class SubjectGroupsController extends Controller
             'session',
             'classSections.classSection.class',
             'classSections.classSection.section',
-        ]);
+        ])->where('subject_groups.session_id', $getselectedSessionId);
 
         // Ensure $section_id is an array
         if (!is_array($section_id)) {
