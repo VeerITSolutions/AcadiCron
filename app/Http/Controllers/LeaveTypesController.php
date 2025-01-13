@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\LeaveTypes;
 use Illuminate\Http\Request;
+use DB;
 
 class LeaveTypesController extends Controller
 {
