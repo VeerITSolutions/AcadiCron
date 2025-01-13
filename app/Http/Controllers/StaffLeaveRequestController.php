@@ -96,7 +96,7 @@ class StaffLeaveRequestController extends Controller
         $category->date  = $validatedData['date'];
         $category->leave_days  = $dateDifference;
         $category->employee_remark  = $validatedData['employee_remark'];
-        $category->admin_remark  = $validatedData['admin_remark'];
+        $category->admin_remark  = $validatedData['admin_remark'] ?? 0;
         $category->status  = $validatedData['status'];
         $category->staff_id  = 1;
        $category->applied_by = $validatedData['selectedRoleLeave'] ?? 'default_value';

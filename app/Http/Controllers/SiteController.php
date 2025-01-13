@@ -162,7 +162,7 @@ class SiteController extends Controller
 
                 }
             }
-
+            $userData['user_id'] =$user->id;
             return response()->json([
                 'success' => true,
                 'message' => 'Successfully authenticated',

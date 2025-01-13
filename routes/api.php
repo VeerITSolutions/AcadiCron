@@ -391,6 +391,8 @@ Route::post('/leave-type', [LeaveTypesController::class, 'create']);
 Route::delete('/leave-type/{id}', [LeaveTypesController::class, 'destroy']);
 Route::post('/leave-type/{id}', [LeaveTypesController::class, 'update']);
 
+Route::get('/leave-type/{id}', [LeaveTypesController::class, 'allotedLeaveType']);
+
 
 Route::get('/notification/{id?}', [NotificationSettingController::class, 'index']);
 Route::post('/notification', [NotificationSettingController::class, 'create']);
