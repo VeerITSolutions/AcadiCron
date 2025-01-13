@@ -166,10 +166,17 @@ $data = $query->paginate($perPage, ['*'], 'page', $page);
         // Validate the request data
         $validatedData = $request->all();
 
-        // Update the lesson
-        $lesson->update($validatedData);
 
 
+
+        foreach ($validatedData['name'] as $name) {
+
+            $lesson->name = $name;
+
+            // Save the new lesson
+            $lesson->update();
+
+        }
 
 
         return response()->json([
