@@ -30,27 +30,12 @@ class TopicController extends Controller
          // Query using Eloquent with joins and relationships
          $query = DB::table('topic')
          ->select(
-             'topic.id',
+             'topic.*',
              'topic.name',
-             'topic.subject_group_subject_id',
-             'topic.subject_group_class_sections_id',
-             'subject_groups.name as sgname',
-             'subjects.name as subname',
-             'sections.section as sname',
-             'sections.id as sectionid',
-             'subject_groups.id as subjectgroupsid',
-             'subjects.id as subjectid',
-             'class_sections.id as csectionid',
-             'classes.class as cname',
-             'classes.id as classid'
+             'lesson.id as lesson_id'
          )
-         ->join('subject_group_subjects', 'subject_group_subjects.id', '=', 'Topic.subject_group_subject_id')
-         ->join('subject_groups', 'subject_groups.id', '=', 'subject_group_subjects.subject_group_id')
-         ->join('subjects', 'subjects.id', '=', 'subject_group_subjects.subject_id')
-         ->join('subject_group_class_sections', 'subject_group_class_sections.id', '=', 'Topic.subject_group_class_sections_id')
-         ->join('class_sections', 'class_sections.id', '=', 'subject_group_class_sections.class_section_id')
-         ->join('sections', 'sections.id', '=', 'class_sections.section_id')
-         ->join('classes', 'classes.id', '=', 'class_sections.class_id')
+         ->join('lesson', 'lesson.id', '=', 'topic.lesson_id')
+
          ->where('topic.session_id', $sessinoId)
          ->orderBy('topic.id', 'desc');
          /* ->groupBy('Topic.subject_group_subject_id', 'Topic.subject_group_class_sections_id'); */
