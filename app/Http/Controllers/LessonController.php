@@ -166,11 +166,20 @@ $data = $query->paginate($perPage, ['*'], 'page', $page);
         // Validate the request data
         $validatedData = $request->all();
 
-
-
+        $class_id = $validatedData['selectedClass'];
+        $section_id = $validatedData['selectedSection'];
+        $subject_group_id = $validatedData['selectedSubjectGroup'];
+        $selectedSubject = $validatedData['selectedSubject'];
+        $current_session = $validatedData['currentSessionId'];
+        $lessonLastId = $lesson->getSubjectGroupClassSectionsId($class_id, $section_id, $subject_group_id, $current_session);
 
         foreach ($validatedData['name'] as $name) {
 
+
+
+            $lesson->session_id = $current_session;
+            $lesson->subject_group_subject_id = $selectedSubject;
+            $lesson->subject_group_class_sections_id = $lessonLastId; // Ensure this is valid
             $lesson->name = $name;
 
             // Save the new lesson
