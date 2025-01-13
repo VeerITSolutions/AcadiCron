@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\LeaveTypes;
 use Illuminate\Http\Request;
+use DB;
 
 class LeaveTypesController extends Controller
 {
@@ -41,7 +42,21 @@ class LeaveTypesController extends Controller
         ], 200);
     }
 
+    public function allotedLeaveType($id) {
+        $data = DB::table('staff_leave_details')
+            ->join('leave_types', 'staff_leave_details.leave_type_id', '=', 'leave_types.id')
+            ->where('staff_id', $id)
+            ->select('staff_leave_details.*', 'leave_types.type', 'leave_types.id as typeid')
+            ->get();
 
+
+            return response()->json([
+                'success' => true,
+                'data' => $data
+             
+            ], 200);
+    }
+    
 
     /**
      * Show the form for creating a new resource.

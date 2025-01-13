@@ -162,7 +162,7 @@ class StudentApplyleaveController extends Controller
         // Create a new category
         $category = new StudentApplyleave();
 
-        $category->student_session_id = $validatedData['student_session_id'] ?? 0;
+        $category->student_session_id = $validatedData['selectedStudent'] ?? 0;
         $category->from_date = $validatedData['from_date'] ?? null;
         $category->to_date = $validatedData['to_date'] ?? null;
         $category->apply_date = $validatedData['apply_date'] ?? null;

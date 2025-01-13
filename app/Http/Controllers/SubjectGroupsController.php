@@ -20,7 +20,7 @@ class SubjectGroupsController extends Controller
     // Initialize pagination variables
     $page = (int) $request->input('page', 1);
     $perPage = (int) $request->input('perPage', 10);
-
+    $getselectedSessionId = (int) $request->input('getselectedSessionId');
 
     $section_id = $request->input('section_id');
     $class_id = $request->input('class_id');
@@ -30,7 +30,7 @@ class SubjectGroupsController extends Controller
             'session',
             'classSections.classSection.class',
             'classSections.classSection.section',
-        ]);
+        ])->where('subject_groups.session_id', $getselectedSessionId);
 
         // Ensure $section_id is an array
         if (!is_array($section_id)) {
@@ -119,37 +119,55 @@ class SubjectGroupsController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        // Find the subject group by ID
-        $subjectGroup = SubjectGroups::findOrFail($id);
-
-        $validatedData = $request->validate([
-            'name' => 'required',
-        ]);
-
-         // Get the description from the request without validation
-         $name = $request->input('name');
-         $description = $request->input('description');
-         $savedSessionstate = $request->input('savedSessionstate');
-         $is_active = $request->input('is_active');
-
-         // Merge the validated data with the description
-         $updatedData = array_merge($validatedData, [
-             'name' => $name,
-             'description' => $description,
-             'savedSessionstate' => $savedSessionstate,
-         ]);
-
-
-        // Save the updated record
-        $subjectGroup->save();
-
-        // Return a success response
+        // Retrieve the input data from the request
+        $data = $request->data;
+        $subject_group = $request->subject_group;
+        $section_group = $request->section_group;
+        $session_id = $request->session_id;
+    
+        // Check if subject group exists by id
+        $subject_group_exists = DB::table('subject_groups')->where('id', $id)->exists();
+    
+        if ($subject_group_exists) {
+            // Update subject group if it exists
+            DB::table('subject_groups')->where('id', $id)->update($data);
+            $subject_group_id = $id;
+        } else {
+            // Insert a new subject group if not found
+            $subject_group_id = DB::table('subject_groups')->insertGetId($data);
+        }
+    
+        // Prepare subject group subjects data for batch insert
+        $subject_group_subject_array = array_map(function ($subject_id) use ($subject_group_id, $session_id) {
+            return [
+                'subject_group_id' => $subject_group_id,
+                'subject_id' => $subject_id,
+                'session_id' => $session_id,
+            ];
+        }, $subject_group);
+    
+        // Batch insert into subject_group_subjects
+        DB::table('subject_group_subjects')->insert($subject_group_subject_array);
+    
+        // Prepare subject group class sections data for batch insert
+        $section_group_array = array_map(function ($class_section_id) use ($subject_group_id, $session_id) {
+            return [
+                'subject_group_id' => $subject_group_id,
+                'class_section_id' => $class_section_id,
+                'session_id' => $session_id,
+            ];
+        }, $section_group);
+    
+        // Batch insert into subject_group_class_sections
+        DB::table('subject_group_class_sections')->insert($section_group_array);
+    
         return response()->json([
             'success' => true,
             'message' => 'Subject group updated successfully',
-            'subjectGroup' => $subjectGroup,
+            'subject_group_id' => $subject_group_id, // Include updated or inserted subject group id
         ], 200);
     }
+    
 
 
 

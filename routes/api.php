@@ -89,6 +89,7 @@ use App\Http\Controllers\FrontCmsMenusController;
 use App\Http\Controllers\OnlineexamController;
 use App\Http\Controllers\AlumniEventsController;
 use App\Http\Controllers\LessonController;
+use App\Http\Controllers\TopicController;
 
 /*
 |--------------------------------------------------------------------------
@@ -391,6 +392,8 @@ Route::post('/leave-type', [LeaveTypesController::class, 'create']);
 Route::delete('/leave-type/{id}', [LeaveTypesController::class, 'destroy']);
 Route::post('/leave-type/{id}', [LeaveTypesController::class, 'update']);
 
+Route::get('/leave-type/{id}', [LeaveTypesController::class, 'allotedLeaveType']);
+
 
 Route::get('/notification/{id?}', [NotificationSettingController::class, 'index']);
 Route::post('/notification', [NotificationSettingController::class, 'create']);
@@ -551,6 +554,13 @@ Route::get('/lesson', [LessonController::class, 'index']);
 Route::post('/lesson', [LessonController::class, 'create']);
 Route::delete('/lesson/{id}', [LessonController::class, 'destroy']);
 Route::post('/lesson/{id}', [LessonController::class, 'update']);
+
+
+Route::get('/topic', [TopicController::class, 'index']);
+Route::post('/topic', [TopicController::class, 'create']);
+Route::delete('/topic/{id}', [TopicController::class, 'destroy']);
+Route::post('/topic/{id}', [TopicController::class, 'update']);
+
 
 Route::post('/get-lessonplan-by-subjectid', [LessonplanLessonController::class, 'getLessonBySubjectId']);
 
