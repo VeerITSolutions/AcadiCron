@@ -554,7 +554,7 @@ Route::get('/lesson', [LessonController::class, 'index']);
 Route::post('/lesson', [LessonController::class, 'create']);
 Route::delete('/lesson/{id}', [LessonController::class, 'destroy']);
 Route::post('/lesson/{id}', [LessonController::class, 'update']);
-
+Route::post('/get-lesson-by-subject-id', [LessonController::class, 'getlessonBysubjectid']);
 
 Route::get('/topic', [TopicController::class, 'index']);
 Route::post('/topic', [TopicController::class, 'create']);

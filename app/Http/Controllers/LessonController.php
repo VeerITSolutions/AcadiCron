@@ -128,6 +128,39 @@ $data = $query->paginate($perPage, ['*'], 'page', $page);
         ], 201); // 201 Created status code
     }
 
+
+    public function getlessonBysubjectid(Request $request){
+
+        $validatedData = $request->all();
+
+        $class_id = $validatedData['selectedClass'];
+        $section_id = $validatedData['selectedSection'];
+        $subject_group_id = $validatedData['selectedSubjectGroup'];
+        $selectedSubject = $validatedData['selectedSubject'];
+        $current_session = $validatedData['currentSessionId'];
+
+        $lesson = new Lesson();
+
+        // Retrieve the ID for the subject group class section
+        $lessonLastId = $lesson->getSubjectGroupClassSectionsId($class_id, $section_id, $subject_group_id, $current_session);
+
+
+        $data   = $lesson->getlessonBysubjectid($selectedSubject, $lessonLastId);
+
+        if (!$data) {
+            return response()->json([
+                'data' => $data,
+                'success' => false,
+                'message' => 'success.',
+            ], 200); // 400 Bad Request
+        }
+        return response()->json([
+            'data' => '',
+            'success' => false,
+            'message' => 'success.',
+        ], 200); // 400 Bad Request
+    }
+
     /**
      * Store a newly created resource in storage.
      */
