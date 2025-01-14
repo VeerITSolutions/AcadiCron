@@ -202,11 +202,8 @@ class StudentListController extends Controller
         /* ->where('student_session.session_id', $this->current_session) */
         ->where('students.is_active', 'no');
 
-        // Paginate the filtered students data
-        $data = $query->orderBy('students.id', 'desc')->paginate($perPage, ['*'], 'page', $page);
-
-         // Apply filtering based on selectedClass
-         if (!empty($selectedClass)) {
+          // Apply filtering based on selectedClass
+          if (!empty($selectedClass)) {
             $query->where('student_session.class_id', $selectedClass);
         }
 
@@ -215,11 +212,19 @@ class StudentListController extends Controller
             $query->where('student_session.section_id', $selectedSection);
         }
 
-        // Apply filtering based on keyword (searching in the 'firstname' field)
         if (!empty($keyword)) {
-            $query->where('students.firstname', 'like', '%' . $keyword . '%');
+            $query->where(function ($subQuery) use ($keyword) {
+                $subQuery->where('students.firstname', 'like', '%' . $keyword . '%')
+                    ->orWhere('students.lastname', 'like', '%' . $keyword . '%')
+                    ->orWhere(DB::raw("CONCAT(students.firstname, ' ', students.lastname)"), 'like', '%' . $keyword . '%');
+            });
         }
+        
 
+        // Paginate the filtered students data
+        $data = $query->orderBy('students.id', 'desc')->paginate($perPage, ['*'], 'page', $page);
+
+       
         // Return the paginated data with total count and pagination details
         return response()->json([
             'success' => true,
