@@ -90,6 +90,7 @@ use App\Http\Controllers\OnlineexamController;
 use App\Http\Controllers\AlumniEventsController;
 use App\Http\Controllers\LessonController;
 use App\Http\Controllers\TopicController;
+use App\Http\Controllers\MultiClassStudentsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -300,6 +301,13 @@ Route::get('/student/multiclass', [SiteController::class, 'studentMultiClass']);
 Route::get('/student/bulkdelete', [SiteController::class, 'studentBulkDelete']);
 
 Route::get('/admin/dtstudentlist/disabled', [StudentListController::class, 'getdisableStudent']);
+
+
+Route::get('/multi-class', [MultiClassStudentsController::class, 'index']);
+Route::post('/multi-class', [MultiClassStudentsController::class, 'create']);
+Route::delete('/multi-class/{id}', [MultiClassStudentsController::class, 'destroy']);
+Route::post('/multi-class/{id}', [MultiClassStudentsController::class, 'update']);
+Route::post('/update-multi-class', [MultiClassStudentsController::class, 'saveMultiClass']);
 
 Route::get('/category', [CategoriesController::class, 'index']);
 Route::post('/category', [CategoriesController::class, 'create']);
