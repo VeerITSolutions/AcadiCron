@@ -144,7 +144,7 @@ $data = $query->paginate($perPage, ['*'], 'page', $page);
         // Retrieve the ID for the subject group class section
         $lessonLastId = $lesson->getSubjectGroupClassSectionsId($class_id, $section_id, $subject_group_id, $current_session);
 
-
+      
         $data   = $lesson->getlessonBysubjectid($selectedSubject, $lessonLastId);
 
         if (!$data) {
@@ -155,7 +155,7 @@ $data = $query->paginate($perPage, ['*'], 'page', $page);
             ], 200); // 400 Bad Request
         }
         return response()->json([
-            'data' => '',
+            'data' => $data,
             'success' => false,
             'message' => 'success.',
         ], 200); // 400 Bad Request
