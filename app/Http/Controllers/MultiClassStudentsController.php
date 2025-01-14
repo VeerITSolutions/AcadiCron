@@ -4,10 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Classes;  // Assuming your model names
 use App\Models\Sections;
-use App\Models\Sessions;
+use App\Models\StudentSession;
 use App\Models\Students;
-use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Http\Request;
 
 class MultiClassStudentsController extends Controller
 {
@@ -37,7 +37,7 @@ class MultiClassStudentsController extends Controller
         // Retrieve student data based on class and section
         $class_id = request()->input('class_id');
         $section_id = request()->input('section_id');
-        $studentsQuery = Sessions::searchMultiStudentByClassSection($class_id, $section_id);
+        $studentsQuery = StudentSession::searchMultiStudentByClassSection($class_id, $section_id);
     
         // If pagination is required, apply it
         $data['students'] = $studentsQuery->paginate(10);  // Adjust the number of items per page as needed
@@ -57,13 +57,10 @@ class MultiClassStudentsController extends Controller
     $message = "";
     $duplicate_record = 0;
     
-    // Validation rules
-    $validated = $request->validate([
-        'student_id' => 'required|trim',
-        'row_count' => 'required|array',
-    ]);
-
+    $validated = $request->all();
     $total_rows = $request->input('row_count');
+    
+    
     
     if (!empty($total_rows)) {
         foreach ($total_rows as $row_count) {
