@@ -87,7 +87,18 @@ class HomeworkController extends Controller
     ], 200);
 }
 
+    public function getStudents(Request $request)
+    {
+        $object = new Homework();
+        $id = $request->id;
+        $data = $object->getStudents($id);
 
+
+            return response()->json([
+                'success' => true,
+                'data' => $data,
+            ], 200);
+    }
 
 public function searchHomework(Request $request)
 

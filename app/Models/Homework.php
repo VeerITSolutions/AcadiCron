@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Homework extends Model
 {
@@ -35,4 +36,40 @@ class Homework extends Model
         {
             return $this->hasMany(SubmitAssignment::class, 'homework_id');
         }
+
+        public function getStudents($id)
+{
+    return DB::table('student_session')
+        ->selectRaw('
+            IFNULL(homework_evaluation.id, 0) as homework_evaluation_id,
+            student_session.*,
+            students.firstname,
+            students.middlename,
+            students.lastname,
+            students.admission_no
+        ')
+        ->joinSub(
+            DB::table('homework')
+                ->select('id as homework_id', 'class_id', 'section_id', 'session_id')
+                ->where('id', '=', $id),
+            'home_work',
+            function ($join) {
+                $join->on('home_work.class_id', '=', 'student_session.class_id')
+                    ->on('home_work.section_id', '=', 'student_session.section_id')
+                    ->on('home_work.session_id', '=', 'student_session.session_id');
+            }
+        )
+        ->join('students', function ($join) {
+            $join->on('students.id', '=', 'student_session.student_id')
+                ->where('students.is_active', '=', 'yes');
+        })
+        ->leftJoin('homework_evaluation', function ($join) use ($id) {
+            $join->on('homework_evaluation.student_session_id', '=', 'student_session.id')
+                ->on('homework_evaluation.homework_id', '=', DB::raw($id))
+                ->where('students.is_active', '=', 'yes');
+        })
+        ->orderBy('students.id', 'desc')
+        ->get()
+        ->toArray();
+}
 }

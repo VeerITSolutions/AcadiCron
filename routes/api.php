@@ -413,6 +413,7 @@ Route::get('/homework', [HomeworkController::class, 'index']);
 Route::post('/homework', [HomeworkController::class, 'create']);
 Route::delete('/homework/{id}', [HomeworkController::class, 'destroy']);
 Route::post('/homework/{id}', [HomeworkController::class, 'update']);
+Route::post('/get-students-homework', [HomeworkController::class, 'getStudents']);
 
 Route::post('/search-homework', [HomeworkController::class, 'searchHomework']);
 
