@@ -59,12 +59,15 @@ class QuestionsController extends Controller
      */
     public function create(Request $request)
     {
-
-
         // Validate the incoming request
-        $validatedData = $request->all();
-
-
+        $validatedData = $request->validate([
+            'subject_id' => 'required|integer',
+            'question_type' => 'required|string', // Ensure this key exists
+            'level' => 'required|string',
+            'class_id' => 'required|integer',
+            'section_id' => 'required|integer',
+        ]);
+    
         // Create a new Questions
         $Questions = new Questions();
         $Questions->subject_id = $validatedData['subject_id'];
@@ -72,16 +75,16 @@ class QuestionsController extends Controller
         $Questions->level = $validatedData['level'];
         $Questions->class_id = $validatedData['class_id'];
         $Questions->section_id = $validatedData['section_id'];
-
-
+    
         $Questions->save();
-
+    
         return response()->json([
             'success' => true,
-            'message' => 'Questions  saved successfully',
+            'message' => 'Questions saved successfully',
             'Questions' => $Questions,
         ], 201); // 201 Created status code
     }
+    
 
 
     /**
