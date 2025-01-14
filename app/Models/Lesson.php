@@ -17,19 +17,31 @@ class Lesson extends Model
 
 
 
-public function getSubjectGroupClassSectionsId($class_id, $section_id, $subject_group_id, $current_session)
-{
-    $result = DB::table('subject_group_class_sections')
-        ->join('class_sections', 'class_sections.id', '=', 'subject_group_class_sections.class_section_id')
-        ->join('subject_groups', 'subject_groups.id', '=', 'subject_group_class_sections.subject_group_id')
-        ->where('class_sections.class_id', $class_id)
-        ->where('class_sections.section_id', $section_id)
-        ->where('subject_groups.id', $subject_group_id)
-        ->where('subject_groups.session_id', $current_session)
-        ->orderBy('subject_groups.id', 'DESC')
-        ->select('subject_groups.name', 'subject_group_class_sections.*')
-        ->first();
+    public function getSubjectGroupClassSectionsId($class_id, $section_id, $subject_group_id, $current_session)
+    {
+        $result = DB::table('subject_group_class_sections')
+            ->join('class_sections', 'class_sections.id', '=', 'subject_group_class_sections.class_section_id')
+            ->join('subject_groups', 'subject_groups.id', '=', 'subject_group_class_sections.subject_group_id')
+            ->where('class_sections.class_id', $class_id)
+            ->where('class_sections.section_id', $section_id)
+            ->where('subject_groups.id', $subject_group_id)
+            ->where('subject_groups.session_id', $current_session)
+            ->orderBy('subject_groups.id', 'DESC')
+            ->select('subject_groups.name', 'subject_group_class_sections.*')
+            ->first();
 
-        return $result ? $result->id : null; // Return the ID if found
-}
+            return $result ? $result->id : null; // Return the ID if found
+    }
+
+    public function getLessonBySubjectId($sub_id, $class_section_id)
+    {
+        return DB::table('lesson')
+            ->select('*')
+            ->where('subject_group_subject_id', $sub_id)
+            ->where('subject_group_class_sections_id', $class_section_id)
+            ->get()
+            ->toArray();
+
+
+    }
 }

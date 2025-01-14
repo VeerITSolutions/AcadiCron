@@ -51,7 +51,8 @@ class LessonController extends Controller
     ->join('class_sections', 'class_sections.id', '=', 'subject_group_class_sections.class_section_id')
     ->join('sections', 'sections.id', '=', 'class_sections.section_id')
     ->join('classes', 'classes.id', '=', 'class_sections.class_id')
-    ->where('lesson.session_id', $sessinoId);
+    ->where('lesson.session_id', $sessinoId)
+    ->orderBy('lesson.id', 'desc');
     /* ->groupBy('lesson.subject_group_subject_id', 'lesson.subject_group_class_sections_id'); */
 
 $data = $query->paginate($perPage, ['*'], 'page', $page);
@@ -127,6 +128,39 @@ $data = $query->paginate($perPage, ['*'], 'page', $page);
         ], 201); // 201 Created status code
     }
 
+
+    public function getlessonBysubjectid(Request $request){
+
+        $validatedData = $request->all();
+
+        $class_id = $validatedData['selectedClass'];
+        $section_id = $validatedData['selectedSection'];
+        $subject_group_id = $validatedData['selectedSubjectGroup'];
+        $selectedSubject = $validatedData['selectedSubject'];
+        $current_session = $validatedData['currentSessionId'];
+
+        $lesson = new Lesson();
+
+        // Retrieve the ID for the subject group class section
+        $lessonLastId = $lesson->getSubjectGroupClassSectionsId($class_id, $section_id, $subject_group_id, $current_session);
+
+      
+        $data   = $lesson->getlessonBysubjectid($selectedSubject, $lessonLastId);
+
+        if (!$data) {
+            return response()->json([
+                'data' => $data,
+                'success' => false,
+                'message' => 'success.',
+            ], 200); // 400 Bad Request
+        }
+        return response()->json([
+            'data' => $data,
+            'success' => false,
+            'message' => 'success.',
+        ], 200); // 400 Bad Request
+    }
+
     /**
      * Store a newly created resource in storage.
      */
@@ -165,10 +199,26 @@ $data = $query->paginate($perPage, ['*'], 'page', $page);
         // Validate the request data
         $validatedData = $request->all();
 
-        // Update the lesson
-        $lesson->update($validatedData);
+        $class_id = $validatedData['selectedClass'];
+        $section_id = $validatedData['selectedSection'];
+        $subject_group_id = $validatedData['selectedSubjectGroup'];
+        $selectedSubject = $validatedData['selectedSubject'];
+        $current_session = $validatedData['currentSessionId'];
+        $lessonLastId = $lesson->getSubjectGroupClassSectionsId($class_id, $section_id, $subject_group_id, $current_session);
+
+        foreach ($validatedData['name'] as $name) {
 
 
+
+            $lesson->session_id = $current_session;
+            $lesson->subject_group_subject_id = $selectedSubject;
+            $lesson->subject_group_class_sections_id = $lessonLastId; // Ensure this is valid
+            $lesson->name = $name;
+
+            // Save the new lesson
+            $lesson->update();
+
+        }
 
 
         return response()->json([

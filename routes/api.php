@@ -89,6 +89,7 @@ use App\Http\Controllers\FrontCmsMenusController;
 use App\Http\Controllers\OnlineexamController;
 use App\Http\Controllers\AlumniEventsController;
 use App\Http\Controllers\LessonController;
+use App\Http\Controllers\TopicController;
 
 /*
 |--------------------------------------------------------------------------
@@ -555,6 +556,13 @@ Route::get('/lesson', [LessonController::class, 'index']);
 Route::post('/lesson', [LessonController::class, 'create']);
 Route::delete('/lesson/{id}', [LessonController::class, 'destroy']);
 Route::post('/lesson/{id}', [LessonController::class, 'update']);
+Route::post('/get-lesson-by-subject-id', [LessonController::class, 'getlessonBysubjectid']);
+
+Route::get('/topic', [TopicController::class, 'index']);
+Route::post('/topic', [TopicController::class, 'create']);
+Route::delete('/topic/{id}', [TopicController::class, 'destroy']);
+Route::post('/topic/{id}', [TopicController::class, 'update']);
+
 
 Route::post('/get-lessonplan-by-subjectid', [LessonplanLessonController::class, 'getLessonBySubjectId']);
 
