@@ -27,18 +27,34 @@ class TopicController extends Controller
              $perPage = 10; // Default value if invalid
          }
 
-         // Query using Eloquent with joins and relationships
+
+
          $query = DB::table('topic')
          ->select(
              'topic.*',
-             'topic.name',
-             'lesson.id as lesson_id'
+             'subject_groups.name as sgname',
+             'subjects.name as subname',
+             'sections.section as sname',
+             'sections.id as sectionid',
+             'subject_groups.id as subjectgroupsid',
+             'subjects.id as subjectid',
+             'class_sections.id as csectionid',
+             'classes.class as cname',
+             'classes.id as classid',
+             'lesson.name as lessonname',
+             'lesson.subject_group_class_sections_id',
+             'lesson.subject_group_subject_id'
          )
          ->join('lesson', 'lesson.id', '=', 'topic.lesson_id')
-
+         ->join('subject_group_subjects', 'subject_group_subjects.id', '=', 'lesson.subject_group_subject_id')
+         ->join('subject_groups', 'subject_groups.id', '=', 'subject_group_subjects.subject_group_id')
+         ->join('subjects', 'subjects.id', '=', 'subject_group_subjects.subject_id')
+         ->join('subject_group_class_sections', 'subject_group_class_sections.id', '=', 'lesson.subject_group_class_sections_id')
+         ->join('class_sections', 'class_sections.id', '=', 'subject_group_class_sections.class_section_id')
+         ->join('sections', 'sections.id', '=', 'class_sections.section_id')
+         ->join('classes', 'classes.id', '=', 'class_sections.class_id')
          ->where('topic.session_id', $sessinoId)
          ->orderBy('topic.id', 'desc');
-         /* ->groupBy('Topic.subject_group_subject_id', 'Topic.subject_group_class_sections_id'); */
 
      $data = $query->paginate($perPage, ['*'], 'page', $page);
 
@@ -61,56 +77,33 @@ class TopicController extends Controller
           */
          public function create(Request $request)
          {
-             // Validate the incoming request
-             $validatedData = $request->all();
 
-             $class_id = $validatedData['selectedClass'];
-             $section_id = $validatedData['selectedSection'];
-             $subject_group_id = $validatedData['selectedSubjectGroup'];
-             $selectedSubject = $validatedData['selectedSubject'];
-             $current_session = $validatedData['currentSessionId'];
 
-             $Topic = new Topic();
 
-             // Retrieve the ID for the subject group class section
-             $TopicLastId = $Topic->getSubjectGroupClassSectionsId($class_id, $section_id, $subject_group_id, $current_session);
 
-             if (!$TopicLastId) {
-                 return response()->json([
-                     'data' => $TopicLastId,
-                     'success' => false,
-                     'message' => 'Invalid subject group class sections ID. Please check the input data.',
-                 ], 400); // 400 Bad Request
-             }
+            $validatedData = $request->all();
 
-             // Verify that the subject_group_class_sections_id exists in the database
-             $exists = DB::table('subject_group_class_sections')->where('id', $TopicLastId)->exists();
-             if (!$exists) {
-                 return response()->json([
-                     'success' => false,
-                     'message' => 'The subject group class sections ID does not exist in the database.',
-                 ], 400);
-             }
+            $lessonId = $validatedData['lessonId'];
+            $current_session = $validatedData['currentSessionId'];
 
-             // Initialize an array to track created Topics
-             $createdTopics = [];
-             foreach ($validatedData['name'] as $day) {
-                 $newTopic = new Topic();
-                 $newTopic->session_id = $current_session;
-                 $newTopic->subject_group_subject_id = $selectedSubject;
-                 $newTopic->subject_group_class_sections_id = $TopicLastId; // Ensure this is valid
-                 $newTopic->name = $day;
 
-                 // Save the new Topic
-                 $newTopic->save();
-                 $createdTopics[] = $newTopic; // Keep track of created Topics for response
-             }
+            foreach ($validatedData['name'] as $name) {
+                $Topic = new Topic();
+                $Topic->session_id = $current_session;
+                $Topic->lesson_id = $lessonId;
+                $Topic->complete_date =  now();
+                $Topic->status = 0;
+                $Topic->name = $name;
+                $Topic->save();
 
-             return response()->json([
-                 'success' => true,
-                 'message' => 'Topics saved successfully',
-                 'Topics' => $createdTopics,
-             ], 201); // 201 Created status code
+            }
+
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Added successfully',
+                'Topic' => $Topic,
+            ], 201); // 201 Created status code
          }
 
          /**
@@ -151,20 +144,20 @@ class TopicController extends Controller
              // Validate the request data
              $validatedData = $request->all();
 
-             $class_id = $validatedData['selectedClass'];
-             $section_id = $validatedData['selectedSection'];
-             $subject_group_id = $validatedData['selectedSubjectGroup'];
-             $selectedSubject = $validatedData['selectedSubject'];
+
+
+             $lessonId = $validatedData['lessonId'];
              $current_session = $validatedData['currentSessionId'];
-             $TopicLastId = $Topic->getSubjectGroupClassSectionsId($class_id, $section_id, $subject_group_id, $current_session);
+
 
              foreach ($validatedData['name'] as $name) {
 
 
 
                  $Topic->session_id = $current_session;
-                 $Topic->subject_group_subject_id = $selectedSubject;
-                 $Topic->subject_group_class_sections_id = $TopicLastId; // Ensure this is valid
+                 $Topic->lesson_id = $lessonId;
+                 $Topic->complete_date =  now();
+                 $Topic->status = 0; // Ensure this is valid
                  $Topic->name = $name;
 
                  // Save the new Topic
