@@ -141,7 +141,7 @@ Route::get('/admin/expense', [IncomeController::class, 'adminExpense']);
 Route::match(['get', 'post'], '/admin/dtstudentlist', [StudentListController::class, 'searchdtByClassSection']);
 Route::post('/admin/deletestudentbulk', [StudentListController::class, 'studentBlukDelete']);
 
-Route::get('/admin/dtstudentlist/disabled', [StudentListController::class, 'getdisableStudent']);
+
 
 Route::get('/admin/stuattendence', [StudentAttendencesController::class, 'adminStuAttendance']);
 
@@ -297,6 +297,8 @@ Route::get('/student/create', [SiteController::class, 'studentCreate']);
 Route::get('/student/disablestudentslist', [SiteController::class, 'studentDisableStudentsList']);
 Route::get('/student/multiclass', [SiteController::class, 'studentMultiClass']);
 Route::get('/student/bulkdelete', [SiteController::class, 'studentBulkDelete']);
+
+Route::get('/admin/dtstudentlist/disabled', [StudentListController::class, 'getdisableStudent']);
 
 Route::get('/category', [CategoriesController::class, 'index']);
 Route::post('/category', [CategoriesController::class, 'create']);
