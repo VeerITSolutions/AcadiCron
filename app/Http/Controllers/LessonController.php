@@ -144,7 +144,8 @@ $data = $query->paginate($perPage, ['*'], 'page', $page);
         // Retrieve the ID for the subject group class section
         $lessonLastId = $lesson->getSubjectGroupClassSectionsId($class_id, $section_id, $subject_group_id, $current_session);
 
-      
+
+
         $data   = $lesson->getlessonBysubjectid($selectedSubject, $lessonLastId);
 
         if (!$data) {
