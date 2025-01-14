@@ -100,6 +100,7 @@ class StaffLeaveRequestController extends Controller
         $category->status  = $validatedData['status'];
         $category->staff_id  = 1;
        $category->applied_by = $validatedData['selectedRoleLeave'] ?? 'default_value';
+       
 
 
         /* imag update */
