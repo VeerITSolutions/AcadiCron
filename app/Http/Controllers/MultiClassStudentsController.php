@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Classes;  // Assuming your model names
+use App\Models\Classes;
+use App\Models\MultiClassStudents; 
 use App\Models\Sections;
 use App\Models\StudentSession;
 use App\Models\Students;
@@ -14,42 +15,38 @@ class MultiClassStudentsController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        // Initialize data
-        $data['title'] = 'Student Fees';
-        $data['classlist'] = Classes::all();  // Fetch all classes
-        $data['sch_setting'] = $this->getSchoolSettings();  // Assuming this method gets school settings
-    
         // Form validation
-        $validator = Validator::make(request()->all(), [
-            'section_id' => 'required|integer',
-            'class_id' => 'required|integer',
-        ]);
     
-        if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->withInput();
+        $validated = $request->all();
+    
+        $students = [];
+        $message = '';
+    
+        if ($validated) {
+            $class_id = $request->input('class_id');
+            $section_id = $request->input('section_id');
+    
+            // Fetch students based on class and section
+            $students = StudentSession::where('class_id', $class_id)
+                ->where('section_id', $section_id)
+                ->get();
+    
+            $message = 'Students retrieved successfully.';
+        } else {
+            $message = 'Validation failed.';
         }
     
-        // Fetch classes and sections
-        $data['classes'] = Sections::all();  // Assuming this returns all classes with sections
-    
-        // Retrieve student data based on class and section
-        $class_id = request()->input('class_id');
-        $section_id = request()->input('section_id');
-        $studentsQuery = StudentSession::searchMultiStudentByClassSection($class_id, $section_id);
-    
-        // If pagination is required, apply it
-        $data['students'] = $studentsQuery->paginate(10);  // Adjust the number of items per page as needed
-    
-        // If it's an API request, return JSON response
-        if (request()->wantsJson()) {
-            return response()->json([
-                'success' => true,
-                'data' => $data['students']->items(),
-            ], 200);
-        }
+        // Return JSON response
+        return response()->json([
+            'success' => true,
+            'data' => $students, // Return matching records
+            'totalCount' => $students ? $students->count() : 0, // Count of matching records
+            'message' => $message,
+        ], 200);
     }
+    
     
     public function saveMultiClass(Request $request)
 {
@@ -59,8 +56,6 @@ class MultiClassStudentsController extends Controller
     
     $validated = $request->all();
     $total_rows = $request->input('row_count');
-    
-    
     
     if (!empty($total_rows)) {
         foreach ($total_rows as $row_count) {
