@@ -14,23 +14,21 @@ class ItemIssueController extends Controller
     public function index(Request $request)
     {
         // Get current page and items per page from the request
-        $page = $request->input('page', 1); // Default to page 1
-        $perPage = $request->input('perPage', 10); // Default items per page to 10
-    
+        $page = (int) $request->input('page', 1); // Default to page 1
+        $perPage = (int) $request->input('perPage', 10); // Default items per page to 10
+        
         // Validate the perPage value
-        $perPage = (int) $perPage;
-        $page = (int) $page;
         if ($perPage <= 0 || $perPage > 100) {
             $perPage = 10;
         }
     
         // Query the database using Eloquent and relationships
-        $data = DB::table('item_issue')
-            ->join('item', 'item.id', '=', 'item_issue.item_id')
-            ->join('item_category', 'item_category.id', '=', 'item.item_category_id')
-            ->join('staff', 'staff.id', '=', 'item_issue.issue_to')
-            ->join('staff_roles', 'staff_roles.staff_id', '=', 'staff.id')
-            ->join('roles', 'roles.id', '=', 'staff_roles.role_id')
+    
+        $data = ItemIssue::leftJoin('item', 'item.id', '=', 'item_issue.item_id')
+            ->leftJoin('item_category', 'item_category.id', '=', 'item.item_category_id')
+            ->leftJoin('staff', 'staff.id', '=', 'item_issue.issue_to')
+            ->leftJoin('staff_roles', 'staff_roles.staff_id', '=', 'staff.id')
+            ->leftJoin('roles', 'roles.id', '=', 'staff_roles.role_id')
             ->select(
                 'item_issue.*',
                 'item.name as name',
@@ -55,10 +53,7 @@ class ItemIssueController extends Controller
         ], 200);
     }
     
-
-
-
-
+    
     /**
      * Show the form for creating a new resource.
      */
