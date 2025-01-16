@@ -81,11 +81,16 @@ class TemplateMarksheetsController extends Controller
     $marksheets->content = $validatedData['content'] ?? null;
     $marksheets->content_footer = $validatedData['content_footer'] ?? null;
 
-    $file = $request->file('background_image');
+ 
+    $file = $request->file('background_img');
     if ($file) {
-        $imageName = time() . '_background.' . $file->getClientOriginalExtension(); 
-        $imagePath = $file->storeAs('marksheets/background_img', $imageName, 'public'); 
+        $imageName = $marksheets->staff_id . '_document_' . time(); // Example name
+        $imageSubfolder = "/marksheet/" . $marksheets->staff_id; // Example subfolder
+        $full_path = 0;
+        $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
         $marksheets->background_img = $imagePath;
+    } else {
+        $marksheets->background_img = ''; // Provide a default value if no image is uploaded
     }
 
     $marksheets->save();
@@ -168,12 +173,17 @@ class TemplateMarksheetsController extends Controller
         $marksheets->content = $validatedData['content'];
         $marksheets->content_footer = $validatedData['content_footer'];
     
-        $file = $request->file('background_image');
-        if ($file) {
-            $imageName = time() . '_background.' . $file->getClientOriginalExtension(); 
-            $imagePath = $file->storeAs('marksheets/backgrounds', $imageName, 'public'); 
-            $marksheets->background_img = $imagePath;
-        }
+        $file = $request->file('background_img');
+    if ($file) {
+        $imageName = $marksheets->staff_id . '_document_' . time();
+        $imageSubfolder = "/marksheet/" . $marksheets->staff_id; 
+        $full_path = 0;
+        $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
+        $marksheets->background_img = $imagePath;
+    } else {
+        $marksheets->background_img = ''; 
+    }
+
 
         $marksheets->save();
     
