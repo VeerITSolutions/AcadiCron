@@ -104,6 +104,41 @@ class TemplateMarksheetsController extends Controller
 
 
 
+public function marksheetView(Request $request, string $id)
+{
+
+    // Ensure you actually use the `$id` value from the request
+    if (!$id) {
+        return response()->json(['error' => 'Invalid marksheet ID'], 400);
+    }
+
+    $marksheet = DB::table('template_marksheets')->where('id', $id)->first();
+
+    if (!$marksheet) {
+        return response()->json(['error' => 'Marksheet not found'], 404);
+    }
+
+    $data = [
+        'marksheet' => $marksheet,
+    ];
+    $idsToGenerate = $request->idsToGenerate;
+    if($idsToGenerate){
+
+        $data['studentDatas']  = Students::whereIn('id', $idsToGenerate)->get();
+
+    $preview = view('admin.marksheet.generate_marksheet', $data)->render();
+    }else{
+         // Render the preview view and return it as a response
+    $preview = view('admin.marksheet.preview_marksheet', $data)->render();
+
+    }
+    return response()->json([
+        'success' => true,
+        'data' => $preview, // Return rendered HTML
+    ], 200);
+}
+
+
     /**
      * Store a newly created resource in storage.
      */

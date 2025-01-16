@@ -692,6 +692,8 @@ Route::get('/template-marksheets', [TemplateMarksheetsController::class, 'index'
 Route::post('/template-marksheets', [TemplateMarksheetsController::class, 'create']);
 Route::delete('/template-marksheets/{id}', [TemplateMarksheetsController::class, 'destroy']);
 Route::post('/template-marksheets/{id}', [TemplateMarksheetsController::class, 'update']);
+Route::post('/marksheet-view/{id}', [TemplateMarksheetsController::class, 'marksheetView']);
+Route::post('/marksheet-view-generate/{id}', [TemplateMarksheetsController::class, 'generateMultiple']);
 /* for content manangment  */
 
 /* for content manangment  */
