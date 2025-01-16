@@ -91,6 +91,7 @@ use App\Http\Controllers\AlumniEventsController;
 use App\Http\Controllers\LessonController;
 use App\Http\Controllers\TopicController;
 use App\Http\Controllers\MultiClassStudentsController;
+use App\Http\Controllers\TemplateMarksheetsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -685,6 +686,12 @@ Route::get('/alumni-event', [AlumniEventsController::class, 'index']);
 Route::post('/alumni-event', [AlumniEventsController::class, 'create']);
 Route::delete('/alumni-event/{id}', [AlumniEventsController::class, 'destroy']);
 Route::post('/alumni-event/{id}', [AlumniEventsController::class, 'update']);
+
+
+Route::get('/template-marksheets', [TemplateMarksheetsController::class, 'index']);
+Route::post('/template-marksheets', [TemplateMarksheetsController::class, 'create']);
+Route::delete('/template-marksheets/{id}', [TemplateMarksheetsController::class, 'destroy']);
+Route::post('/template-marksheets/{id}', [TemplateMarksheetsController::class, 'update']);
 /* for content manangment  */
 
 /* for content manangment  */
