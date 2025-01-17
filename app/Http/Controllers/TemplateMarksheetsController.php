@@ -243,4 +243,83 @@ public function marksheetView(Request $request, string $id)
             return response()->json(['success' => false, 'message' => ' deletion failed: ' . $e->getMessage()], 500);
         }
     }
+
+
+     public function generateMultiple(Request $request)
+    {
+        $studentData = $request->input('data');
+        $studentArray = json_decode($studentData);
+        $certificateId = $request->input('certificate_id');
+        $classId = $request->input('class_id');
+
+        $results = [];
+        $studentIds = [];
+        $data = [];
+
+        // Fetch school settings
+        $data['sch_setting'] = DB::table('sch_settings')
+            ->join('sessions', 'sessions.id', '=', 'sch_settings.session_id')
+            ->join('languages', 'languages.id', '=', 'sch_settings.lang_id')
+            ->select(
+                'sch_settings.*',
+                'sessions.session',
+                'languages.language'
+            )
+            ->first();
+
+        // Fetch certificate details
+        $data['certificate'] = DB::table('certificates')->where('id', $certificateId)->first();
+
+        foreach ($studentArray as $student) {
+            $studentIds[] = $student->student_id;
+
+            // Check if a TC certificate exists for the student
+            $existingCertificate = DB::table('certificate_tc')
+                ->where('student_id', $student->student_id)
+                ->first();
+
+            if (!$existingCertificate) {
+                // Generate a new TC number
+                $maxTcNo = DB::table('certificate_tc')->max('tc_no');
+                $newTcNo = $maxTcNo ? $maxTcNo + 1 : 1;
+
+                // Insert the new TC certificate
+                DB::table('certificate_tc')->insert([
+                    'student_id' => $student->student_id,
+                    'tc_no' => $newTcNo,
+                ]);
+            }
+
+            // Fetch updated TC certificate
+            $certData = DB::table('certificate_tc')
+                ->where('student_id', $student->student_id)
+                ->first();
+
+            $results[] = $certData;
+        }
+
+        // Fetch student details
+        $data['students'] = DB::table('students')
+            ->whereIn('id', $studentIds)
+            ->get();
+
+        // Append TC number and full name to each student
+        foreach ($data['students'] as $student) {
+            $tcCertificate = collect($results)->firstWhere('student_id', $student->id);
+            $student->tc_no = $tcCertificate->tc_no ?? null;
+
+            // Assuming a custom method exists to generate the full name
+            $student->name = $this->getFullName($student);
+        }
+
+        // Render the certificate view
+        $certificates = view('admin.certificate.generate_certificate', $data)->render();
+
+
+
+        return response()->json([
+            'success' => true,
+            'data' => $certificates, // Return rendered HTML
+        ], 200);
+    }
 }

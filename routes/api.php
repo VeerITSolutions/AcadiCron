@@ -92,6 +92,7 @@ use App\Http\Controllers\LessonController;
 use App\Http\Controllers\TopicController;
 use App\Http\Controllers\MultiClassStudentsController;
 use App\Http\Controllers\TemplateMarksheetsController;
+use App\Http\Controllers\TemplateAdmitcardsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -694,6 +695,16 @@ Route::delete('/template-marksheets/{id}', [TemplateMarksheetsController::class,
 Route::post('/template-marksheets/{id}', [TemplateMarksheetsController::class, 'update']);
 Route::post('/marksheet-view/{id}', [TemplateMarksheetsController::class, 'marksheetView']);
 Route::post('/marksheet-view-generate/{id}', [TemplateMarksheetsController::class, 'generateMultiple']);
+
+
+
+Route::get('/admit-card', [TemplateAdmitcardsController::class, 'index']);
+Route::post('/admit-card', [TemplateAdmitcardsController::class, 'create']);
+Route::delete('/admit-card/{id}', [TemplateAdmitcardsController::class, 'destroy']);
+Route::post('/admit-card/{id}', [TemplateAdmitcardsController::class, 'update']);
+Route::post('/admit-card-view/{id}', [TemplateAdmitcardsController::class, 'marksheetView']);
+
+
 /* for content manangment  */
 
 /* for content manangment  */
