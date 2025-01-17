@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\TemplateAdmitcards;
+use Illuminate\Support\Facades\DB;
 
 class TemplateAdmitcardsController extends Controller
 {
@@ -104,24 +105,24 @@ public function AdmitcardView(Request $request, string $id)
         return response()->json(['error' => 'Invalid Admitcard ID'], 400);
     }
 
-    $Admitcard = DB::table('template_admitcard')->where('id', $id)->first();
+    $admitcard = DB::table('template_admitcards')->where('id', $id)->first();
 
-    if (!$Admitcard) {
+    if (!$admitcard) {
         return response()->json(['error' => 'Admitcard not found'], 404);
     }
 
     $data = [
-        'Admitcard' => $Admitcard,
+        'Admitcard' => $admitcard,
     ];
     $idsToGenerate = $request->idsToGenerate;
     if($idsToGenerate){
 
         $data['studentDatas']  = Students::whereIn('id', $idsToGenerate)->get();
 
-    $preview = view('admin.Admitcard.generate_Admitcard', $data)->render();
+    $preview = view('admin.admitcard.createadmitcard', $data)->render();
     }else{
          // Render the preview view and return it as a response
-    $preview = view('admin.Admitcard.preview_Admitcard', $data)->render();
+    $preview = view('admin.admitcard._view', $data)->render();
 
     }
     return response()->json([
@@ -172,28 +173,27 @@ public function AdmitcardView(Request $request, string $id)
         }
    
         $admitcard->template = $validatedData['template'];
-        $admitcard->heading = $validatedData['heading'] ?? null;
-        $admitcard->title = $validatedData['title'] ?? null;
-        $admitcard->left_logo = $validatedData['left_logo'] ?? null;
-        $admitcard->right_logo = $validatedData['right_logo'] ?? null;
-        $admitcard->exam_name = $validatedData['exam_name'] ?? null;
-        $admitcard->school_name = $validatedData['school_name'] ?? null;
-        $admitcard->exam_center = $validatedData['exam_center'] ?? null;
-        $admitcard->sign = $validatedData['sign'] ?? null;
-        $admitcard->background_img = $validatedData['background_img'] ?? null;
-        $admitcard->is_name = ($validatedData['is_name'] === 'false' || !$validatedData['is_name']) ? 0 : 1;
-        $admitcard->is_father_name = $validatedData['is_father_name'] ?? 1;
-        $admitcard->is_mother_name = $validatedData['is_mother_name'] ?? 1;
-        $admitcard->is_dob = $validatedData['is_dob'] ?? 1;
-        $admitcard->is_admission_no = $validatedData['is_admission_no'] ?? 1;
-        $admitcard->is_roll_no = $validatedData['is_roll_no'] ?? 1;
-        $admitcard->is_address = $validatedData['is_address'] ?? 0;
-        $admitcard->is_gender = $validatedData['is_gender'] ?? 0;
-        $admitcard->is_photo = $validatedData['is_photo'] ?? 1;
-        $admitcard->is_class = $validatedData['is_class'] ?? 0;
-        $admitcard->is_section = $validatedData['is_section'] ?? 0;
-        $admitcard->content_footer = $validatedData['content_footer'] ?? null;
-
+    $admitcard->heading = $validatedData['heading'] ?? null;
+    $admitcard->title = $validatedData['title'] ?? null;
+    $admitcard->left_logo = $validatedData['left_logo'] ?? null;
+    $admitcard->right_logo = $validatedData['right_logo'] ?? null;
+    $admitcard->exam_name = $validatedData['exam_name'] ?? null;
+    $admitcard->school_name = $validatedData['school_name'] ?? null;
+    $admitcard->exam_center = $validatedData['exam_center'] ?? null;
+    $admitcard->sign = $validatedData['sign'] ?? null;
+    $admitcard->background_img = $validatedData['background_img'] ?? null;
+    $admitcard->is_name = ($validatedData['is_name'] === 'false' || !$validatedData['is_name']) ? 0 : 1;
+    $admitcard->is_father_name = ($validatedData['is_father_name'] === 'false' || !$validatedData['is_father_name']) ? 0 : 1;
+    $admitcard->is_mother_name = ($validatedData['is_mother_name'] === 'false' || !$validatedData['is_mother_name']) ? 0 : 1;
+    $admitcard->is_dob = ($validatedData['is_dob'] === 'false' || !$validatedData['is_dob']) ? 0 : 1;
+    $admitcard->is_admission_no = ($validatedData['is_admission_no'] === 'false' || !$validatedData['is_admission_no']) ? 0 : 1;
+    $admitcard->is_roll_no = ($validatedData['is_roll_no'] === 'false' || !$validatedData['is_roll_no']) ? 0 : 1;
+    $admitcard->is_address = ($validatedData['is_address'] === 'false' || !$validatedData['is_address']) ? 0 : 1;
+    $admitcard->is_gender = ($validatedData['is_gender'] === 'false' || !$validatedData['is_gender']) ? 0 : 1;
+    $admitcard->is_photo = ($validatedData['is_photo'] === 'false' || !$validatedData['is_photo']) ? 0 : 1;
+    $admitcard->is_class = ($validatedData['is_class'] === 'false' || !$validatedData['is_class']) ? 0 : 1;
+    $admitcard->is_section = ($validatedData['is_section'] === 'false' || !$validatedData['is_section']) ? 0 : 1;
+    $admitcard->content_footer = $validatedData['content_footer'] ?? null;
     
         $file = $request->file('background_img');
     if ($file) {
@@ -236,7 +236,7 @@ public function AdmitcardView(Request $request, string $id)
     {
         $studentData = $request->input('data');
         $studentArray = json_decode($studentData);
-        $certificateId = $request->input('certificate_id');
+        $certificateId = $request->input('admitcard_id');
         $classId = $request->input('class_id');
 
         $results = [];
@@ -254,31 +254,31 @@ public function AdmitcardView(Request $request, string $id)
             )
             ->first();
 
-        // Fetch certificate details
-        $data['certificate'] = DB::table('certificates')->where('id', $certificateId)->first();
+        // Fetch admitcard details
+        $data['admitcard'] = DB::table('admitcards')->where('id', $admitcardId)->first();
 
         foreach ($studentArray as $student) {
             $studentIds[] = $student->student_id;
 
-            // Check if a TC certificate exists for the student
-            $existingCertificate = DB::table('certificate_tc')
+
+            $existingadmitcard = DB::table('template_admitcards')
                 ->where('student_id', $student->student_id)
                 ->first();
 
-            if (!$existingCertificate) {
+            if (!$existingadmitcard) {
                 // Generate a new TC number
-                $maxTcNo = DB::table('certificate_tc')->max('tc_no');
+                $maxTcNo = DB::table('template_admitcards')->max('tc_no');
                 $newTcNo = $maxTcNo ? $maxTcNo + 1 : 1;
 
-                // Insert the new TC certificate
-                DB::table('certificate_tc')->insert([
+                // Insert the new TC admitcard
+                DB::table('template_admitcards')->insert([
                     'student_id' => $student->student_id,
                     'tc_no' => $newTcNo,
                 ]);
             }
 
-            // Fetch updated TC certificate
-            $certData = DB::table('certificate_tc')
+            // Fetch updated TC admitcard
+            $certData = DB::table('template_admitcards')
                 ->where('student_id', $student->student_id)
                 ->first();
 
@@ -292,21 +292,21 @@ public function AdmitcardView(Request $request, string $id)
 
         // Append TC number and full name to each student
         foreach ($data['students'] as $student) {
-            $tcCertificate = collect($results)->firstWhere('student_id', $student->id);
-            $student->tc_no = $tcCertificate->tc_no ?? null;
+            $admitcard = collect($results)->firstWhere('student_id', $student->id);
+            $student->tc_no = $admitcard->tc_no ?? null;
 
             // Assuming a custom method exists to generate the full name
             $student->name = $this->getFullName($student);
         }
 
-        // Render the certificate view
-        $certificates = view('admin.certificate.generate_certificate', $data)->render();
+        // Render the admitcard view
+        $admitcards = view('admin.admitcard.createadmitcard', $data)->render();
 
 
 
         return response()->json([
             'success' => true,
-            'data' => $certificates, // Return rendered HTML
+            'data' => $admitcards, // Return rendered HTML
         ], 200);
     }
 }

@@ -702,7 +702,7 @@ Route::get('/admit-card', [TemplateAdmitcardsController::class, 'index']);
 Route::post('/admit-card', [TemplateAdmitcardsController::class, 'create']);
 Route::delete('/admit-card/{id}', [TemplateAdmitcardsController::class, 'destroy']);
 Route::post('/admit-card/{id}', [TemplateAdmitcardsController::class, 'update']);
-Route::post('/admit-card-view/{id}', [TemplateAdmitcardsController::class, 'marksheetView']);
+Route::post('/admit-card-view/{id}', [TemplateAdmitcardsController::class, 'AdmitcardView']);
 
 
 /* for content manangment  */
