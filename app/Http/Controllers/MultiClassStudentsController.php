@@ -67,39 +67,48 @@ class MultiClassStudentsController extends Controller
 
 
     public function saveMultiClass(Request $request)
-{
-    $student_id = '';
-    $message = "";
-    $duplicate_record = 0;
-
-    $validated = $request->all();
-    $total_rows = $request->input('row_count');
-
-    if (!empty($total_rows)) {
-        foreach ($total_rows as $row_count) {
-            $request->validate([
-                'class_id_' . $row_count => 'required|trim',
-                'section_id_' . $row_count => 'required|trim',
+    {
+        $duplicate_record = 0;
+    
+        // Validate incoming request
+        $validated = $request->all();
+        $total_rows = $request->input('row_count');
+    
+        // Validate row inputs
+        if (!empty($total_rows) && is_array($total_rows)) {
+            foreach ($total_rows as $row_count) {
+                $request->validate([
+                    'class_id_' . $row_count => 'required|string|trim',
+                    'section_id_' . $row_count => 'required|string|trim',
+                ]);
+            }
+        } else {
+            // Handle invalid or missing row_count input
+            return response()->json([
+                'status' => 0,
+                'error' => 'Invalid input',
+                'message' => 'row_count must be an array and cannot be null.',
             ]);
         }
-    }
-
-    $msg = [];
-    if ($validated) {
-        $rowcount = $request->input('row_count');
+    
         $class_section_array = [];
         $duplicate_array = [];
-
-        foreach ($rowcount as $value_rowcount) {
+    
+        // Prepare data and check for duplicates
+        foreach ($total_rows as $value_rowcount) {
+            $class_id = $request->input('class_id_' . $value_rowcount);
+            $section_id = $request->input('section_id_' . $value_rowcount);
+    
             $class_section_array[] = [
-                'class_id' => $request->input('class_id_' . $value_rowcount),
+                'class_id' => $class_id,
                 'session_id' => $this->setting_model->getCurrentSession(),
                 'student_id' => $request->input('student_id'),
-                'section_id' => $request->input('section_id_' . $value_rowcount),
+                'section_id' => $section_id,
             ];
-            $duplicate_array[] = $request->input('class_id_' . $value_rowcount) . "-" . $request->input('section_id_' . $value_rowcount);
+    
+            $duplicate_array[] = $class_id . '-' . $section_id;
         }
-
+    
         // Check for duplicate entries
         $duplicates = array_count_values($duplicate_array);
         foreach ($duplicates as $val => $count) {
@@ -108,38 +117,25 @@ class MultiClassStudentsController extends Controller
                 break;
             }
         }
-
+    
         if ($duplicate_record) {
-            $array = [
+            return response()->json([
                 'status' => 0,
                 'error' => '',
-                'message' => 'Duplicate entry',
-            ];
-        } else {
-            // Store the data in the database
-            $this->add($class_section_array, $request->input('student_id'));
-
-            $array = [
-                'status' => 1,
-                'error' => '',
-                'message' => 'Success message',
-            ];
+                'message' => 'Duplicate entry detected. Please check your input.',
+            ]);
         }
-    } else {
-        // Collect validation errors
-        foreach ($request->all() as $key => $value) {
-            $msg[$key] = $this->getValidationErrorMessage($key);
-        }
-
-        $array = [
-            'status' => 0,
-            'error' => $msg,
-            'message' => 'Something went wrong',
-        ];
+    
+        // Store data in the database
+        $this->add($class_section_array, $request->input('student_id'));
+    
+        return response()->json([
+            'status' => 1,
+            'error' => '',
+            'message' => 'Data successfully saved.',
+        ]);
     }
-
-    return response()->json($array);
-}
+    
 
 // Helper method to get validation error messages
 private function getValidationErrorMessage($field)
