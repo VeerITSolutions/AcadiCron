@@ -78,10 +78,8 @@ class StaffLeaveRequestController extends Controller
         // Validate the incoming request
         $validatedData = $request->all();
 
-
-
-        // Create a new category
-        $category = new StaffLeaveRequest();
+        // Create a new leaverequest
+        $leaverequest = new StaffLeaveRequest();
 
         $leaveFrom = Carbon::parse($validatedData['leave_from']);
         $leaveTo = Carbon::parse($validatedData['leave_to']);
@@ -90,41 +88,41 @@ class StaffLeaveRequestController extends Controller
         $dateDifference = $leaveFrom->diffInDays($leaveTo);
 
 
-        $category->leave_from  = $validatedData['leave_from'];
-        $category->leave_to  = $validatedData['leave_to'];
-        $category->leave_type_id   = $validatedData['selectedLeaveType'];
-        $category->date  = $validatedData['date'];
-        $category->leave_days  = $dateDifference;
-        $category->employee_remark  = $validatedData['employee_remark'];
-        $category->admin_remark  = $validatedData['admin_remark'] ?? 0;
-        $category->status  = $validatedData['status'];
-        $category->staff_id  = 1;
-       $category->applied_by = $validatedData['selectedRoleLeave'] ?? 'default_value';
+        $leaverequest->leave_from  = $validatedData['leave_from'];
+        $leaverequest->leave_to  = $validatedData['leave_to'];
+        $leaverequest->leave_type_id   = $validatedData['selectedLeaveType'];
+        $leaverequest->date  = $validatedData['date'];
+        $leaverequest->leave_days  = $dateDifference;
+        $leaverequest->employee_remark  = $validatedData['employee_remark'];
+        $leaverequest->admin_remark  = $validatedData['admin_remark'] ?? 0;
+        $leaverequest->status  = $validatedData['status'];
+        $leaverequest->staff_id  = $validatedData['selectedStaff'];
+       $leaverequest->applied_by = $validatedData['selectedRoleLeave'];
        
 
 
         /* imag update */
-        /*  $category->document_file  = 1; */
+        /*  $leaverequest->document_file  = 1; */
 
         $file = $request->file('document_file');
         if($file)
         {
-           $imageName = $category->staff_id .'_document_file_'. time(); // Example name
-           $imageSubfolder = "/staff_documents/".$category->staff_id;   // Example subfolder
+           $imageName = $leaverequest->staff_id .'_document_file_'. time(); // Example name
+           $imageSubfolder = "/staff_documents/".$leaverequest->staff_id;   // Example subfolder
            $full_path = 0;
            $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
-           $category->document_file  =  $validatedData['document_file'] = $imagePath;
+           $leaverequest->document_file  =  $validatedData['document_file'] = $imagePath;
         }
 
 
 
-        $category->save();
+        $leaverequest->save();
 
 
         return response()->json([
             'status' => 200,
             'message' => 'Staff Leave saved successfully',
-            'category' => $category,
+            'leaverequest' => $leaverequest,
         ], 201); // 201 Created status code
     }
 
@@ -163,7 +161,7 @@ class StaffLeaveRequestController extends Controller
          // Validate the request data
          $validatedData = $request->all();
 
-         // Find the category by id
+         // Find the leaverequest by id
          $leaverequest = StaffLeaveRequest::findOrFail($validatedData['currentLeaveId']);
 
          // Parse dates
@@ -178,9 +176,12 @@ class StaffLeaveRequestController extends Controller
          $leaverequest->applied_by = $validatedData['selectedRoleLeave'];
          $leaverequest->leave_from = $validatedData['leave_from'];
          $leaverequest->leave_to = $validatedData['leave_to'];
+         $leaverequest->leave_type_id   = $validatedData['selectedLeaveType'];
+         $leaverequest->date  = $validatedData['date'];
          $leaverequest->employee_remark = $validatedData['employee_remark'];
          $leaverequest->admin_remark = $validatedData['admin_remark'];
          $leaverequest->status = $validatedData['status'];
+         $leaverequest->staff_id  = $validatedData['selectedStaff'];
 
 
          // Handle file upload if present
@@ -210,16 +211,16 @@ class StaffLeaveRequestController extends Controller
     public function destroy($id)
     {
         try {
-            // Find the category by ID
-            $category = StaffLeaveRequest::findOrFail($id);
+            // Find the leaverequest by ID
+            $leaverequest = StaffLeaveRequest::findOrFail($id);
 
-            // Delete the category
-            $category->delete();
+            // Delete the leaverequest
+            $leaverequest->delete();
 
             // Return success response
             return response()->json(['success' => true, 'message' => 'Staff Leave deleted successfully']);
         } catch (\Exception $e) {
-            // Handle failure (e.g. if the category was not found)
+            // Handle failure (e.g. if the leaverequest was not found)
             return response()->json(['success' => false, 'message' => 'Staff Leave  deletion failed: ' . $e->getMessage()], 500);
         }
     }
