@@ -19,4 +19,7 @@ class ClassTeacher extends Model
         'section_id',
         'session_id',
     ];
+
+    
+
 }

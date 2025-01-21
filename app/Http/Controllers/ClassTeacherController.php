@@ -63,10 +63,6 @@ $paginatedData = $query->orderBy('id', 'desc')->paginate($perPage, ['*'], 'page'
         // Validate the incoming request
         $validatedData = $request->all();
 
-
-        // Create a new classteacher
-       
-       
        foreach($validatedData['staff_id'] as $value){
 
         $classteacher = new ClassTeacher();
@@ -77,8 +73,6 @@ $paginatedData = $query->orderBy('id', 'desc')->paginate($perPage, ['*'], 'page'
 
         $classteacher->save();
        }
-       
-
        
 
         return response()->json([
@@ -126,12 +120,14 @@ $paginatedData = $query->orderBy('id', 'desc')->paginate($perPage, ['*'], 'page'
 
         // Validate the request data
         $validatedData = $request->all();
+        foreach($validatedData['staff_id'] as $value){
+        $classteacher->class_id = $validatedData['class_id'];
+        $classteacher->staff_id = $value;
+        $classteacher->section_id = $validatedData['section_id'];
+        $classteacher->session_id = $validatedData['session_id'];
 
-        // Update the classteacher
-        $classteacher->update($validatedData);
-
-
-
+        $classteacher->update();
+        }
 
         return response()->json([
             'success' => true,
@@ -146,17 +142,15 @@ $paginatedData = $query->orderBy('id', 'desc')->paginate($perPage, ['*'], 'page'
     public function destroy($id)
     {
         try {
-            // Find the classteacher by ID
+
             $classteacher = ClassTeacher::findOrFail($id);
 
-            // Delete the classteacher
             $classteacher->delete();
 
-            // Return success response
-            return response()->json(['success' => true, 'message' => 'class teacher  deleted successfully']);
+            return response()->json(['success' => true, 'message' => 'Item Category  deleted successfully']);
         } catch (\Exception $e) {
-            // Handle failure (e.g. if the classteacher was not found)
-            return response()->json(['success' => false, 'message' => 'class teacher deletion failed: ' . $e->getMessage()], 500);
+        
+            return response()->json(['success' => false, 'message' => 'Leave type deletion failed: ' . $e->getMessage()], 500);
         }
     }
 }
