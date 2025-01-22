@@ -15,112 +15,120 @@ class StaffController extends Controller
      * Display a listing of the resource.
      */
 
-     public function index(Request $request, $id = null, $role = null)
-     {
-          // Get pagination inputs, default to page 1 and 10 records per page if not provided
-    $page = (int) $request->input('page', 1);
-    $perPage = (int) $request->input('perPage', 10);
+    public function index(Request $request, $id = null, $role = null)
+    {
+        // Get pagination inputs, default to page 1 and 10 records per page if not provided
+        $page = (int) $request->input('page', 1);
+        $perPage = (int) $request->input('perPage', 10);
 
-    // Role ID (replace or customize as per your logic)
-    $role_id = 1;
+        // Role ID (replace or customize as per your logic)
+        $role_id = 1;
 
-    // Build the query
-
-
-    $query = DB::table('class_teacher')
-    ->join('classes', 'classes.id', '=', 'class_teacher.class_id')
-    ->join('sections', 'sections.id', '=', 'class_teacher.section_id')
-    ->groupBy('class_teacher.class_id', 'class_teacher.section_id')
-    ->orderByRaw('LENGTH(classes.class), classes.class')
-    ->select(
-        DB::raw('MAX(class_teacher.id) as id'),
-        'classes.class',
-        'sections.section'
-    );
+        // Build the query
 
 
+        $query = DB::table('class_teacher')
+            ->join('classes', 'classes.id', '=', 'class_teacher.class_id')
+            ->join('sections', 'sections.id', '=', 'class_teacher.section_id')
+            ->groupBy('class_teacher.class_id', 'class_teacher.section_id')
+            ->orderByRaw('LENGTH(classes.class), classes.class')
+            ->select(
+                DB::raw('MAX(class_teacher.id) as id'),
+                'classes.class',
+                'sections.section'
+            );
 
 
-// Apply pagination
-$paginatedData = $query->orderBy('id', 'desc')->paginate($perPage, ['*'], 'page', $page);
-
-    // Return paginated data with total count and pagination details
-    return response()->json([
-        'success' => true,
-        'data' => $paginatedData->items(), // Only return the current page data
-        'current_page' => $paginatedData->currentPage(),
-        'per_page' => $paginatedData->perPage(),
-        'total' => $paginatedData->total(),
-    ], 200);
-     }
-
-     public function getInventoryStaff()
-     {
-         $data = DB::table('staff')
-             ->selectRaw("CONCAT_WS(' ', staff.name, staff.surname) as name, staff.employee_id")
-             ->where('staff.is_active', 1)
-             ->get()
-             ->toArray();
-
-             return response()->json([
-                 'success' => true,
-                 'data' => $data
-
-             ], 200);
-     }
 
 
-     public function getStaffbyrole(Request $request)
-     {
-         // Role ID (use the provided role ID or default to 1)
-         $role_id = $request->selectedRole;
-         $leave_role_id = $request->selectedRoleLeave;
+        // Apply pagination
+        $paginatedData = $query->orderBy('id', 'desc')->paginate($perPage, ['*'], 'page', $page);
 
-         // Get pagination inputs, default to page 1 and 10 records per page if not provided
-         $page = (int) $request->input('page');
-         $perPage = (int) $request->input('perPage', 10);
-         $keyword = $request->input('keyword');
+        // Return paginated data with total count and pagination details
+        return response()->json([
+            'success' => true,
+            'data' => $paginatedData->items(), // Only return the current page data
+            'current_page' => $paginatedData->currentPage(),
+            'per_page' => $paginatedData->perPage(),
+            'total' => $paginatedData->total(),
+        ], 200);
+    }
 
-         // Build the query
-         $query = DB::table('staff')
-             ->select('staff.*',
-                      'staff_designation.designation as designation',
-                      'staff_roles.role_id',
-                      'department.department_name as department',
-                      'roles.name as user_type')
-             ->leftJoin('staff_designation', 'staff_designation.id', '=', 'staff.designation')
-             ->leftJoin('department', 'department.id', '=', 'staff.department')
-             ->leftJoin('staff_roles', 'staff_roles.staff_id', '=', 'staff.id')
-             ->leftJoin('roles', 'staff_roles.role_id', '=', 'roles.id');
-             if($role_id)
-             {
-                $query->where('staff_roles.role_id', $role_id);
-             }
+    public function getInventoryStaff()
+    {
+        $data = DB::table('staff')
+            ->selectRaw("CONCAT_WS(' ', staff.name, staff.surname) as name, staff.employee_id")
+            ->where('staff.is_active', 1)
+            ->get()
+            ->toArray();
 
-             if($leave_role_id)
-             {
-                $query->where('staff_roles.role_id', $leave_role_id);
-             }
+        return response()->json([
+            'success' => true,
+            'data' => $data
+
+        ], 200);
+    }
 
 
-               // Apply filtering based on keyword (searching in the 'firstname' field)
-            if (!empty($keyword)) {
-                $query->where('staff.name', 'like', '%' . $keyword . '%');
-            }
+    public function getStaffbyrole(Request $request)
+    {
+        // Role ID (use the provided role ID or default to 1)
+        $role_id = $request->selectedRole;
+        $leave_role_id = $request->selectedRoleLeave;
 
-             $query->where('staff.is_active', '1');
+        $attendance = $request->attendance;
+        $searchDate = $request->attendance_date;
 
-         // Apply pagination
+        // Get pagination inputs, default to page 1 and 10 records per page if not provided
+        $page = (int) $request->input('page');
+        $perPage = (int) $request->input('perPage', 10);
+        $keyword = $request->input('keyword');
 
-         if($leave_role_id)
-         {
+        // Build the query
+        $query = DB::table('staff')
+            ->select(
+                'staff.*',
+                'staff_designation.designation as designation',
+                'staff_roles.role_id',
+                'department.department_name as department',
+                'roles.name as user_type'
+            )
+            ->leftJoin('staff_designation', 'staff_designation.id', '=', 'staff.designation')
+            ->leftJoin('department', 'department.id', '=', 'staff.department')
+            ->leftJoin('staff_roles', 'staff_roles.staff_id', '=', 'staff.id')
+            ->leftJoin('roles', 'staff_roles.role_id', '=', 'roles.id');
+        if ($attendance) {
+            $query->leftJoin('staff_attendance', function ($join) use ($searchDate) {
+                $join->on('staff_attendance.staff_id', '=', 'staff.id')
+                    ->whereDate('staff_attendance.date', '=', $searchDate); // Filter by attendance date
+            });
+        }
+        if ($role_id) {
+            $query->where('staff_roles.role_id', $role_id);
+        }
+
+        if ($leave_role_id) {
+            $query->where('staff_roles.role_id', $leave_role_id);
+        }
+
+
+        // Apply filtering based on keyword (searching in the 'firstname' field)
+        if (!empty($keyword)) {
+            $query->where('staff.name', 'like', '%' . $keyword . '%');
+        }
+
+        $query->where('staff.is_active', '1');
+
+        // Apply pagination
+
+        if ($leave_role_id) {
 
             $data = $query->get();
             return response()->json([
                 'success' => true,
                 'data' => $data
             ], 200);
-         }else{
+        } else {
             $paginatedData = $query->orderBy('id', 'desc')->paginate($perPage, ['*'], 'page', $page);
             return response()->json([
                 'success' => true,
@@ -129,61 +137,62 @@ $paginatedData = $query->orderBy('id', 'desc')->paginate($perPage, ['*'], 'page'
                 'per_page' => $paginatedData->perPage(),
                 'total' => $paginatedData->total(),
             ], 200);
-         }
+        }
 
-         // Return paginated data with total count and pagination details
+        // Return paginated data with total count and pagination details
 
-     }
-
-
-     public function getSingleData(Request $request)
-     {
-         // Role ID (use the provided role ID or default to 1)
-         $id = $request->id;
-
-         // Get pagination inputs, default to page 1 and 10 records per page if not provided
-         $page = (int) $request->input('page', 1);
-         $perPage = (int) $request->input('perPage', 10);
-         $keyword = $request->input('keyword');
+    }
 
 
-         // Build the query
-         $query = Staff::select('staff.*',
-                      'staff_designation.designation as designation_name',
-                      'staff_roles.role_id',
-                      'department.department_name as department_name',
-                      'roles.name as user_type')
+    public function getSingleData(Request $request)
+    {
+        // Role ID (use the provided role ID or default to 1)
+        $id = $request->id;
 
-                      ->with(['staffLeaveDetails' => function ($query) use ($keyword) {
+        // Get pagination inputs, default to page 1 and 10 records per page if not provided
+        $page = (int) $request->input('page', 1);
+        $perPage = (int) $request->input('perPage', 10);
+        $keyword = $request->input('keyword');
 
-                        $query->with('leaveType');
-                    }])
-             ->leftJoin('staff_designation', 'staff_designation.id', '=', 'staff.designation')
-             ->leftJoin('department', 'department.id', '=', 'staff.department')
-             ->leftJoin('staff_roles', 'staff_roles.staff_id', '=', 'staff.id')
-             ->leftJoin('roles', 'staff_roles.role_id', '=', 'roles.id');
 
-             if($id)
-             {
-                $query->where('staff.id', $id);
-             }
+        // Build the query
+        $query = Staff::select(
+            'staff.*',
+            'staff_designation.designation as designation_name',
+            'staff_roles.role_id',
+            'department.department_name as department_name',
+            'roles.name as user_type'
+        )
 
-               // Apply filtering based on keyword (searching in the 'firstname' field)
-            if (!empty($keyword)) {
-                $query->where('staff.name', 'like', '%' . $keyword . '%');
-            }
+            ->with(['staffLeaveDetails' => function ($query) use ($keyword) {
 
-             $query->where('staff.is_active', '1');
+                $query->with('leaveType');
+            }])
+            ->leftJoin('staff_designation', 'staff_designation.id', '=', 'staff.designation')
+            ->leftJoin('department', 'department.id', '=', 'staff.department')
+            ->leftJoin('staff_roles', 'staff_roles.staff_id', '=', 'staff.id')
+            ->leftJoin('roles', 'staff_roles.role_id', '=', 'roles.id');
 
-         // Apply pagination
-         $data = $query->first();
+        if ($id) {
+            $query->where('staff.id', $id);
+        }
 
-         // Return paginated data with total count and pagination details
-         return response()->json([
-             'success' => true,
-             'data' => $data,
-         ], 200);
-     }
+        // Apply filtering based on keyword (searching in the 'firstname' field)
+        if (!empty($keyword)) {
+            $query->where('staff.name', 'like', '%' . $keyword . '%');
+        }
+
+        $query->where('staff.is_active', '1');
+
+        // Apply pagination
+        $data = $query->first();
+
+        // Return paginated data with total count and pagination details
+        return response()->json([
+            'success' => true,
+            'data' => $data,
+        ], 200);
+    }
 
 
 
@@ -194,7 +203,8 @@ $paginatedData = $query->orderBy('id', 'desc')->paginate($perPage, ['*'], 'page'
     /**
      * Show the form for creating a new resource.
      */
-    public function create(Request $request){
+    public function create(Request $request)
+    {
 
 
 
@@ -256,43 +266,39 @@ $paginatedData = $query->orderBy('id', 'desc')->paginate($perPage, ['*'], 'page'
         $updatestaff = Staff::findOrFail($staff->id);
 
         $file = $request->file('image');
-        if($file)
-        {
-           $imageName = $staff->id .'_image_'. time(); // Example name
-            $imageSubfolder = "/staff_documents/".$staff->id;      // Example subfolder
-           $full_path = 0;
-           $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
-           $validatedData['image'] = $imagePath;
+        if ($file) {
+            $imageName = $staff->id . '_image_' . time(); // Example name
+            $imageSubfolder = "/staff_documents/" . $staff->id;      // Example subfolder
+            $full_path = 0;
+            $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
+            $validatedData['image'] = $imagePath;
         }
 
         $file = $request->file('resume');
-        if($file)
-        {
-           $imageName = $staff->id .'_resume_'. time(); // Example name
-            $imageSubfolder = "/staff_documents/".$staff->id;      // Example subfolder
-           $full_path = 0;
-           $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
-           $validatedData['resume'] = $imagePath;
+        if ($file) {
+            $imageName = $staff->id . '_resume_' . time(); // Example name
+            $imageSubfolder = "/staff_documents/" . $staff->id;      // Example subfolder
+            $full_path = 0;
+            $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
+            $validatedData['resume'] = $imagePath;
         }
 
         $file = $request->file('joining_letter');
-        if($file)
-        {
-           $imageName = $staff->id .'_joining_letter_'. time(); // Example name
-            $imageSubfolder = "/staff_documents/".$staff->id;      // Example subfolder
-           $full_path = 0;
-           $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
-           $validatedData['joining_letter'] = $imagePath;
+        if ($file) {
+            $imageName = $staff->id . '_joining_letter_' . time(); // Example name
+            $imageSubfolder = "/staff_documents/" . $staff->id;      // Example subfolder
+            $full_path = 0;
+            $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
+            $validatedData['joining_letter'] = $imagePath;
         }
 
         $file = $request->file('other_document_file');
-        if($file)
-        {
-           $imageName = $staff->id .'_other_document_file_'. time(); // Example name
-           $imageSubfolder = "/staff_documents/".$staff->id;   // Example subfolder
-           $full_path = 0;
-           $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
-           $validatedData['other_document_file'] = $imagePath;
+        if ($file) {
+            $imageName = $staff->id . '_other_document_file_' . time(); // Example name
+            $imageSubfolder = "/staff_documents/" . $staff->id;   // Example subfolder
+            $full_path = 0;
+            $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
+            $validatedData['other_document_file'] = $imagePath;
         }
 
 
@@ -371,10 +377,7 @@ $paginatedData = $query->orderBy('id', 'desc')->paginate($perPage, ['*'], 'page'
             'success' => true,
             'data' => $data,
         ], 200);
-
-
-
-}
+    }
 
 
     /**
@@ -406,7 +409,7 @@ $paginatedData = $query->orderBy('id', 'desc')->paginate($perPage, ['*'], 'page'
      */
 
 
-    public function update(Request $request,string $id)
+    public function update(Request $request, string $id)
     {
 
         // Find the category by id
@@ -417,43 +420,39 @@ $paginatedData = $query->orderBy('id', 'desc')->paginate($perPage, ['*'], 'page'
 
 
         $file = $request->file('image');
-        if($file)
-        {
-           $imageName = $staff->id .'_image_'. time(); // Example name
-            $imageSubfolder = "/staff_documents/".$staff->id;      // Example subfolder
-           $full_path = 0;
-           $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
-           $validatedData['image'] = $imagePath;
+        if ($file) {
+            $imageName = $staff->id . '_image_' . time(); // Example name
+            $imageSubfolder = "/staff_documents/" . $staff->id;      // Example subfolder
+            $full_path = 0;
+            $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
+            $validatedData['image'] = $imagePath;
         }
 
         $file = $request->file('resume');
-        if($file)
-        {
-           $imageName = $staff->id .'_resume_'. time(); // Example name
-            $imageSubfolder = "/staff_documents/".$staff->id;      // Example subfolder
-           $full_path = 0;
-           $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
-           $validatedData['resume'] = $imagePath;
+        if ($file) {
+            $imageName = $staff->id . '_resume_' . time(); // Example name
+            $imageSubfolder = "/staff_documents/" . $staff->id;      // Example subfolder
+            $full_path = 0;
+            $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
+            $validatedData['resume'] = $imagePath;
         }
 
         $file = $request->file('joining_letter');
-        if($file)
-        {
-           $imageName = $staff->id .'_joining_letter_'. time(); // Example name
-            $imageSubfolder = "/staff_documents/".$staff->id;      // Example subfolder
-           $full_path = 0;
-           $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
-           $validatedData['joining_letter'] = $imagePath;
+        if ($file) {
+            $imageName = $staff->id . '_joining_letter_' . time(); // Example name
+            $imageSubfolder = "/staff_documents/" . $staff->id;      // Example subfolder
+            $full_path = 0;
+            $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
+            $validatedData['joining_letter'] = $imagePath;
         }
 
         $file = $request->file('other_document_file');
-        if($file)
-        {
-           $imageName = $staff->id .'_other_document_file_'. time(); // Example name
-           $imageSubfolder = "/staff_documents/".$staff->id;   // Example subfolder
-           $full_path = 0;
-           $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
-           $validatedData['other_document_file'] = $imagePath;
+        if ($file) {
+            $imageName = $staff->id . '_other_document_file_' . time(); // Example name
+            $imageSubfolder = "/staff_documents/" . $staff->id;   // Example subfolder
+            $full_path = 0;
+            $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
+            $validatedData['other_document_file'] = $imagePath;
         }
 
         // Update the category
