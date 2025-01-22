@@ -499,7 +499,7 @@ Route::get('/student-none-promoted', [StudentsController::class, 'searchNonPromo
 
 Route::get('/class-teacher', [ClassTeacherController::class, 'index']);
 Route::post('/class-teacher', [ClassTeacherController::class, 'create']);
-Route::delete('/class-teacher/{id}', [ClassTeacherController::class, 'destroy']);
+Route::delete('/class-teacher/{class_id}/{section_id}', [ClassTeacherController::class, 'destroy']);
 Route::post('/class-teacher/{id}', [ClassTeacherController::class, 'update']);
 
 Route::get('/staff', [StaffController::class, 'getStaffbyrole']);

@@ -38,6 +38,7 @@ class ClassTeacherController extends Controller
         'sections.id as section_id',
         DB::raw('JSON_ARRAYAGG(JSON_OBJECT(
             "id", staff.id,
+             "employee_id", staff.employee_id,
             "name", staff.name,
             "surname", staff.surname
         )) as staff_data') // Create an array of objects with staff.id, name, and surname
@@ -118,19 +119,23 @@ $paginatedData = $query->orderBy('id', 'desc')->paginate($perPage, ['*'], 'page'
 
     public function update(Request $request,string $id)
     {
+       
+         $validatedData = $request->all();
+       
+        $section_id = $request->input('section_id');
+        $class_id = $request->input('class_id');
 
-        // Find the classteacher by id
-        $classteacher = ClassTeacher::findOrFail($id);
-
-        // Validate the request data
-        $validatedData = $request->all();
+        
+        $delete_all = ClassTeacher::where('class_id', $class_id)->where('section_id', $section_id)->delete();
         foreach($validatedData['staff_id'] as $value){
-        $classteacher->class_id = $validatedData['class_id'];
-        $classteacher->staff_id = $value;
-        $classteacher->section_id = $validatedData['section_id'];
-        $classteacher->session_id = $validatedData['session_id'];
-
-        $classteacher->update();
+            $classteacher = new ClassTeacher();
+            $classteacher->class_id = $validatedData['class_id'];
+            $classteacher->staff_id = $value;
+            $classteacher->section_id = $validatedData['section_id'];
+            $classteacher->session_id = $validatedData['session_id'];
+    
+            $classteacher->save();
+       
         }
 
         return response()->json([
@@ -143,13 +148,10 @@ $paginatedData = $query->orderBy('id', 'desc')->paginate($perPage, ['*'], 'page'
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy($id)
+    public function destroy($class_id, $section_id)
     {
         try {
-
-            $classteacher = ClassTeacher::findOrFail($id);
-
-            $classteacher->delete();
+            $classteacher = ClassTeacher::where('class_id', $class_id)->where('section_id', $section_id)->delete();
 
             return response()->json(['success' => true, 'message' => 'Item Category  deleted successfully']);
         } catch (\Exception $e) {
