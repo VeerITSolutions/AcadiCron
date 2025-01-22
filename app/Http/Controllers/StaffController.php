@@ -86,18 +86,30 @@ class StaffController extends Controller
 
         // Build the query
         $query = DB::table('staff')
-            ->select(
-                'staff.*',
-                'staff_designation.designation as designation',
-                'staff_roles.role_id',
-                'department.department_name as department',
-                'roles.name as user_type',
-                'staff_attendance.date as attendance_date',
-                'staff_attendance.staff_attendance_type_id as attendance_status',
-                'staff_attendance.id as attendance_id',
-                'staff_attendance.remark as attendance_note'
-            )
-            ->leftJoin('staff_designation', 'staff_designation.id', '=', 'staff.designation')
+
+            if($attendance){
+                $query->select(
+                    'staff.*',
+                    'staff_designation.designation as designation',
+                    'staff_roles.role_id',
+                    'department.department_name as department',
+                    'roles.name as user_type',
+                    'staff_attendance.date as attendance_date',
+                    'staff_attendance.staff_attendance_type_id as attendance_status',
+                    'staff_attendance.id as attendance_id',
+                    'staff_attendance.remark as attendance_note'
+            );
+            }else{
+                $query->select(
+                    'staff.*',
+                    'staff_designation.designation as designation',
+                    'staff_roles.role_id',
+                    'department.department_name as department',
+                    'roles.name as user_type'
+            );
+            }
+
+            $query->leftJoin('staff_designation', 'staff_designation.id', '=', 'staff.designation')
             ->leftJoin('department', 'department.id', '=', 'staff.department')
             ->leftJoin('staff_roles', 'staff_roles.staff_id', '=', 'staff.id')
             ->leftJoin('roles', 'staff_roles.role_id', '=', 'roles.id');
