@@ -33,15 +33,19 @@ class ClassTeacherController extends Controller
     ->select(
         DB::raw('MAX(class_teacher.id) as id'),
         'classes.class',
+        'classes.id as class_id',
         'sections.section',
-        DB::raw('MAX(staff.name) as name'),  // Apply aggregate function
-        DB::raw('MAX(staff.surname) as surname')  // Apply aggregate function
+        'sections.id as section_id',
+        DB::raw('JSON_ARRAYAGG(JSON_OBJECT(
+            "id", staff.id,
+            "name", staff.name,
+            "surname", staff.surname
+        )) as staff_data') // Create an array of objects with staff.id, name, and surname
     );
 
 
 // Apply pagination
 $paginatedData = $query->orderBy('id', 'desc')->paginate($perPage, ['*'], 'page', $page);
-
     // Return paginated data with total count and pagination details
     return response()->json([
         'success' => true,
