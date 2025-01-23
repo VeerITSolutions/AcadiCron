@@ -57,29 +57,53 @@ class StaffAttendanceController extends Controller
      */
     public function create(Request $request)
     {
-        $attendanceData = $request->input('attendance_data'); // Assuming JSON input in 'attendance_data'
+        $attendanceData = json_decode($request->input('attendance_data')); // Assuming JSON input in 'attendance_data'
         $date = $request->input('date');
 
-        // Prepare data for bulk insert
-        $formattedData = array_map(function ($data) use ($date) {
-            return [
-                'staff_id' => $data['id'],
-                'date' => $date,
-                'staff_attendance_type_id' => $data['attendance_type'],
-                'remark' => $data['attendance_note'] ?? null, // Handle nullable field
-                'created_at' => now(),
-                'updated_at' => now(),
-            ];
-        }, $attendanceData);
+        foreach ($attendanceData as $data) {
+            // Check if an entry for this staff_id and date already exists
+            $existingEntry = DB::table('staff_attendance')
+                ->where('staff_id', $data->id)
+                ->where('date', $date)
+                ->first();
 
-        // Insert into the database
-        $inserted = DB::table('staff_attendance')->insert($formattedData);
+            // Extract optional fields, handle their absence
+            $attendanceType = $data->attendance_type ?? null;
+            $attendanceNote = $data->attendance_note ?? '';
+
+            if ($existingEntry) {
+                // If entry exists and values differ, update it
+                if (
+                    ($attendanceType !== null && $existingEntry->staff_attendance_type_id != $attendanceType) ||
+                    $existingEntry->remark != $attendanceNote
+                ) {
+                    DB::table('staff_attendance')
+                        ->where('id', $existingEntry->id)
+                        ->update([
+                            'staff_attendance_type_id' => $attendanceType ?? $existingEntry->staff_attendance_type_id, // Preserve existing if not provided
+                            'remark' => $attendanceNote,
+                            'updated_at' => now(),
+                        ]);
+                }
+            } else {
+                // If no entry exists, create a new one
+                DB::table('staff_attendance')->insert([
+                    'staff_id' => $data->id,
+                    'date' => $date,
+                    'staff_attendance_type_id' => $attendanceType, // Can be null
+                    'remark' => $attendanceNote,
+                    'is_active' => 0, // Assuming default value
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
+        }
 
         // Return response
         return response()->json([
-            'success' => $inserted,
-            'message' => $inserted ? 'Attendance data saved successfully.' : 'Failed to save attendance data.',
-        ], $inserted ? 200 : 500);
+            'success' => true,
+            'message' => 'Attendance data processed successfully.',
+        ], 200);
     }
 
     /**

@@ -117,7 +117,7 @@ class StaffController extends Controller
         if ($attendance) {
             $query->leftJoin('staff_attendance', function ($join) use ($searchDate) {
                 $join->on('staff_attendance.staff_id', '=', 'staff.id')
-                    ->whereDate('staff_attendance.date', '=', $searchDate); // Filter by attendance date
+                    ->where('staff_attendance.date', '=', $searchDate); // Filter by attendance date
             });
         }
         if ($role_id) {
