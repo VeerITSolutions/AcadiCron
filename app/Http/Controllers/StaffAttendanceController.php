@@ -6,8 +6,7 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 use App\Models\StaffAttendance;
 use Illuminate\Http\Request;
-
-
+use Illuminate\Support\Facades\DB;
 
 class StaffAttendanceController extends Controller
 {
@@ -26,11 +25,14 @@ class StaffAttendanceController extends Controller
 
 
         // Initialize the query for retrieving staff attendance
-        $query = StaffAttendance::select('staff_attendance.*'  ,'staff.name as staff_name',
-        'staff.surname as staff_surname',
-        'staff_attendance_type.type as staff_attendance_type')
-             ->leftJoin('staff', 'staff.id', '=', 'staff_attendance.staff_id')
-             ->leftJoin('staff_attendance_type', 'staff_attendance_type.id', '=', 'staff_attendance.staff_attendance_type_id');
+        $query = StaffAttendance::select(
+            'staff_attendance.*',
+            'staff.name as staff_name',
+            'staff.surname as staff_surname',
+            'staff_attendance_type.type as staff_attendance_type'
+        )
+            ->leftJoin('staff', 'staff.id', '=', 'staff_attendance.staff_id')
+            ->leftJoin('staff_attendance_type', 'staff_attendance_type.id', '=', 'staff_attendance.staff_attendance_type_id');
 
 
 
@@ -53,9 +55,31 @@ class StaffAttendanceController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Request $request)
     {
-        //
+        $attendanceData = $request->input('attendance_data'); // Assuming JSON input in 'attendance_data'
+        $date = $request->input('date');
+
+        // Prepare data for bulk insert
+        $formattedData = array_map(function ($data) use ($date) {
+            return [
+                'staff_id' => $data['id'],
+                'date' => $date,
+                'staff_attendance_type_id' => $data['attendance_type'],
+                'remark' => $data['attendance_note'] ?? null, // Handle nullable field
+                'created_at' => now(),
+                'updated_at' => now(),
+            ];
+        }, $attendanceData);
+
+        // Insert into the database
+        $inserted = DB::table('staff_attendance')->insert($formattedData);
+
+        // Return response
+        return response()->json([
+            'success' => $inserted,
+            'message' => $inserted ? 'Attendance data saved successfully.' : 'Failed to save attendance data.',
+        ], $inserted ? 200 : 500);
     }
 
     /**
