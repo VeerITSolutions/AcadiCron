@@ -315,7 +315,7 @@ class StudentsController extends Controller
         $promoted_section_id = $request->input('promoted_section_id');
 
         foreach ($promote_student_data as $student) {
-            $student_id = $student->student_id;
+            $student_id = $student->id;
 
             $existingRecord = StudentSession::where('student_id', $student_id)
                 ->where('class_id', $class_id)
@@ -324,7 +324,58 @@ class StudentsController extends Controller
                 ->first();
 
             if ($existingRecord) {
-                // If a record exists, don't do anything (could log or handle as needed).
+                $current_result = $student->current_result;
+                $next_session_status = $student->next_session_status;
+
+                // Handle the logic for pass, fail, and leave.
+                if ($current_result == "1" && $next_session_status == "1") {
+                    // Promote the student to the new class and section
+                    $existingRecord->update([
+                        'class_id' => $promoted_class_id,
+                        'session_id' => $session_id,
+                        'student_id' => $student_id,
+                        'section_id' => $promoted_section_id,
+                        'route_id' => 0,
+                        'hostel_room_id' => 0,
+                        'vehroute_id' => 0,
+                        'transport_fees' => 0,
+                        'fees_discount' => 0,
+                        'is_active' => 'no',
+                        'is_alumni' => 0,
+                        'default_login' => 'no',
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ]);
+                } elseif ($current_result == "2" && $next_session_status == "1") {
+                    // Reassign the student to the same session but with new class/section
+                    $class_post = $student->class_post;
+                    $section_post = $student->section_post;
+                    $existingRecord->create([
+                        'class_id' => $class_post,
+                        'session_id' => $session_id,
+                        'student_id' => $student_id,
+                        'section_id' => $section_post,
+                        'route_id' => 0,
+                        'hostel_room_id' => 0,
+                        'vehroute_id' => 0,
+                        'transport_fees' => 0,
+                        'fees_discount' => 0,
+                        'is_active' => 'no',
+                        'is_alumni' => 0,
+                        'default_login' => 'no',
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ]);
+                } elseif ($next_session_status == "2") {
+                    // Mark the student as alumni
+                    $alumni_data = [
+                        'student_id' => $student_id,
+                        'is_alumni' => 1,
+                    ];
+                    // Assuming you have a method to update alumni status
+                    StudentSession::where('student_id', $student_id)
+                        ->update($alumni_data);
+                }
             } else {
                 $current_result = $student->current_result;
                 $next_session_status = $student->next_session_status;
