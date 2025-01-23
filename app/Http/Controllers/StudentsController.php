@@ -12,137 +12,137 @@ use Illuminate\Support\Facades\DB;
 
 class StudentsController extends Controller
 {
-   /**
+    /**
      * Display a listing of the resource.
      */
     protected $studentBalanceService;
 
-     public function __construct(StudentBalanceService $studentBalanceService)
-     {
-         $this->studentBalanceService = $studentBalanceService;
-     }
+    public function __construct(StudentBalanceService $studentBalanceService)
+    {
+        $this->studentBalanceService = $studentBalanceService;
+    }
 
-     public function index(Request $request, $id = null, $role = null)
-     {
-          // Get pagination inputs, default to page 1 and 10 records per page if not provided
-    $page = (int) $request->input('page', 1);
-    $perPage = (int) $request->input('perPage', 10);
+    public function index(Request $request, $id = null, $role = null)
+    {
+        // Get pagination inputs, default to page 1 and 10 records per page if not provided
+        $page = (int) $request->input('page', 1);
+        $perPage = (int) $request->input('perPage', 10);
 
-    // Role ID (replace or customize as per your logic)
-    $role_id = 1;
+        // Role ID (replace or customize as per your logic)
+        $role_id = 1;
 
-    // Build the query
-    $query = DB::table('students')
-    ->select('students.*');
-
-
-// Apply pagination
-$paginatedData = $query->orderBy('id', 'desc')->paginate($perPage, ['*'], 'page', $page);
-
-    // Return paginated data with total count and pagination details
-    return response()->json([
-        'success' => true,
-        'data' => $paginatedData->items(), // Only return the current page data
-        'current_page' => $paginatedData->currentPage(),
-        'per_page' => $paginatedData->perPage(),
-        'total' => $paginatedData->total(),
-    ], 200);
-     }
+        // Build the query
+        $query = DB::table('students')
+            ->select('students.*');
 
 
-     public function admissionYear()
-     {
-         $result = DB::table('students')
-             ->select(DB::raw('distinct(year(admission_date)) as year'))
-             ->whereNotIn('admission_date', ['0000-00-00', '1970-01-01'])
-             ->get();
+        // Apply pagination
+        $paginatedData = $query->orderBy('id', 'desc')->paginate($perPage, ['*'], 'page', $page);
 
-         return response()->json([
-             'success' => true,
-             'data' => $result,
-         ], 200);
-     }
-
-     public function searchNonPromotedStudents(Request $request,$promoted_session_id , $promoted_class_id, $promoted_section_id, $class_id, $section_id, $current_session)
-     {
-          // Get pagination inputs, default to page 1 and 10 records per page if not provided
-    $page = (int) $request->input('page', 1);
-    $perPage = (int) $request->input('perPage', 10);
-
-    // Role ID (replace or customize as per your logic)
-    $role_id = 1;
-
-    // Build the query
+        // Return paginated data with total count and pagination details
+        return response()->json([
+            'success' => true,
+            'data' => $paginatedData->items(), // Only return the current page data
+            'current_page' => $paginatedData->currentPage(),
+            'per_page' => $paginatedData->perPage(),
+            'total' => $paginatedData->total(),
+        ], 200);
+    }
 
 
-    $query = DB::table('students')
-    ->join('student_session', 'student_session.student_id', '=', 'students.id')
-    ->join('classes', 'student_session.class_id', '=', 'classes.id')
-    ->join('sections', 'student_session.section_id', '=', 'sections.id')
-    ->leftJoin('categories', 'students.category_id', '=', 'categories.id')
-    ->leftJoin(DB::raw("(SELECT * FROM student_session WHERE session_id = {$promoted_session_id} AND class_id = {$promoted_class_id} AND section_id = {$promoted_section_id}) AS promoted_students"), 'promoted_students.student_id', '=', 'students.id')
-    ->where('student_session.session_id', '=', $current_session)
-    ->where('students.is_active', '=', 'yes')
-    ->where('student_session.class_id', '=', $class_id)
-    ->where('student_session.section_id', '=', $section_id)
-    ->whereNull('promoted_students.id')
-    ->orderBy('students.id')
-    ->select(
-        'promoted_students.id as promoted_student_id',
-        'classes.id as class_id',
-        'student_session.id as student_session_id',
-        'students.id',
-        'classes.class',
-        'sections.id as section_id',
-        'sections.section',
-        'students.admission_no',
-        'students.roll_no',
-        'students.admission_date',
-        'students.firstname',
-        'students.middlename',
-        'students.lastname',
-        'students.image',
-        'students.mobileno',
-        'students.email',
-        'students.state',
-        'students.city',
-        'students.pincode',
-        'students.religion',
-        'students.dob',
-        'students.current_address',
-        'students.permanent_address',
-        DB::raw("IFNULL(students.category_id, 0) as category_id"),
-        DB::raw("IFNULL(categories.category, '') as category"),
-        'students.adhar_no',
-        'students.samagra_id',
-        'students.bank_account_no',
-        'students.bank_name',
-        'students.ifsc_code',
-        'students.guardian_name',
-        'students.guardian_relation',
-        'students.guardian_phone',
-        'students.guardian_address',
-        'students.is_active',
-        'students.created_at',
-        'students.updated_at',
-        'students.father_name',
-        'students.rte',
-        'students.gender'
-    );
+    public function admissionYear()
+    {
+        $result = DB::table('students')
+            ->select(DB::raw('distinct(year(admission_date)) as year'))
+            ->whereNotIn('admission_date', ['0000-00-00', '1970-01-01'])
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $result,
+        ], 200);
+    }
+
+    public function searchNonPromotedStudents(Request $request, $promoted_session_id, $promoted_class_id, $promoted_section_id, $class_id, $section_id, $current_session)
+    {
+        // Get pagination inputs, default to page 1 and 10 records per page if not provided
+        $page = (int) $request->input('page', 1);
+        $perPage = (int) $request->input('perPage', 10);
+
+        // Role ID (replace or customize as per your logic)
+        $role_id = 1;
+
+        // Build the query
 
 
-// Apply pagination
-$paginatedData = $query->orderBy('id', 'desc')->paginate($perPage, ['*'], 'page', $page);
+        $query = DB::table('students')
+            ->join('student_session', 'student_session.student_id', '=', 'students.id')
+            ->join('classes', 'student_session.class_id', '=', 'classes.id')
+            ->join('sections', 'student_session.section_id', '=', 'sections.id')
+            ->leftJoin('categories', 'students.category_id', '=', 'categories.id')
+            ->leftJoin(DB::raw("(SELECT * FROM student_session WHERE session_id = {$promoted_session_id} AND class_id = {$promoted_class_id} AND section_id = {$promoted_section_id}) AS promoted_students"), 'promoted_students.student_id', '=', 'students.id')
+            ->where('student_session.session_id', '=', $current_session)
+            ->where('students.is_active', '=', 'yes')
+            ->where('student_session.class_id', '=', $class_id)
+            ->where('student_session.section_id', '=', $section_id)
+            ->whereNull('promoted_students.id')
+            ->orderBy('students.id')
+            ->select(
+                'promoted_students.id as promoted_student_id',
+                'classes.id as class_id',
+                'student_session.id as student_session_id',
+                'students.id',
+                'classes.class',
+                'sections.id as section_id',
+                'sections.section',
+                'students.admission_no',
+                'students.roll_no',
+                'students.admission_date',
+                'students.firstname',
+                'students.middlename',
+                'students.lastname',
+                'students.image',
+                'students.mobileno',
+                'students.email',
+                'students.state',
+                'students.city',
+                'students.pincode',
+                'students.religion',
+                'students.dob',
+                'students.current_address',
+                'students.permanent_address',
+                DB::raw("IFNULL(students.category_id, 0) as category_id"),
+                DB::raw("IFNULL(categories.category, '') as category"),
+                'students.adhar_no',
+                'students.samagra_id',
+                'students.bank_account_no',
+                'students.bank_name',
+                'students.ifsc_code',
+                'students.guardian_name',
+                'students.guardian_relation',
+                'students.guardian_phone',
+                'students.guardian_address',
+                'students.is_active',
+                'students.created_at',
+                'students.updated_at',
+                'students.father_name',
+                'students.rte',
+                'students.gender'
+            );
 
-    // Return paginated data with total count and pagination details
-    return response()->json([
-        'success' => true,
-        'data' => $paginatedData->items(), // Only return the current page data
-        'current_page' => $paginatedData->currentPage(),
-        'per_page' => $paginatedData->perPage(),
-        'total' => $paginatedData->total(),
-    ], 200);
-     }
+
+        // Apply pagination
+        $paginatedData = $query->orderBy('id', 'desc')->paginate($perPage, ['*'], 'page', $page);
+
+        // Return paginated data with total count and pagination details
+        return response()->json([
+            'success' => true,
+            'data' => $paginatedData->items(), // Only return the current page data
+            'current_page' => $paginatedData->currentPage(),
+            'per_page' => $paginatedData->perPage(),
+            'total' => $paginatedData->total(),
+        ], 200);
+    }
 
 
 
@@ -150,7 +150,8 @@ $paginatedData = $query->orderBy('id', 'desc')->paginate($perPage, ['*'], 'page'
     /**
      * Show the form for creating a new resource.
      */
-    public function create(Request $request){
+    public function create(Request $request)
+    {
 
 
         // Validate the incoming request
@@ -227,76 +228,72 @@ $paginatedData = $query->orderBy('id', 'desc')->paginate($perPage, ['*'], 'page'
         $student->save();
 
         $sectionExists = DB::table('sections')->where('id', $validatedData['section_id'])->exists();
-if (!$sectionExists) {
-    return response()->json([
-        'status' => 400,
-        'message' => 'Invalid section ID. Please provide a valid section.',
-    ], 400);
-}
+        if (!$sectionExists) {
+            return response()->json([
+                'status' => 400,
+                'message' => 'Invalid section ID. Please provide a valid section.',
+            ], 400);
+        }
 
-// Prepare the data for student_session
-$newdata = array(
-    'student_id' => $student->id,
-    'section_id' => $validatedData['section_id'],
-    'session_id' => $get_year->session_id,
-    'class_id' => $validatedData['class_id'],
-    'route_id' => $validatedData['route_id'] ?? 0,
-    'hostel_room_id' => $validatedData['hostel_room_id'] ?? 0,
-    'vehroute_id' => $validatedData['vehroute_id'] ?? 0,
-    'is_alumni' => 0,
-);
-
-
+        // Prepare the data for student_session
+        $newdata = array(
+            'student_id' => $student->id,
+            'section_id' => $validatedData['section_id'],
+            'session_id' => $get_year->session_id,
+            'class_id' => $validatedData['class_id'],
+            'route_id' => $validatedData['route_id'] ?? 0,
+            'hostel_room_id' => $validatedData['hostel_room_id'] ?? 0,
+            'vehroute_id' => $validatedData['vehroute_id'] ?? 0,
+            'is_alumni' => 0,
+        );
 
 
 
-         $student = Students::findOrFail($student->id);
 
-            /* image  */
 
-         $file = $request->file('image');
-         if($file)
-         {
-            $imageName = $student->id .'_student_images_'. time(); // Example name
+        $student = Students::findOrFail($student->id);
+
+        /* image  */
+
+        $file = $request->file('image');
+        if ($file) {
+            $imageName = $student->id . '_student_images_' . time(); // Example name
             $imageSubfolder = 'student_images';    // Example subfolder
             $full_path = 1;
             $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
             $validatedData['image'] = $imagePath;
-         }
+        }
 
 
-         $file = $request->file('guardian_pic');
-         if($file)
-         {
-         $imageName =  $student->id .'_guardian_pic_' . time(); // Example name
-         $imageSubfolder = 'student_images';    // Example subfolder
-         $full_path = 1;
-         $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
-         $validatedData['guardian_pic'] = $imagePath;
-         }
+        $file = $request->file('guardian_pic');
+        if ($file) {
+            $imageName =  $student->id . '_guardian_pic_' . time(); // Example name
+            $imageSubfolder = 'student_images';    // Example subfolder
+            $full_path = 1;
+            $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
+            $validatedData['guardian_pic'] = $imagePath;
+        }
 
-         $file = $request->file('father_pic');
-         if($file)
-         {
-         $imageName =  $student->id .'_father_pic_' . time(); // Example name
-         $imageSubfolder = 'student_images';    // Example subfolder
-         $full_path = 1;
-         $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
-         $validatedData['father_pic'] = $imagePath;
-         }
-         if($file)
-         {
-         $file = $request->file('mother_pic');
-         $imageName =  $student->id .'_mother_pic_' . time(); // Example name
-         $imageSubfolder = 'student_images';    // Example subfolder
-         $full_path = 1;
-         $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
-         $validatedData['mother_pic'] = $imagePath;
-         }
+        $file = $request->file('father_pic');
+        if ($file) {
+            $imageName =  $student->id . '_father_pic_' . time(); // Example name
+            $imageSubfolder = 'student_images';    // Example subfolder
+            $full_path = 1;
+            $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
+            $validatedData['father_pic'] = $imagePath;
+        }
+        if ($file) {
+            $file = $request->file('mother_pic');
+            $imageName =  $student->id . '_mother_pic_' . time(); // Example name
+            $imageSubfolder = 'student_images';    // Example subfolder
+            $full_path = 1;
+            $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
+            $validatedData['mother_pic'] = $imagePath;
+        }
 
-         /* image end */
+        /* image end */
 
-          $student->update($validatedData);
+        $student->update($validatedData);
 
         StudentSession::create($newdata);
 
@@ -307,14 +304,93 @@ $newdata = array(
         ], 201); // 201 Created status code
     }
 
+    public function studentPromoted(Request $request)
+    {
+        $promote_student_data = json_decode($request->input('promote_student_data'));
+        $class_id = $request->input('class_id');
+        $section_id = $request->input('section_id');
+        $session_id = $request->input('session_id');
+
+        $promoted_class_id = $request->input('promoted_class_id');
+        $promoted_section_id = $request->input('promoted_section_id');
+
+        foreach ($promote_student_data as $student) {
+            $student_id = $student->student_id;
+
+            $existingRecord = StudentSession::where('student_id', $student_id)
+                ->where('class_id', $class_id)
+                ->where('section_id', $section_id)
+                ->where('session_id', $session_id)
+                ->first();
+
+            if ($existingRecord) {
+                // If a record exists, don't do anything (could log or handle as needed).
+            } else {
+                $current_result = $student->current_result;
+                $next_session_status = $student->next_session_status;
+
+                // Handle the logic for pass, fail, and leave.
+                if ($current_result == "1" && $next_session_status == "1") {
+                    // Promote the student to the new class and section
+                    StudentSession::create([
+                        'class_id' => $promoted_class_id,
+                        'session_id' => $session_id,
+                        'student_id' => $student_id,
+                        'section_id' => $promoted_section_id,
+                        'route_id' => 0,
+                        'hostel_room_id' => 0,
+                        'vehroute_id' => 0,
+                        'transport_fees' => 0,
+                        'fees_discount' => 0,
+                        'is_active' => 'no',
+                        'is_alumni' => 0,
+                        'default_login' => 'no',
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ]);
+                } elseif ($current_result == "2" && $next_session_status == "1") {
+                    // Reassign the student to the same session but with new class/section
+                    $class_post = $student->class_post;
+                    $section_post = $student->section_post;
+                    StudentSession::create([
+                        'class_id' => $class_post,
+                        'session_id' => $session_id,
+                        'student_id' => $student_id,
+                        'section_id' => $section_post,
+                        'route_id' => 0,
+                        'hostel_room_id' => 0,
+                        'vehroute_id' => 0,
+                        'transport_fees' => 0,
+                        'fees_discount' => 0,
+                        'is_active' => 'no',
+                        'is_alumni' => 0,
+                        'default_login' => 'no',
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ]);
+                } elseif ($next_session_status == "2") {
+                    // Mark the student as alumni
+                    $alumni_data = [
+                        'student_id' => $student_id,
+                        'is_alumni' => 1,
+                    ];
+                    // Assuming you have a method to update alumni status
+                    StudentSession::where('student_id', $student_id)
+                        ->update($alumni_data);
+                }
+            }
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Data processed successfully.',
+        ], 201);
+    }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
-    {
-
-    }
+    public function store(Request $request) {}
 
     /**
      * Display the specified resource.
@@ -376,51 +452,46 @@ $newdata = array(
         $data = $request->all();
 
         $file = $request->file('image');
-        if($file)
-        {
-        $imageName = $id .'_student_images_'. time(); // Example name
-        $imageSubfolder = 'student_images';    // Example subfolder
-        $full_path = 1;
-        $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
-        $data['image'] = $imagePath;
-
+        if ($file) {
+            $imageName = $id . '_student_images_' . time(); // Example name
+            $imageSubfolder = 'student_images';    // Example subfolder
+            $full_path = 1;
+            $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
+            $data['image'] = $imagePath;
         }
 
 
         $file = $request->file('guardian_pic');
-        if($file)
-        {
-        $imageName =  $id .'_guardian_pic_' . time(); // Example name
-        $imageSubfolder = 'student_images';    // Example subfolder
-        $full_path = 1;
-        $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
-        $data['guardian_pic'] = $imagePath;
+        if ($file) {
+            $imageName =  $id . '_guardian_pic_' . time(); // Example name
+            $imageSubfolder = 'student_images';    // Example subfolder
+            $full_path = 1;
+            $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
+            $data['guardian_pic'] = $imagePath;
         }
 
         $file = $request->file('father_pic');
-        if($file)
-        {
-        $imageName =  $id .'_father_pic_' . time(); // Example name
-        $imageSubfolder = 'student_images';    // Example subfolder
-        $full_path = 1;
-        $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
-        $data['father_pic'] = $imagePath;
+        if ($file) {
+            $imageName =  $id . '_father_pic_' . time(); // Example name
+            $imageSubfolder = 'student_images';    // Example subfolder
+            $full_path = 1;
+            $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
+            $data['father_pic'] = $imagePath;
         }
 
         $file = $request->file('mother_pic');
-        if($file)
-        {
-        $imageName =  $id .'_mother_pic_' . time(); // Example name
-        $imageSubfolder = 'student_images';    // Example subfolder
-        $full_path = 1;
-        $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
-        $data['mother_pic'] = $imagePath;
+        if ($file) {
+            $imageName =  $id . '_mother_pic_' . time(); // Example name
+            $imageSubfolder = 'student_images';    // Example subfolder
+            $full_path = 1;
+            $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
+            $data['mother_pic'] = $imagePath;
         }
 
 
         $student->update($data);
 
-        $studentsession = StudentSession::where('student_id',$id)->first();
+        $studentsession = StudentSession::where('student_id', $id)->first();
         $newdata = array(
             'student_id' => $id,
             'section_id' => $request->section_id,
@@ -467,24 +538,24 @@ $newdata = array(
     public function calculateBalances(Request $request)
     {
         $class_id = $request->input('selectedClass');
-        $section_id =$request->input('selectedSection');
+        $section_id = $request->input('selectedSection');
 
 
 
 
         $students = Students::join('student_session', 'student_session.student_id', '=', 'students.id')
-        ->join('classes', 'student_session.class_id', '=', 'classes.id')
-        ->join('sections', 'student_session.section_id', '=', 'sections.id')
+            ->join('classes', 'student_session.class_id', '=', 'classes.id')
+            ->join('sections', 'student_session.section_id', '=', 'sections.id')
 
-        /*  ->where('student_session.session_id', '=', $current_session) */
-        ->where('students.is_active', '=', 'yes')
-        ->where('student_session.class_id', '=', $class_id)
-        ->where('student_session.section_id', '=', $section_id)
-        ->get(); // Assuming students is passed as JSON
+            /*  ->where('student_session.session_id', '=', $current_session) */
+            ->where('students.is_active', '=', 'yes')
+            ->where('student_session.class_id', '=', $class_id)
+            ->where('student_session.section_id', '=', $section_id)
+            ->get(); // Assuming students is passed as JSON
         $balanceGroup = '48';
 
 
-        $studentsWithBalances = $this->studentBalanceService->calculateBalances(collect($students), $balanceGroup );
+        $studentsWithBalances = $this->studentBalanceService->calculateBalances(collect($students), $balanceGroup);
 
 
 
