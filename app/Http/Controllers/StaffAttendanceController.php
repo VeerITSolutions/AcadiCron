@@ -59,6 +59,9 @@ class StaffAttendanceController extends Controller
     {
         $attendanceData = json_decode($request->input('attendance_data')); // Assuming JSON input in 'attendance_data'
         $date = $request->input('date');
+        $holiday = $request->input('holiday');
+
+
 
         foreach ($attendanceData as $data) {
             // Check if an entry for this staff_id and date already exists
@@ -77,6 +80,9 @@ class StaffAttendanceController extends Controller
                     ($attendanceType !== null && $existingEntry->staff_attendance_type_id != $attendanceType) ||
                     $existingEntry->remark != $attendanceNote
                 ) {
+                    if ($holiday) {
+                        $attendanceType = 5;
+                    }
                     DB::table('staff_attendance')
                         ->where('id', $existingEntry->id)
                         ->update([
@@ -86,6 +92,9 @@ class StaffAttendanceController extends Controller
                         ]);
                 }
             } else {
+                if ($holiday) {
+                    $attendanceType = 5;
+                }
                 // If no entry exists, create a new one
                 DB::table('staff_attendance')->insert([
                     'staff_id' => $data->id,
