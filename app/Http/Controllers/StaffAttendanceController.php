@@ -80,21 +80,17 @@ class StaffAttendanceController extends Controller
                     ($attendanceType !== null && $existingEntry->staff_attendance_type_id != $attendanceType) ||
                     $existingEntry->remark != $attendanceNote
                 ) {
-                    if ($holiday == true) {
-                        $attendanceType = 5;
-                    }
+
                     DB::table('staff_attendance')
                         ->where('id', $existingEntry->id)
                         ->update([
-                            'staff_attendance_type_id' => $attendanceType ?? $existingEntry->staff_attendance_type_id, // Preserve existing if not provided
+                            'staff_attendance_type_id' => $attendanceType, // Preserve existing if not provided
                             'remark' => $attendanceNote,
                             'updated_at' => now(),
                         ]);
                 }
             } else {
-                if ($holiday == true) {
-                    $attendanceType = 5;
-                }
+
                 // If no entry exists, create a new one
                 DB::table('staff_attendance')->insert([
                     'staff_id' => $data->id,
