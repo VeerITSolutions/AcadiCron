@@ -80,7 +80,7 @@ class StaffAttendanceController extends Controller
                     ($attendanceType !== null && $existingEntry->staff_attendance_type_id != $attendanceType) ||
                     $existingEntry->remark != $attendanceNote
                 ) {
-                    if ($holiday) {
+                    if ($holiday == true) {
                         $attendanceType = 5;
                     }
                     DB::table('staff_attendance')
@@ -92,7 +92,7 @@ class StaffAttendanceController extends Controller
                         ]);
                 }
             } else {
-                if ($holiday) {
+                if ($holiday == true) {
                     $attendanceType = 5;
                 }
                 // If no entry exists, create a new one

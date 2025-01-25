@@ -16,105 +16,91 @@ class StudentApplyleaveController extends Controller
      * Display a listing of the resource.
      */
     public function index(Request $request)
-{
-    // Initialize pagination variables
-    $page = (int) $request->input('page', 1);
-    $perPage = (int) $request->input('perPage', 10);
-    $selectedClass = $request->input('selectedClass');
-    $selectedSection = $request->input('selectedSection');
-    $student = $request->input('student');  // Get student input from the request
-    $keyword = $request->input('keyword');
-
-    // Validate form input
-    $validator = Validator::make($request->all(), [
-        'selectedClass' => 'nullable|integer',
-        'selectedSection' => 'nullable|integer',
-        'student' => 'nullable|integer|exists:students,id',  // Validate if student exists in the 'students' table
-    ]);
-
-    if ($validator->fails()) {
-        return response()->json([
-            'success' => false,
-            'errors' => $validator->errors(),
-        ], 422);
-    }
-
-    // Build the query
-    $query = DB::table('student_applyleave')
-        ->leftJoin('student_session', 'student_applyleave.student_session_id', '=', 'student_session.id')
-        ->leftJoin('students', 'students.id', '=', 'student_session.student_id') // Join with the students table
-        ->leftJoin('classes', 'classes.id', '=', 'student_session.class_id')
-        ->leftJoin('sections', 'sections.id', '=', 'student_session.section_id')
-        ->leftJoin('staff', 'staff.id', '=', 'student_applyleave.approve_by')
-
-        ->select(
-            'student_applyleave.*',
-            'students.firstname',
-            'students.lastname',
-            'students.id as student_id',  // Include student_id for reference
-            'classes.class as class_name',
-            'sections.section as section_name',
-            'staff.name as staff_name',
-            'staff.surname as staff_surname'
+    {
+        // Initialize pagination variables
+        $page = (int) $request->input('page', 1);
+        $perPage = (int) $request->input('perPage', 10);
+        $selectedClass = $request->input('selectedClass');
+        $selectedSection = $request->input('selectedSection');
+        $student = $request->input('student');  // Get student input from the request
+        $keyword = $request->input('keyword');
 
 
-        )
-        ->orderBy('student_applyleave.created_at', 'desc');
+        $query = DB::table('student_applyleave')
+            ->leftJoin('student_session', 'student_applyleave.student_session_id', '=', 'student_session.id')
+            ->leftJoin('students', 'students.id', '=', 'student_session.student_id') // Join with the students table
+            ->leftJoin('classes', 'classes.id', '=', 'student_session.class_id')
+            ->leftJoin('sections', 'sections.id', '=', 'student_session.section_id')
+            ->leftJoin('staff', 'staff.id', '=', 'student_applyleave.approve_by')
 
-    // Apply filtering based on selectedClass
-    if (!empty($selectedClass)) {
-        $query->where('student_session.class_id', $selectedClass);
-    }
-
-    // Apply filtering based on selectedSection
-    if (!empty($selectedSection)) {
-        $query->where('student_session.section_id', $selectedSection);
-    }
-    // Apply filtering based on keyword (searching in the 'firstname' field)
-    if (!empty($keyword)) {
-        $query->where('students.firstname', 'like', '%' . $keyword . '%');
-    }
-
-
-    if (!empty($keyword)) {
-        $query->where(function($q) use ($keyword) {
-            $q->where('students.firstname', 'like', '%' . $keyword . '%')
-            ->orWhereRaw('CONCAT(students.firstname, " ", students.lastname) like ?', ['%' . $keyword . '%']);
-        });
-    }
-    // Apply filtering based on student
-    if (!empty($student)) {
-        $query->where('students.id', $student);  // Filter by student ID if provided
-    }
+            ->select(
+                'student_applyleave.*',
+                'students.firstname',
+                'students.lastname',
+                'students.id as student_id',  // Include student_id for reference
+                'classes.class as class_name',
+                'sections.section as section_name',
+                'staff.name as staff_name',
+                'staff.surname as staff_surname'
 
 
-    // Apply pagination
-    $paginatedData = $query->paginate($perPage, ['*'], 'page', $page);
+            )
+            ->orderBy('student_applyleave.id');
 
-    // Return paginated data with pagination details and full name concatenated
-    $data = $paginatedData->items();
-    foreach ($data as $key => $value) {
-        // Concatenate the full name directly using object notation
-        $fullName = $value->firstname;
-
-
-        if (!empty($value->lastname)) {
-            $fullName .= ' ' . $value->lastname;
+        // Apply filtering based on selectedClass
+        if (!empty($selectedClass)) {
+            $query->where('student_session.class_id', $selectedClass);
         }
 
-        // Add the full name to the result as 'student_name'
-        $data[$key]->student_name = $fullName; // Use object notation to set the value
-    }
+        // Apply filtering based on selectedSection
+        if (!empty($selectedSection)) {
+            $query->where('student_session.section_id', $selectedSection);
+        }
+        // Apply filtering based on keyword (searching in the 'firstname' field)
+        if (!empty($keyword)) {
+            $query->where('students.firstname', 'like', '%' . $keyword . '%');
+        }
 
-    // Return paginated data with pagination details
-    return response()->json([
-        'success' => true,
-        'data' => $data, // Current page data with student names
-        'current_page' => $paginatedData->currentPage(),
-        'per_page' => $paginatedData->perPage(),
-        'total' => $paginatedData->total(),
-    ], 200);
-}
+
+        if (!empty($keyword)) {
+            $query->where(function ($q) use ($keyword) {
+                $q->where('students.firstname', 'like', '%' . $keyword . '%')
+                    ->orWhereRaw('CONCAT(students.firstname, " ", students.lastname) like ?', ['%' . $keyword . '%']);
+            });
+        }
+        // Apply filtering based on student
+        if (!empty($student)) {
+            $query->where('students.id', $student);  // Filter by student ID if provided
+        }
+
+
+        // Apply pagination
+        $paginatedData = $query->paginate($perPage, ['*'], 'page', $page);
+
+        // Return paginated data with pagination details and full name concatenated
+        $data = $paginatedData->items();
+        foreach ($data as $key => $value) {
+            // Concatenate the full name directly using object notation
+            $fullName = $value->firstname;
+
+
+            if (!empty($value->lastname)) {
+                $fullName .= ' ' . $value->lastname;
+            }
+
+            // Add the full name to the result as 'student_name'
+            $data[$key]->student_name = $fullName; // Use object notation to set the value
+        }
+
+        // Return paginated data with pagination details
+        return response()->json([
+            'success' => true,
+            'data' => $data, // Current page data with student names
+            'current_page' => $paginatedData->currentPage(),
+            'per_page' => $paginatedData->perPage(),
+            'total' => $paginatedData->total(),
+        ], 200);
+    }
 
 
 
@@ -122,27 +108,27 @@ class StudentApplyleaveController extends Controller
      * Show the form for creating a new resource.
      */
 
-     public function changeStatus(Request $request){
+    public function changeStatus(Request $request)
+    {
 
         $id = $request->id;
         $role_id = $request->role_id;
 
 
 
-         // Find the category by id
-         $leaverequest = StudentApplyleave::where('id', $id)->first();
+        // Find the category by id
+        $leaverequest = StudentApplyleave::where('id', $id)->first();
 
-         if($leaverequest->status == '1'){
+        if ($leaverequest->status == '1') {
             $leaverequest->status  = 0;
-             $leaverequest->approve_by  =  $role_id;
-         }else{
+            $leaverequest->approve_by  =  $role_id;
+        } else {
 
             $leaverequest->status  = 1;
             $leaverequest->approve_by  = $role_id;
+        }
 
-         }
-
-         $leaverequest->update();
+        $leaverequest->update();
         return response()->json([
             'status' => 200,
             'message' => 'successfully',
@@ -152,7 +138,8 @@ class StudentApplyleaveController extends Controller
 
     }
 
-    public function create(Request $request){
+    public function create(Request $request)
+    {
 
 
 
@@ -178,13 +165,12 @@ class StudentApplyleaveController extends Controller
         /*  $category->document_file  = 1; */
 
         $file = $request->file('docs');
-        if($file)
-        {
-           $imageName = $category->staff_id .'_docs_'. time(); // Example name
-           $imageSubfolder = "/student_leavedocuments/".$category->staff_id;   // Example subfolder
-           $full_path = 0;
-           $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
-           $category->docs  =  $validatedData['docs'] = $imagePath;
+        if ($file) {
+            $imageName = $category->staff_id . '_docs_' . time(); // Example name
+            $imageSubfolder = "/student_leavedocuments/" . $category->staff_id;   // Example subfolder
+            $full_path = 0;
+            $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
+            $category->docs  =  $validatedData['docs'] = $imagePath;
         }
 
         $category->save();
@@ -222,43 +208,43 @@ class StudentApplyleaveController extends Controller
      * Update the specified resource in storage.
      */
     public function update(Request $request)
-     {
-         // Validate the request data
-         $validatedData = $request->all();
+    {
+        // Validate the request data
+        $validatedData = $request->all();
 
-         // Find the category by id
-         $leaverequest = StudentApplyleave::findOrFail($validatedData['currentLeaveId']);
+        // Find the category by id
+        $leaverequest = StudentApplyleave::findOrFail($validatedData['currentLeaveId']);
 
-         $leaverequest->student_session_id  = $validatedData['student_session_id'];
-         $leaverequest->from_date  = $validatedData['from_date'];
-         $leaverequest->to_date  = $validatedData['to_date'];
-         $leaverequest->apply_date  = $validatedData['apply_date'];
-         $leaverequest->created_at  = $validatedData['created_at'];
-         $leaverequest->reason  = $validatedData['reason'];
-         $leaverequest->approve_by  = $validatedData['approve_by'];
-         $leaverequest->request_type  = $validatedData['request_type'];
-         $leaverequest->status  = $validatedData['status'];
+        $leaverequest->student_session_id  = $validatedData['student_session_id'];
+        $leaverequest->from_date  = $validatedData['from_date'];
+        $leaverequest->to_date  = $validatedData['to_date'];
+        $leaverequest->apply_date  = $validatedData['apply_date'];
+        $leaverequest->created_at  = $validatedData['created_at'];
+        $leaverequest->reason  = $validatedData['reason'];
+        $leaverequest->approve_by  = $validatedData['approve_by'];
+        $leaverequest->request_type  = $validatedData['request_type'];
+        $leaverequest->status  = $validatedData['status'];
 
 
-         // Handle file upload if present
-         if ($request->hasFile('docs')) {
-             $file = $request->file('docs');
-             $imageName = $leaverequest->id . '_docs_' . time();
-             $imageSubfolder = "/student_leavedocuments/" . $leaverequest->id;
-             $full_path = false; // Adjust based on your uploadImage logic
-             $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
-             $leaverequest->docs = $imagePath;
-         }
+        // Handle file upload if present
+        if ($request->hasFile('docs')) {
+            $file = $request->file('docs');
+            $imageName = $leaverequest->id . '_docs_' . time();
+            $imageSubfolder = "/student_leavedocuments/" . $leaverequest->id;
+            $full_path = false; // Adjust based on your uploadImage logic
+            $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
+            $leaverequest->docs = $imagePath;
+        }
 
-         // Save the updated model
-         $leaverequest->save();
+        // Save the updated model
+        $leaverequest->save();
 
-         return response()->json([
-             'status' => 200,
-             'message' => 'Edit successful',
-             'leaverequest' => $leaverequest,
-         ], 200); // 200 OK status code
-     }
+        return response()->json([
+            'status' => 200,
+            'message' => 'Edit successful',
+            'leaverequest' => $leaverequest,
+        ], 200); // 200 OK status code
+    }
 
     /**
      * Remove the specified resource from storage.
