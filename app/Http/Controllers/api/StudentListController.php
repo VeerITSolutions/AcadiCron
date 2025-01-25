@@ -138,7 +138,7 @@ class StudentListController extends Controller
                 'sections.section as section_name',
                 'categories.category as category_name',
 
-
+                'student_session.id as student_session_id',
                 'student_attendences.date as attendance_date',
                 'student_attendences.biometric_attendence as student_biometric_attendence',
 
