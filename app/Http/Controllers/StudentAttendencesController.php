@@ -92,8 +92,8 @@ class StudentAttendencesController extends Controller
             'staff.surname as staff_surname',
             'student_attendences_type.type as student_attendences_type'
         )
-            ->leftJoin('staff', 'staff.id', '=', 'student_attendences.staff_id')
-            ->leftJoin('student_attendences_type', 'student_attendences_type.id', '=', 'student_attendences.student_attendences_type_id');
+            ->leftJoin('staff', 'staff.id', '=', 'student_attendences.student_session_id')
+            ->leftJoin('student_attendences_type', 'student_attendences_type.id', '=', 'student_attendences.attendence_type_id');
 
 
 
@@ -125,9 +125,9 @@ class StudentAttendencesController extends Controller
 
 
         foreach ($attendanceData as $data) {
-            // Check if an entry for this staff_id and date already exists
+            // Check if an entry for this student_session_id and date already exists
             $existingEntry = DB::table('student_attendences')
-                ->where('staff_id', $data->id)
+                ->where('student_session_id', $data->id)
                 ->where('date', $date)
                 ->first();
 
@@ -138,14 +138,14 @@ class StudentAttendencesController extends Controller
             if ($existingEntry) {
                 // If entry exists and values differ, update it
                 if (
-                    ($attendanceType !== null && $existingEntry->student_attendences_type_id != $attendanceType) ||
+                    ($attendanceType !== null && $existingEntry->attendence_type_id != $attendanceType) ||
                     $existingEntry->remark != $attendanceNote
                 ) {
 
                     DB::table('student_attendences')
                         ->where('id', $existingEntry->id)
                         ->update([
-                            'student_attendences_type_id' => $attendanceType, // Preserve existing if not provided
+                            'attendence_type_id' => $attendanceType, // Preserve existing if not provided
                             'remark' => $attendanceNote,
                             'updated_at' => now(),
                         ]);
@@ -154,11 +154,11 @@ class StudentAttendencesController extends Controller
 
                 // If no entry exists, create a new one
                 DB::table('student_attendences')->insert([
-                    'staff_id' => $data->id,
+                    'student_session_id' => $data->id,
                     'date' => $date,
-                    'student_attendences_type_id' => $attendanceType, // Can be null
+                    'attendence_type_id' => $attendanceType, // Can be null
                     'remark' => $attendanceNote,
-                    'is_active' => 0, // Assuming default value
+                    'is_active' => 'no', // Assuming default value
                     'created_at' => now(),
                     'updated_at' => now(),
                 ]);
