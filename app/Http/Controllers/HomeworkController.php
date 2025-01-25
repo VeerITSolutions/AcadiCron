@@ -265,6 +265,33 @@ class HomeworkController extends Controller
         ], 201); // 201 Created status code
     }
 
+    public function createEvaluvation(Request $request)
+    {
+
+
+        $selectedIds = json_decode($request->input('selectedIds')); // Assuming JSON input in 'attendance_data'
+        $formhomeworkid = $request->input('formhomeworkid');
+
+        foreach ($selectedIds as $data) {
+
+            DB::table('homework_evaluation')->insert([
+                'homework_id' => $formhomeworkid,
+                'student_id' => $data,
+                'student_session_id' => $data,
+                'status' => 'Complete',
+                'date' => now()
+            ]);
+        }
+
+        // Return response
+        return response()->json([
+            'success' => true,
+            'message' => 'Added successfully.',
+        ], 200);
+    }
+
+
+
 
     /**
      * Store a newly created resource in storage.

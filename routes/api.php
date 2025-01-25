@@ -424,6 +424,7 @@ Route::post('/homework', [HomeworkController::class, 'create']);
 Route::delete('/homework/{id}', [HomeworkController::class, 'destroy']);
 Route::post('/homework/{id}', [HomeworkController::class, 'update']);
 Route::post('/get-students-homework', [HomeworkController::class, 'getStudents']);
+Route::post('/homework-evaluvation', [HomeworkController::class, 'createEvaluvation']);
 
 Route::post('/search-homework', [HomeworkController::class, 'searchHomework']);
 
