@@ -274,9 +274,14 @@ class HomeworkController extends Controller
 
         foreach ($selectedIds as $data) {
 
+            $get  = DB::table('student_session')
+                ->select('student_id')
+                ->where('id', $data)
+                ->first();
+
             DB::table('homework_evaluation')->insert([
                 'homework_id' => $formhomeworkid,
-                'student_id' => $data,
+                'student_id' => $get->student_id,
                 'student_session_id' => $data,
                 'status' => 'Complete',
                 'date' => now()
