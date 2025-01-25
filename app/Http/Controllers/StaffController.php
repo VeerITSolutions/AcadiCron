@@ -95,7 +95,9 @@ class StaffController extends Controller
                 'staff_roles.role_id',
                 'department.department_name as department',
                 'roles.name as user_type',
+                'staff_attendance.id as staff_attendance_id',
                 'staff_attendance.date as attendance_date',
+
                 'staff_attendance.staff_attendance_type_id as attendance_status',
                 'staff_attendance.id as attendance_id',
                 'staff_attendance.remark as attendance_note'
