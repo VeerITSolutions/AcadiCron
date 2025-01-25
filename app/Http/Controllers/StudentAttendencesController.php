@@ -2,32 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\StudentAttendences;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class StudentAttendencesController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index(Request $request) {
-        // Retrieve the 'id' from the request if it exists
-        $id = $request->input('id');
 
-        // Start building the query on the student_attendences table
-        $query = DB::table('student_attendences');
-
-        // If an ID is provided, filter the results by ID
-        if ($id !== null) {
-            $query->where('id', $id);
-        } else {
-            // If no ID is provided, order the results by ID
-            $query->orderBy('id');
-        }
-
-        // Execute the query and return the result
-        return $id !== null ? $query->first() : $query->get();
-    }
 
 
 
@@ -36,66 +17,159 @@ class StudentAttendencesController extends Controller
         // Set $date to today's date if no value is provided
         $date = $date ?? date('Y-m-d');
 
-    $currentSession = '2024-25'; // Assuming this is a class property.
+        $currentSession = '2024-25'; // Assuming this is a class property.
 
-    $results = DB::table('students')
-        ->select(
-            'student_sessions.attendence_id',
-            'student_sessions.attendence_dt',
-            'students.firstname',
-            'students.middlename',
-            'students.lastname',
-            'student_sessions.date',
-            'student_sessions.remark',
-            'student_sessions.biometric_attendence',
-            'students.roll_no',
-            'students.admission_no',
-            'students.id as std_id',
-            'students.lastname',
-            'student_sessions.attendence_type_id',
-            'student_sessions.id as student_session_id',
-            'attendence_type.type as att_type',
-            'attendence_type.key_value as key'
-        )
-        ->joinSub(
-            DB::table('student_session')
-                ->leftJoin('student_attendences', function ($join) use ($date) {
-                    $join->on('student_attendences.student_session_id', '=', 'student_session.id')
-                         ->where('student_attendences.date', '=', $date);
-                })
-                ->select(
-                    'student_session.id',
-                    'student_session.student_id',
-                    DB::raw("IFNULL(student_attendences.date, 'xxx') as date"),
-                    DB::raw("IFNULL(student_attendences.created_at, 'xxx') as attendence_dt"),
-                    'student_attendences.remark',
-                    'student_attendences.biometric_attendence',
-                    DB::raw("IFNULL(student_attendences.id, 0) as attendence_id"),
-                    'student_attendences.attendence_type_id'
-                )
-               /*  ->where('student_session.session_id', '=', $currentSession) */
-                ->where('student_session.class_id', '=', $class_id)
-                ->where('student_session.section_id', '=', $section_id),
-            'student_sessions',
-            'student_sessions.student_id',
-            '=',
-            'students.id'
-        )
-        ->leftJoin('attendence_type', 'attendence_type.id', '=', 'student_sessions.attendence_type_id')
-        ->where('students.is_active', '=', 'yes')
-        ->orderBy('students.id', 'desc')
-        ->get();
+        $results = DB::table('students')
+            ->select(
+                'student_sessions.attendence_id',
+                'student_sessions.attendence_dt',
+                'students.firstname',
+                'students.middlename',
+                'students.lastname',
+                'student_sessions.date',
+                'student_sessions.remark',
+                'student_sessions.biometric_attendence',
+                'students.roll_no',
+                'students.admission_no',
+                'students.id as std_id',
+                'students.lastname',
+                'student_sessions.attendence_type_id',
+                'student_sessions.id as student_session_id',
+                'attendence_type.type as att_type',
+                'attendence_type.key_value as key'
+            )
+            ->joinSub(
+                DB::table('student_session')
+                    ->leftJoin('student_attendences', function ($join) use ($date) {
+                        $join->on('student_attendences.student_session_id', '=', 'student_session.id')
+                            ->where('student_attendences.date', '=', $date);
+                    })
+                    ->select(
+                        'student_session.id',
+                        'student_session.student_id',
+                        DB::raw("IFNULL(student_attendences.date, 'xxx') as date"),
+                        DB::raw("IFNULL(student_attendences.created_at, 'xxx') as attendence_dt"),
+                        'student_attendences.remark',
+                        'student_attendences.biometric_attendence',
+                        DB::raw("IFNULL(student_attendences.id, 0) as attendence_id"),
+                        'student_attendences.attendence_type_id'
+                    )
+                    /*  ->where('student_session.session_id', '=', $currentSession) */
+                    ->where('student_session.class_id', '=', $class_id)
+                    ->where('student_session.section_id', '=', $section_id),
+                'student_sessions',
+                'student_sessions.student_id',
+                '=',
+                'students.id'
+            )
+            ->leftJoin('attendence_type', 'attendence_type.id', '=', 'student_sessions.attendence_type_id')
+            ->where('students.is_active', '=', 'yes')
+            ->orderBy('students.id', 'desc')
+            ->get();
 
-    return $results;
-}
+        return $results;
+    }
+
+
+    /**
+     * Display a listing of the resource.
+     */
+    public function index(Request $request)
+    {
+        // Initialize pagination variables
+        $page = (int) $request->input('page', 1);
+        $perPage = (int) $request->input('perPage', 10);
+
+        $month = (int) $request->input('month');
+        $year = (int) $request->input('year');
+
+
+
+        // Initialize the query for retrieving staff attendance
+        $query = StudentAttendences::select(
+            'student_attendences.*',
+            'staff.name as staff_name',
+            'staff.surname as staff_surname',
+            'student_attendences_type.type as student_attendences_type'
+        )
+            ->leftJoin('staff', 'staff.id', '=', 'student_attendences.staff_id')
+            ->leftJoin('student_attendences_type', 'student_attendences_type.id', '=', 'student_attendences.student_attendences_type_id');
+
+
+
+
+
+        // Apply pagination to the query
+        $paginatedData = $query->orderBy('id', 'desc')->paginate($perPage, ['*'], 'page', $page);
+
+        // Return paginated data with pagination details
+        return response()->json([
+            'success' => true,
+            'data' => $paginatedData->items(), // Current page data
+            'current_page' => $paginatedData->currentPage(),
+            'per_page' => $paginatedData->perPage(),
+            'total' => $paginatedData->total(),
+        ], 200);
+    }
 
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Request $request)
     {
-        //
+        $attendanceData = json_decode($request->input('attendance_data')); // Assuming JSON input in 'attendance_data'
+        $date = $request->input('date');
+        $holiday = $request->input('holiday');
+
+
+
+        foreach ($attendanceData as $data) {
+            // Check if an entry for this staff_id and date already exists
+            $existingEntry = DB::table('student_attendences')
+                ->where('staff_id', $data->id)
+                ->where('date', $date)
+                ->first();
+
+            // Extract optional fields, handle their absence
+            $attendanceType = $data->attendance_type ?? null;
+            $attendanceNote = $data->attendance_note ?? '';
+
+            if ($existingEntry) {
+                // If entry exists and values differ, update it
+                if (
+                    ($attendanceType !== null && $existingEntry->student_attendences_type_id != $attendanceType) ||
+                    $existingEntry->remark != $attendanceNote
+                ) {
+
+                    DB::table('student_attendences')
+                        ->where('id', $existingEntry->id)
+                        ->update([
+                            'student_attendences_type_id' => $attendanceType, // Preserve existing if not provided
+                            'remark' => $attendanceNote,
+                            'updated_at' => now(),
+                        ]);
+                }
+            } else {
+
+                // If no entry exists, create a new one
+                DB::table('student_attendences')->insert([
+                    'staff_id' => $data->id,
+                    'date' => $date,
+                    'student_attendences_type_id' => $attendanceType, // Can be null
+                    'remark' => $attendanceNote,
+                    'is_active' => 0, // Assuming default value
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
+        }
+
+        // Return response
+        return response()->json([
+            'success' => true,
+            'message' => 'Attendance data processed successfully.',
+        ], 200);
     }
 
     /**

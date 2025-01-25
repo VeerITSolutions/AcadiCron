@@ -536,11 +536,7 @@ Route::post('/searchpayment', [SearchPaymentController::class, 'create']);
 Route::delete('/searchpayment/{id}', [SearchPaymentController::class, 'destroy']);
 Route::post('/searchpayment/{id}', [SearchPaymentController::class, 'update']);
 
-Route::get('/student-attendance', [StudentAttendencesController::class, 'index']);
-Route::get('/student-attendance-by-class-section', [StudentAttendencesController::class, 'searchAttendenceClassSection']);
-Route::post('/student-attendance', [StudentAttendencesController::class, 'create']);
-Route::delete('/student-attendance/{id}', [StudentAttendencesController::class, 'destroy']);
-Route::post('/student-attendance/{id}', [StudentAttendencesController::class, 'update']);
+
 
 Route::get('/attendence-type', [AttendenceTypeController::class, 'index']);
 Route::post('/attendence-type', [AttendenceTypeController::class, 'create']);
@@ -605,6 +601,13 @@ Route::get('/staff-attendance', [StaffAttendanceController::class, 'index']);
 Route::post('/staff-attendance', [StaffAttendanceController::class, 'create']);
 Route::delete('/staff-attendance/{id}', [StaffAttendanceController::class, 'destroy']);
 Route::post('/staff-attendance/{id}', [StaffAttendanceController::class, 'update']);
+
+
+Route::get('/student-attendance', [StudentAttendencesController::class, 'index']);
+Route::get('/student-attendance-by-class-section', [StudentAttendencesController::class, 'searchAttendenceClassSection']);
+Route::post('/student-attendance', [StudentAttendencesController::class, 'create']);
+Route::delete('/student-attendance/{id}', [StudentAttendencesController::class, 'destroy']);
+Route::post('/student-attendance/{id}', [StudentAttendencesController::class, 'update']);
 
 
 Route::get('/income', [IncomeController::class, 'index']);
