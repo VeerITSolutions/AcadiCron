@@ -95,6 +95,7 @@ class SiteController extends Controller
                         $userData = [
                             'name' => $user_username,
                             'surname' => $user_last_name,
+                            'user_data' => $get_student,
 
                             'roles' => []
                         ];
@@ -110,7 +111,7 @@ class SiteController extends Controller
                         $userData = [
                             'name' => $guardian_name,
                             'surname' => '',
-
+                            'user_data' => $get_student,
                             'roles' => []
                         ];
                     }
