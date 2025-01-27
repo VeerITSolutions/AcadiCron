@@ -177,6 +177,7 @@ class StudentListController extends Controller
                 'data' => $query->get(),
             ], 200);
         }
+        $query->where('students.is_active', 'yes');
 
         // Apply filters based on request parameters
         if (!empty($id)) {
@@ -208,7 +209,7 @@ class StudentListController extends Controller
                     ->orWhereRaw('CONCAT(students.firstname, " ", students.lastname) LIKE ?', ['%' . $keyword . '%']);
             });
         }
-        $query->where('students.is_active', 'yes');
+
         // Order by students ID
         $query->orderBy('students.id', 'desc');
 
