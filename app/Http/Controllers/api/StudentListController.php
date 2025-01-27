@@ -123,10 +123,14 @@ class StudentListController extends Controller
             ->join('sections', 'sections.id', '=', 'student_session.section_id')
             ->leftJoin('categories', 'categories.id', '=', 'students.category_id');
         if ($attendance) {
-            $query->leftJoin('student_attendences', function ($join) use ($searchDate) {
-                $join->on('student_attendences.student_session_id', '=', 'student_session.id')
-                    ->where('student_attendences.date', '=', $searchDate); // Filter by attendance date
-            });
+            if ($searchDate) {
+                $query->leftJoin('student_attendences', function ($join) use ($searchDate) {
+                    $join->on('student_attendences.student_session_id', '=', 'student_session.id')
+                        ->where('student_attendences.date', '=', $searchDate); // Filter by attendance date
+                });
+            } else {
+                $query->leftJoin('student_attendences', 'student_attendences.student_session_id', '=', 'student_session.id');
+            }
         }
         if ($attendance) {
 

@@ -88,12 +88,13 @@ class StudentAttendencesController extends Controller
         // Initialize the query for retrieving staff attendance
         $query = StudentAttendences::select(
             'student_attendences.*',
-            'staff.name as staff_name',
-            'staff.surname as staff_surname',
-            'student_attendences_type.type as student_attendences_type'
+            'students.firstname as students_name',
+            'students.lastname as students_surname',
+            'attendence_type.type as student_attendences_type'
         )
-            ->leftJoin('staff', 'staff.id', '=', 'student_attendences.student_session_id')
-            ->leftJoin('student_attendences_type', 'student_attendences_type.id', '=', 'student_attendences.attendence_type_id');
+            ->join('student_session', 'student_attendences.student_session_id', '=', 'student_session.id')
+            ->join('students', 'student_session.student_id', '=', 'students.id')
+            ->leftJoin('attendence_type', 'attendence_type.id', '=', 'student_attendences.attendence_type_id');
 
 
 
