@@ -445,22 +445,70 @@ class StudentsController extends Controller
         $reason = $request->input('reason');
         $date = $request->input('date');
         $note = $request->input('note');
+        $status = $request->input('status');
 
 
 
         $student = Students::findOrFail($student_id);
-        $student->update([
-            'dis_reason' => $reason,
-            'dis_note' => $note,
-            'is_active' => 'no',
-            'disable_at' => $date,
-        ]);
+        if ($status == 'active') {
+            $student->update([
+
+                'is_active' => 'yes',
+
+            ]);
+            return response()->json([
+                'success' => true,
+                'message' => 'Student enabled successfully.',
+            ], 201);
+        } else {
+            $student->update([
+                'dis_reason' => $reason,
+                'dis_note' => $note,
+                'is_active' => 'no',
+                'disable_at' => $date,
+            ]);
+        }
+
 
         return response()->json([
             'success' => true,
             'message' => 'Student disabled successfully.',
         ], 201);
     }
+
+    public function StudentLoginDetails(Request $request)
+    {
+        $student_id = $request->input('id');
+        $studentId = intval($student_id); // Ensure the ID is sanitized
+
+        // Select specific columns to ensure both queries return the same structure
+        $parentUsers = DB::table('users')
+            ->select('users.*') // Ensure the same column structure as above
+            ->whereIn('id', function ($query) use ($studentId) {
+                $query->select('students.parent_id')
+                    ->from('students')
+                    ->join('users', 'students.id', '=', 'users.user_id')
+                    ->where('users.user_id', $studentId)
+                    ->where('users.role', 'student');
+            });
+
+        $studentUsers = DB::table('users')
+            ->join('students', 'students.id', '=', 'users.user_id')
+            ->select('users.*') // Ensure the same column structure as above
+            ->where('users.user_id', $studentId)
+            ->where('users.role', 'student');
+
+        $result = $parentUsers->union($studentUsers)->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $result,
+            'message' => 'Data fetched successfully.',
+        ], 201);
+    }
+
+
+
 
     /**
      * Store a newly created resource in storage.
