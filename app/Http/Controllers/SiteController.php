@@ -25,7 +25,7 @@ class SiteController extends Controller
 
 
 
-         $notices = config('custom.front_notice_content');
+        $notices = config('custom.front_notice_content');
 
 
 
@@ -41,148 +41,138 @@ class SiteController extends Controller
 
 
 
-    public function dashboard(Request $request){
+    public function dashboard(Request $request)
+    {
         return view('admin.dashboard');
     }
 
     public function login(Request $request)
-{
-    $credentials = $request->only('username', 'password');
+    {
+        $credentials = $request->only('username', 'password');
 
-    // First, try to find the user with the email
-    $user = Staff::with('roles')->where('email', $request->username)->first();
+        // First, try to find the user with the email
+        $user = Staff::with('roles')->where('email', $request->username)->first();
 
-    // If no staff user found, look for a general user
-    if (!$user) {
-        $user = User::where('username', $request->username)->first();
-
-    }
-
-    // If user is found, check the password
-    if ($user) {
-        if (($user instanceof Staff && password_verify($request->password, $user->password)) ||
-            ($user instanceof User && $request->password === $user->password)) {
-            // Log the user in
-            Auth::login($user);
-
-            // Generate a token for the user
-            $token = $user->createToken('YourAppToken')->plainTextToken;
-
-            // Prepare user data
-
-            if ($user instanceof Staff) {
-                $userData = [
-                    'name' => $user->name,
-                    'surname' => $user->surname,
-                    'roles' => []
-                ];
-
-            } elseif ($user instanceof User) {
-
-                if($user->role == 'student')
-                {
-                   $get_student =  Students::where('id', $user->id)->first();
-                   if($get_student){
-
-                    $user_username = $get_student->firstname;
-                    $user_last_name = $get_student->lastname;
-                   }else{
-                    $user_username = 'N/A';
-                    $user_last_name = 'N/A';
-                   }
-
-
-
-                    $userData = [
-                        'name' => $user_username,
-                        'surname' => $user_last_name,
-
-                        'roles' => []
-                    ];
-                }
-
-                if($user->role == 'parent')
-                {
-
-                    $get_student =  Students::where('id', $user->user_id)->first();
-                    $guardian_name = $get_student->guardian_name;
-
-
-
-                    $userData = [
-                        'name' => $guardian_name,
-                        'surname' => '',
-
-                        'roles' => []
-                    ];
-                }
-
-
-
-            }
-
-
-            // Handle roles based on user type
-            if ($user instanceof Staff) {
-                $userData['roles'] = $user->roles->map(function ($role) {
-                    return [
-                        'id' => $role->id,
-                        'is_superadmin' => $role->is_superadmin,
-                        'name' => $role->name,
-
-                    ];
-                });
-            } elseif ($user instanceof User) {
-                // Implement your logic for User roles here
-
-
-                if($user->role == 'student')
-                {
-                    $userData['roles'] = [
-                        [
-                            'id' => '10', // Assuming User has a role_id field
-                            'is_superadmin' => 0, // Assuming User has this field
-                            'name' => $user->role, // Assuming User has this field
-                        ]
-                    ];
-
-                }
-
-                if($user->role == 'parent')
-                {
-
-                    $userData['roles'] = [
-                        [
-                            'id' => '11', // Assuming User has a role_id field
-                            'is_superadmin' => 0, // Assuming User has this field
-                            'name' => $user->role, // Assuming User has this field
-                        ]
-                    ];
-
-
-                }
-            }
-            $userData['user_id'] =$user->id;
-            return response()->json([
-                'success' => true,
-                'message' => 'Successfully authenticated',
-                'token' => $token,
-                'users' => $userData,
-            ]);
-        } else {
-            return response()->json([
-                'success' => false,
-                'message' => 'Authentication failed',
-            ], 401);
+        // If no staff user found, look for a general user
+        if (!$user) {
+            $user = User::where('username', $request->username)->first();
         }
-    }
 
-    // If no user is found
-    return response()->json([
-        'success' => false,
-        'message' => 'User not found',
-    ], 404);
-}
+        // If user is found, check the password
+        if ($user) {
+            if (($user instanceof Staff && password_verify($request->password, $user->password)) ||
+                ($user instanceof User && $request->password === $user->password)
+            ) {
+                // Log the user in
+                Auth::login($user);
+
+                // Generate a token for the user
+                $token = $user->createToken('YourAppToken')->plainTextToken;
+
+                // Prepare user data
+
+                if ($user instanceof Staff) {
+                    $userData = [
+                        'name' => $user->name,
+                        'surname' => $user->surname,
+                        'roles' => []
+                    ];
+                } elseif ($user instanceof User) {
+
+                    if ($user->role == 'student') {
+                        $get_student =  Students::where('id', $user->user_id)->first();
+                        if ($get_student) {
+
+                            $user_username = $get_student->firstname;
+                            $user_last_name = $get_student->lastname;
+                        } else {
+                            $user_username = 'N/A';
+                            $user_last_name = 'N/A';
+                        }
+
+
+
+                        $userData = [
+                            'name' => $user_username,
+                            'surname' => $user_last_name,
+
+                            'roles' => []
+                        ];
+                    }
+
+                    if ($user->role == 'parent') {
+
+                        $get_student =  Students::where('id', $user->user_id)->first();
+                        $guardian_name = $get_student->guardian_name;
+
+
+
+                        $userData = [
+                            'name' => $guardian_name,
+                            'surname' => '',
+
+                            'roles' => []
+                        ];
+                    }
+                }
+
+
+                // Handle roles based on user type
+                if ($user instanceof Staff) {
+                    $userData['roles'] = $user->roles->map(function ($role) {
+                        return [
+                            'id' => $role->id,
+                            'is_superadmin' => $role->is_superadmin,
+                            'name' => $role->name,
+
+                        ];
+                    });
+                } elseif ($user instanceof User) {
+                    // Implement your logic for User roles here
+
+
+                    if ($user->role == 'student') {
+                        $userData['roles'] = [
+                            [
+                                'id' => '10', // Assuming User has a role_id field
+                                'is_superadmin' => 0, // Assuming User has this field
+                                'name' => $user->role, // Assuming User has this field
+                            ]
+                        ];
+                    }
+
+                    if ($user->role == 'parent') {
+
+                        $userData['roles'] = [
+                            [
+                                'id' => '11', // Assuming User has a role_id field
+                                'is_superadmin' => 0, // Assuming User has this field
+                                'name' => $user->role, // Assuming User has this field
+                            ]
+                        ];
+                    }
+                }
+                $userData['user_id'] = $user->id;
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Successfully authenticated',
+                    'token' => $token,
+                    'users' => $userData,
+                ]);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Authentication failed',
+                ], 401);
+            }
+        }
+
+        // If no user is found
+        return response()->json([
+            'success' => false,
+            'message' => 'User not found',
+        ], 404);
+    }
 
 
 
