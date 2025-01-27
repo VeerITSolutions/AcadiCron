@@ -9,5 +9,5 @@ class AttendenceType extends Model
 {
     use HasFactory;
     protected $table = 'attendence_type';
-    protected $fillable = ['type','key_value','is_active', 'created_at','updated_at'];
+    protected $fillable = ['type', 'key_value', 'is_active', 'created_at', 'updated_at'];
 }

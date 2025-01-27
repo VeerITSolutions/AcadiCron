@@ -20,4 +20,9 @@ class StudentAttendences extends Model
         'created_at',
         'updated_at',
     ];
+
+    public function attendanceType()
+    {
+        return $this->belongsTo(AttendenceType::class, 'attendence_type_id');
+    }
 }

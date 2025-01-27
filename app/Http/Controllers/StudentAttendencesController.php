@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\StudentAttendences;
+use App\Models\Students;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -211,5 +213,71 @@ class StudentAttendencesController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+
+    public function getAttendance(Request $request)
+    {
+        // Validate the incoming request parameters
+        $validated = $request->all();
+
+        // Retrieve inputs from the validated request
+        $year = $validated['year'];
+        $month = $validated['month'];
+        $student_id = $validated['student_id'];
+        $student_session_id = $validated['student_session_id'];
+
+        // Retrieve the student's current class and session using the provided student_id
+        $student = Students::findOrFail($student_id);
+
+        $new_date = "01-" . $month . "-" . $year;
+        $totalDays = Carbon::createFromFormat('d-m-Y', $new_date)->daysInMonth;
+
+        $attendanceData = [];
+
+        for ($day = 1; $day <= $totalDays; $day++) {
+            // Calculate the current date by adding days
+            $date = Carbon::createFromFormat('d-m-Y', $new_date)->addDays($day - 1)->toDateString();
+
+            // Get attendance for the given student on this date
+            $attendance = StudentAttendences::with('attendanceType')
+                ->where('student_session_id', $student_session_id)
+                ->where('date', $date)
+                ->first();
+
+            if ($attendance) {
+                $type = $attendance->attendanceType->type;
+
+                $attendanceData[] = [
+                    'date' => $date,
+                    'badge' => false,
+                    'footer' => 'Extra information',
+                    'title' => $type,
+                    'classname' => $this->getAttendanceClass($type),
+                ];
+            }
+        }
+
+        return response()->json($attendanceData);
+    }
+
+    private function getAttendanceClass($type)
+    {
+        switch ($type) {
+            case 'Present':
+                return 'Present';
+            case 'Absent':
+                return 'Absent';
+            case 'Late':
+                return 'Late';
+            case 'Late with excuse':
+                return 'Late with excuse';
+            case 'Holiday':
+                return 'Holiday';
+            case 'Half Day':
+                return 'Half Day';
+            default:
+                return 'Absent';
+        }
     }
 }
