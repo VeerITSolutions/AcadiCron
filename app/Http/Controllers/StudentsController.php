@@ -438,6 +438,30 @@ class StudentsController extends Controller
         ], 201);
     }
 
+
+    public function StudentDisabled(Request $request)
+    {
+        $student_id = $request->input('id');
+        $reason = $request->input('reason');
+        $date = $request->input('date');
+        $note = $request->input('note');
+
+
+
+        $student = Students::findOrFail($student_id);
+        $student->update([
+            'dis_reason' => $reason,
+            'dis_note' => $note,
+            'is_active' => 'no',
+            'disable_at' => $date,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Student disabled successfully.',
+        ], 201);
+    }
+
     /**
      * Store a newly created resource in storage.
      */

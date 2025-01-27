@@ -485,6 +485,8 @@ Route::delete('/student-doc/{id}', [StudentDocController::class, 'destroy']);
 Route::post('/student-doc/{id}', [StudentDocController::class, 'update']);
 
 
+Route::post('/student-disabled', [StudentsController::class, 'StudentDisabled']);
+
 Route::get('/student-timeline/{id}', [StudentTimelineController::class, 'index']);
 Route::post('/student-timeline', [StudentTimelineController::class, 'create']);
 Route::delete('/student-timeline/{id}', [StudentTimelineController::class, 'destroy']);
