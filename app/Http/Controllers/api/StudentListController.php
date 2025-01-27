@@ -208,7 +208,7 @@ class StudentListController extends Controller
                     ->orWhereRaw('CONCAT(students.firstname, " ", students.lastname) LIKE ?', ['%' . $keyword . '%']);
             });
         }
-
+        $query->where('students.is_active', 'yes');
         // Order by students ID
         $query->orderBy('students.id', 'desc');
 
