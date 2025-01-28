@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Models\Classes;
 use App\Models\SchSettings;
 use App\Models\StudentApplyleave;
+use App\Models\StudentSession;
 
 class StudentApplyleaveController extends Controller
 {
@@ -35,14 +36,13 @@ class StudentApplyleaveController extends Controller
 
             ->select(
                 'student_applyleave.*',
-                'students.firstname',
-                'students.lastname',
+                'students.firstname as student_firstname',
+                'students.lastname as student_lastname',
                 'students.id as student_id',  // Include student_id for reference
                 'classes.class as class_name',
                 'sections.section as section_name',
                 'staff.name as staff_name',
                 'staff.surname as staff_surname'
-
 
             )
             ->orderBy('student_applyleave.id');
@@ -79,18 +79,7 @@ class StudentApplyleaveController extends Controller
 
         // Return paginated data with pagination details and full name concatenated
         $data = $paginatedData->items();
-        foreach ($data as $key => $value) {
-            // Concatenate the full name directly using object notation
-            $fullName = $value->firstname;
 
-
-            if (!empty($value->lastname)) {
-                $fullName .= ' ' . $value->lastname;
-            }
-
-            // Add the full name to the result as 'student_name'
-            $data[$key]->student_name = $fullName; // Use object notation to set the value
-        }
 
         // Return paginated data with pagination details
         return response()->json([
@@ -146,10 +135,12 @@ class StudentApplyleaveController extends Controller
         // Validate the incoming request
         $validatedData = $request->all();
 
+        $get_student_session_id =    StudentSession::where('student_id', $validatedData['selectedStudent'])->where('session_id', $validatedData['getselectedSessionId'])->first();
+
         // Create a new category
         $category = new StudentApplyleave();
 
-        $category->student_session_id = $validatedData['selectedStudent'] ?? 0;
+        $category->student_session_id = $get_student_session_id->id ?? 0;
         $category->from_date = $validatedData['from_date'] ?? null;
         $category->to_date = $validatedData['to_date'] ?? null;
         $category->apply_date = $validatedData['apply_date'] ?? null;
