@@ -508,6 +508,11 @@ Route::post('/class-teacher', [ClassTeacherController::class, 'create']);
 Route::delete('/class-teacher/{class_id}/{section_id}', [ClassTeacherController::class, 'destroy']);
 Route::post('/class-teacher/{id}', [ClassTeacherController::class, 'update']);
 
+Route::get('/teacher-review', [ClassTeacherController::class, 'index']);
+Route::post('/teacher-review', [ClassTeacherController::class, 'create']);
+Route::delete('/teacher-review/{id}', [ClassTeacherController::class, 'destroy']);
+Route::post('/teacher-review/{id}', [ClassTeacherController::class, 'update']);
+
 Route::get('/staff', [StaffController::class, 'getStaffbyrole']);
 Route::get('/staff/{id}', [StaffController::class, 'getSingleData']);
 Route::post('/staff', [StaffController::class, 'create']);
