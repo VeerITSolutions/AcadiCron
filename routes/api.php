@@ -510,6 +510,7 @@ Route::delete('/class-teacher/{class_id}/{section_id}', [ClassTeacherController:
 Route::post('/class-teacher/{id}', [ClassTeacherController::class, 'update']);
 
 Route::get('/teacher-review', [StaffRatingController::class, 'index']);
+Route::get('/teacher-review', [StaffRatingController::class, 'getRatedStaff']);
 Route::post('/teacher-review', [StaffRatingController::class, 'create']);
 Route::delete('/teacher-review/{id}', [StaffRatingController::class, 'destroy']);
 Route::post('/teacher-review/{id}', [StaffRatingController::class, 'update']);
