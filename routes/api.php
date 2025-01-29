@@ -91,6 +91,7 @@ use App\Http\Controllers\AlumniEventsController;
 use App\Http\Controllers\LessonController;
 use App\Http\Controllers\TopicController;
 use App\Http\Controllers\MultiClassStudentsController;
+use App\Http\Controllers\StaffRatingController;
 use App\Http\Controllers\TemplateMarksheetsController;
 use App\Http\Controllers\TemplateAdmitcardsController;
 
@@ -508,10 +509,10 @@ Route::post('/class-teacher', [ClassTeacherController::class, 'create']);
 Route::delete('/class-teacher/{class_id}/{section_id}', [ClassTeacherController::class, 'destroy']);
 Route::post('/class-teacher/{id}', [ClassTeacherController::class, 'update']);
 
-Route::get('/teacher-review', [ClassTeacherController::class, 'index']);
-Route::post('/teacher-review', [ClassTeacherController::class, 'create']);
-Route::delete('/teacher-review/{id}', [ClassTeacherController::class, 'destroy']);
-Route::post('/teacher-review/{id}', [ClassTeacherController::class, 'update']);
+Route::get('/teacher-review', [StaffRatingController::class, 'index']);
+Route::post('/teacher-review', [StaffRatingController::class, 'create']);
+Route::delete('/teacher-review/{id}', [StaffRatingController::class, 'destroy']);
+Route::post('/teacher-review/{id}', [StaffRatingController::class, 'update']);
 
 Route::get('/staff', [StaffController::class, 'getStaffbyrole']);
 Route::get('/staff/{id}', [StaffController::class, 'getSingleData']);
