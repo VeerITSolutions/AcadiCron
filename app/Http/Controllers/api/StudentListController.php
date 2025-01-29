@@ -155,6 +155,8 @@ class StudentListController extends Controller
                 'students.*',
                 'student_session.class_id as class_id',
                 'student_session.section_id as section_id',
+                'student_session.id as student_session_id',
+
                 'classes.class as class_name',
                 'sections.section as section_name',
                 'categories.category as category_name'
