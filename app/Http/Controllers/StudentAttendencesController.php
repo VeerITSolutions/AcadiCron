@@ -229,7 +229,7 @@ class StudentAttendencesController extends Controller
         $session_id = $validated['session_id'];
         $student_session_id = StudentSession::where('student_id', $student_id)->where('session_id', $session_id)->first();
 
-        $attendance = StudentAttendences::where('student_session_id', $student_session_id->id)
+        $attendance = StudentAttendences::with('attendanceType')->where('student_session_id', $student_session_id->id)
             ->get();
 
         return response()->json([
