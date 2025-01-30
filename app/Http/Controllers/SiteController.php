@@ -153,7 +153,15 @@ class SiteController extends Controller
                         ];
                     }
                 }
-                $userData['user_id'] = $user->id;
+
+                if ($user->role == 'student') {
+
+                    $get_student =  Students::where('id', $user->user_id)->first();
+                    $userData['user_id'] = $get_student->id;
+                } else {
+                    $userData['user_id'] = $user->id;
+                }
+
                 return response()->json([
                     'success' => true,
                     'message' => 'Successfully authenticated',

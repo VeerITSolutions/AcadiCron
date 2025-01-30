@@ -226,61 +226,15 @@ class StudentAttendencesController extends Controller
         $year = $validated['year'];
         $month = $validated['month'];
         $student_id = $validated['student_id'];
+        $session_id = $validated['session_id'];
+        $student_session_id = StudentSession::where('student_id', $student_id)->where('session_id', $session_id)->first();
 
+        $attendance = StudentAttendences::where('student_session_id', $student_session_id->id)
+            ->get();
 
-        // Retrieve the student's current class and session using the provided student_id
-        $student = Students::findOrFail($student_id);
-
-        $student_session_id = StudentSession::where('student_id', $student_id)->first();
-
-        $new_date = "01-" . $month . "-" . $year;
-        $totalDays = Carbon::createFromFormat('d-m-Y', $new_date)->daysInMonth;
-
-        $attendanceData = [];
-
-        for ($day = 1; $day <= $totalDays; $day++) {
-            // Calculate the current date by adding days
-            $date = Carbon::createFromFormat('d-m-Y', $new_date)->addDays($day - 1)->toDateString();
-
-            // Get attendance for the given student on this date
-            $attendance = StudentAttendences::with('attendanceType')
-                ->where('student_session_id', $student_session_id)
-                ->where('date', $date)
-                ->first();
-
-            if ($attendance) {
-                $type = $attendance->attendanceType->type;
-
-                $attendanceData[] = [
-                    'date' => $date,
-                    'badge' => false,
-                    'footer' => 'Extra information',
-                    'title' => $type,
-                    'classname' => $this->getAttendanceClass($type),
-                ];
-            }
-        }
-
-        return response()->json($attendanceData);
-    }
-
-    private function getAttendanceClass($type)
-    {
-        switch ($type) {
-            case 'Present':
-                return 'Present';
-            case 'Absent':
-                return 'Absent';
-            case 'Late':
-                return 'Late';
-            case 'Late with excuse':
-                return 'Late with excuse';
-            case 'Holiday':
-                return 'Holiday';
-            case 'Half Day':
-                return 'Half Day';
-            default:
-                return 'Absent';
-        }
+        return response()->json([
+            'success' => true,
+            'data' => $attendance,
+        ], 200);
     }
 }

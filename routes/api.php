@@ -619,7 +619,7 @@ Route::get('/student-attendance-by-class-section', [StudentAttendencesController
 Route::post('/student-attendance', [StudentAttendencesController::class, 'create']);
 Route::delete('/student-attendance/{id}', [StudentAttendencesController::class, 'destroy']);
 Route::post('/student-attendance/{id}', [StudentAttendencesController::class, 'update']);
-Route::get('/get-student-attendance', [StudentAttendencesController::class, 'getAttendance']);
+Route::post('/get-student-attendance', [StudentAttendencesController::class, 'getAttendance']);
 
 Route::get('/income', [IncomeController::class, 'index']);
 Route::post('/income', [IncomeController::class, 'create']);
