@@ -9,6 +9,7 @@ class StaffRating extends Model
 {
     use HasFactory;
     protected $table = 'staff_rating';
+    public $timestamps = false;
     protected $fillable = [
         'staff_id',
         'comment',

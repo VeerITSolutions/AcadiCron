@@ -155,13 +155,10 @@ class StaffRatingController extends Controller
         // Validate only the fields you need to validate
         $validatedData = $request->all();
 
-        $staffratingupdate['staff_id'] = $validatedData['staff_id'];
-        $staffratingupdate['comment'] = $validatedData['comment'];
-        $staffratingupdate['rate'] = $validatedData['rate'];
-        $staffratingupdate['user_id'] = $validatedData['user_id'];
-        $staffratingupdate['role'] = $validatedData['role'];
-        $staffratingupdate['status'] = $validatedData['status'];
-        $staffratingupdate['entrydt'] = $validatedData['entrydt'];
+
+        $staffratingupdate['comment'] = $validatedData['desc'];
+        $staffratingupdate['rate'] = $validatedData['rating'];
+
 
         $staffrating->update($staffratingupdate);
 
