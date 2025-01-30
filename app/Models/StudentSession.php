@@ -13,12 +13,12 @@ class StudentSession extends Model
 
     protected $fillable = [
         'student_id',
-'section_id',
-'session_id',
-'class_id',
-'route_id',
-'hostel_room_id',
-'vehroute_id',
-'is_alumni'
+        'section_id',
+        'session_id',
+        'class_id',
+        'route_id',
+        'hostel_room_id',
+        'vehroute_id',
+        'is_alumni'
     ];
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\StudentAttendences;
 use App\Models\Students;
+use App\Models\StudentSession;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -225,10 +226,12 @@ class StudentAttendencesController extends Controller
         $year = $validated['year'];
         $month = $validated['month'];
         $student_id = $validated['student_id'];
-        $student_session_id = $validated['student_session_id'];
+
 
         // Retrieve the student's current class and session using the provided student_id
         $student = Students::findOrFail($student_id);
+
+        $student_session_id = StudentSession::where('student_id', $student_id)->first();
 
         $new_date = "01-" . $month . "-" . $year;
         $totalDays = Carbon::createFromFormat('d-m-Y', $new_date)->daysInMonth;
