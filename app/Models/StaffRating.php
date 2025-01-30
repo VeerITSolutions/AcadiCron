@@ -18,4 +18,17 @@ class StaffRating extends Model
         'status',
         'entrydt',
     ];
+
+    public function staff()
+    {
+        return $this->belongsTo(Staff::class, 'staff_id');
+    }
+
+    /**
+     * Get the user who gave the rating.
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }

@@ -40,17 +40,14 @@ class StaffRatingController extends Controller
 
     public function getRatedStaff(Request $request)
     {
-        $userId = $request->input('user_id');
+        $userId = $request->input('userId');
         $role = $request->input('role');
-        $userRatedStaffList = StaffRating::where('user_id', $userId)->pluck('staff_id')->toArray();
+        $userRatedStaffList = StaffRating::where('user_id', $userId)->with('staff', 'user.student')->get();
 
         $data['user_ratedstafflist'] = $userRatedStaffList;
 
         if ($role == "student") {
-            $ratingsByStudent = StaffRating::where('user_id', $userId)->where('role', 'student')->get();
-            foreach ($ratingsByStudent as $rating) {
-                $data['reviews'][$rating->staff_id] = $rating->rate;
-            }
+            $ratingsByStudent = StaffRating::where('user_id', $userId)->get();
         } elseif ($role == "parent") {
             $allRatings = StaffRating::all();
             $data['rate_canview'] = 0;
@@ -71,7 +68,7 @@ class StaffRatingController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'saved successfully',
-            'staffrating' => $data,
+            'data' => $data,
         ], 201); // 201 Created status code
     }
 
