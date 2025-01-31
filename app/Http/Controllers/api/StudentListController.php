@@ -150,6 +150,7 @@ class StudentListController extends Controller
                 'student_attendences.id as attendance_id',
                 'student_attendences.remark as attendance_note'
             );
+            $query->where('students.is_active', 'yes');
         } else {
             $query->select(
                 'students.*',
@@ -161,6 +162,7 @@ class StudentListController extends Controller
                 'sections.section as section_name',
                 'categories.category as category_name'
             );
+            $query->where('students.is_active', 'yes');
         }
 
 
@@ -183,7 +185,7 @@ class StudentListController extends Controller
                 'data' => $query->get(),
             ], 200);
         }
-        $query->where('students.is_active', 'yes');
+
 
         // Apply filters based on request parameters
         if (!empty($id)) {
