@@ -162,7 +162,7 @@ class StudentListController extends Controller
                 'sections.section as section_name',
                 'categories.category as category_name'
             );
-            $query->where('students.is_active', 'yes');
+            /*   $query->where('students.is_active', 'yes'); */
         }
 
 
