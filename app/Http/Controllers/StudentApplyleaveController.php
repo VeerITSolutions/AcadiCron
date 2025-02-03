@@ -150,6 +150,7 @@ class StudentApplyleaveController extends Controller
         $category->request_type = $validatedData['request_type'] ?? 0;
         $category->status = $validatedData['status'] ?? 0;
         $category->docs = $validatedData['docs'] ?? null;
+        $category->created_at = now();
 
 
         /* imag update */
@@ -215,6 +216,7 @@ class StudentApplyleaveController extends Controller
         $leaverequest->approve_by  = $validatedData['approve_by'];
         $leaverequest->request_type  = $validatedData['request_type'];
         $leaverequest->status  = $validatedData['status'];
+        $leaverequest->created_at = now();
 
 
         // Handle file upload if present
