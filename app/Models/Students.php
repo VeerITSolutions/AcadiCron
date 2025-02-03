@@ -71,6 +71,9 @@ class Students extends Model
         'disable_at',
     ];
 
+    protected $hidden = ['parent_app_key'];
+
+
 
     public function searchByClassSectionWithSession($class_id = null, $section_id = null, $session_id = null)
     {
