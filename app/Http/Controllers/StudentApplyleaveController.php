@@ -203,19 +203,19 @@ class StudentApplyleaveController extends Controller
     {
         // Validate the request data
         $validatedData = $request->all();
-
+        $getLeaveRequest =  StudentApplyleave::where('id', $validatedData['currentLeaveId'])->first();
         // Find the category by id
         $leaverequest = StudentApplyleave::findOrFail($validatedData['currentLeaveId']);
 
-        $leaverequest->student_session_id  = $validatedData['student_session_id'];
-        $leaverequest->from_date  = $validatedData['from_date'];
-        $leaverequest->to_date  = $validatedData['to_date'];
-        $leaverequest->apply_date  = $validatedData['apply_date'];
-        $leaverequest->created_at  = $validatedData['created_at'];
-        $leaverequest->reason  = $validatedData['reason'];
-        $leaverequest->approve_by  = $validatedData['approve_by'];
-        $leaverequest->request_type  = $validatedData['request_type'];
-        $leaverequest->status  = $validatedData['status'];
+        $leaverequest->student_session_id  = $validatedData['student_session_id'] ?? $getLeaveRequest->student_session_id;
+        $leaverequest->from_date  = $validatedData['from_date'] ?? $getLeaveRequest->from_date;
+        $leaverequest->to_date  = $validatedData['to_date'] ?? $getLeaveRequest->to_date;
+        $leaverequest->apply_date  = $validatedData['apply_date'] ?? $getLeaveRequest->apply_date;
+        $leaverequest->created_at  = $validatedData['created_at'] ?? $getLeaveRequest->created_at;
+        $leaverequest->reason  = $validatedData['reason'] ?? $getLeaveRequest->reason;
+        $leaverequest->approve_by  = $validatedData['approve_by'] ?? $getLeaveRequest->approve_by;
+        $leaverequest->request_type  = $validatedData['request_type'] ?? $getLeaveRequest->request_type;
+        $leaverequest->status  = $validatedData['status'] ?? $getLeaveRequest->status;
         $leaverequest->created_at = now();
 
 
@@ -230,7 +230,7 @@ class StudentApplyleaveController extends Controller
         }
 
         // Save the updated model
-        $leaverequest->save();
+        $leaverequest->update();
 
         return response()->json([
             'status' => 200,
