@@ -80,7 +80,25 @@ class SiteController extends Controller
                 } elseif ($user instanceof User) {
 
                     if ($user->role == 'student') {
-                        $get_student =  Students::where('id', $user->user_id)->first();
+                        $get_session = SchSettings::first();
+                        $currentYear = $get_session ? $get_session->session_id : null;
+
+                        $get_student = Students::where('students.id', $user->user_id)
+                            ->leftJoin('student_session', function ($join) use ($currentYear) {
+                                $join->on('student_session.student_id', '=', 'students.id')
+                                    ->where('student_session.session_id', '=', $currentYear);
+                            })
+                            ->leftJoin('classes', 'classes.id', '=', 'student_session.class_id')
+                            ->leftJoin('sections', 'sections.id', '=', 'student_session.section_id')
+                            ->select(
+                                'students.*',
+                                'student_session.class_id as class_id',
+                                'student_session.section_id as section_id',
+                                'classes.class as class_name',
+                                'sections.section as section_name'
+                            )
+                            ->first();
+
                         if ($get_student) {
 
                             $user_username = $get_student->firstname;
