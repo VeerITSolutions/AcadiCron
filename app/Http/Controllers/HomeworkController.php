@@ -244,19 +244,21 @@ class HomeworkController extends Controller
         $homework->evaluation_date = $validatedData['evaluation_date'] ?? now();
         $homework->created_by = $validatedData['created_by'] ?? 0;
         $homework->evaluated_by = $validatedData['evaluated_by'] ?? 0;
+        $homework->save();
 
-
-
+        $updatehomework =  Homework::where('id', $homework->id)->first();
         $file = $request->file('document');
         if ($file) {
-            $imageName = $homework->staff_id . '_document_' . time(); // Example name
-            $imageSubfolder = "/homework/assignment/" . $homework->staff_id;   // Example subfolder
+            $imageName = $homework->id . '_document_' . time(); // Example name
+            $imageSubfolder = "/homework/download/" . $homework->id;   // Example subfolder
             $full_path = 0;
             $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
-            $homework->document  =  $validatedData['document'] = $imagePath;
+            $updatehomework->document  =  $validatedData['document'] = $imagePath;
         }
 
-        $homework->save();
+        $updatehomework->update($updatehomework);
+
+
 
         return response()->json([
             'success' => true,

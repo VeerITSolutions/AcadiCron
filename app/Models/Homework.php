@@ -50,7 +50,7 @@ class Homework extends Model
                 ')
             ->joinSub(
                 DB::table('homework')
-                    ->select('id as homework_id', 'class_id', 'section_id', 'session_id')
+                    ->select('id as homework_id', 'class_id', 'section_id', 'session_id', 'description')
                     ->where('id', '=', $id),
                 'home_work',
                 function ($join) {
