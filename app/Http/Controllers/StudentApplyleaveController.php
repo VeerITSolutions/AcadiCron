@@ -23,6 +23,7 @@ class StudentApplyleaveController extends Controller
         $perPage = (int) $request->input('perPage', 10);
         $selectedClass = $request->input('selectedClass');
         $selectedSection = $request->input('selectedSection');
+        $selectedStudentSessionId = $request->input('student_session_id');
         $student = $request->input('student');  // Get student input from the request
         $keyword = $request->input('keyword');
 
@@ -32,19 +33,22 @@ class StudentApplyleaveController extends Controller
             ->leftJoin('students', 'students.id', '=', 'student_session.student_id') // Join with the students table
             ->leftJoin('classes', 'classes.id', '=', 'student_session.class_id')
             ->leftJoin('sections', 'sections.id', '=', 'student_session.section_id')
-            ->leftJoin('staff', 'staff.id', '=', 'student_applyleave.approve_by')
+            ->leftJoin('staff', 'staff.id', '=', 'student_applyleave.approve_by');
+        if ($selectedStudentSessionId) {
+            $query->where('student_applyleave.student_session_id', $selectedStudentSessionId);
+        };
 
-            ->select(
-                'student_applyleave.*',
-                'students.firstname as student_firstname',
-                'students.lastname as student_lastname',
-                'students.id as student_id',  // Include student_id for reference
-                'classes.class as class_name',
-                'sections.section as section_name',
-                'staff.name as staff_name',
-                'staff.surname as staff_surname'
+        $query->select(
+            'student_applyleave.*',
+            'students.firstname as student_firstname',
+            'students.lastname as student_lastname',
+            'students.id as student_id',  // Include student_id for reference
+            'classes.class as class_name',
+            'sections.section as section_name',
+            'staff.name as staff_name',
+            'staff.surname as staff_surname'
 
-            )
+        )
             ->orderBy('student_applyleave.id');
 
         // Apply filtering based on selectedClass
