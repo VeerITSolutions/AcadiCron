@@ -18,16 +18,16 @@ class ContentsController extends Controller
      */
     public function index(Request $request, $id = null)
     {
-        // Get pagination parameters from the request
-        $page = $request->input('page', 1); // Default to page 1 if not provided
-        $perPage = $request->input('perPage', 10);
-        $type = $request->input('type'); // Default to 10 records per page if not provided
+        // Get pagination parameters from the request with default values
+        $page = (int) $request->input('page', 1);
+        $perPage = (int) $request->input('perPage', 10);
+        $class_id = $request->input('class_id');
+        $section_id = $request->input('section_id');
+        $type = $request->input('type'); // Default to 10 records
 
-        // Validate pagination inputs
-        $page = (int) $page;
-        $perPage = (int) $perPage;
+        // Validate perPage value to prevent excessive queries
         if ($perPage <= 0 || $perPage > 100) {
-            $perPage = 10; // Default value if invalid
+            $perPage = 10;
         }
 
         // Start building the query
@@ -35,50 +35,50 @@ class ContentsController extends Controller
             'contents.*',
             'classes.class',
             'sections.section',
-            'content_for.role as content_for_role',
-            'content_for.content_id as content_for_content_id',
-            'content_for.user_id as content_for_user_id',
-            \DB::raw('(SELECT GROUP_CONCAT(role) FROM content_for WHERE content_id = contents.id) as role'),
-            'class_sections.id as aa'
+            \DB::raw('(SELECT GROUP_CONCAT(role) FROM content_for WHERE content_id = contents.id) as roles')
         )
-        ->leftJoin('class_sections', 'contents.cls_sec_id', '=', 'class_sections.id')
-        ->leftJoin('classes', 'class_sections.class_id', '=', 'classes.id')
-        ->leftJoin('content_for', 'contents.id', '=', 'content_for.content_id')
-        ->leftJoin('sections', 'class_sections.section_id', '=', 'sections.id');
+            ->leftJoin('class_sections', 'contents.cls_sec_id', '=', 'class_sections.id')
+            ->leftJoin('classes', 'class_sections.class_id', '=', 'classes.id')
+            ->leftJoin('sections', 'class_sections.section_id', '=', 'sections.id')
+            ->orderBy('contents.id', 'desc');
 
-        if($type){
-            $query->where('type', $type);
+        // Apply filters
+        if (!empty($class_id)) {
+            $query->where('contents.class_id', $class_id);
         }
-
-        $query->orderBy('contents.id', 'desc'); // Default ordering
-
-        // If $id is provided, fetch a single record
+        if (!empty($section_id)) {
+            $query->where('contents.cls_sec_id', $section_id);
+        }
+        if ($type) {
+            $query->where('contents.type', $type);
+        }
+        // Fetch a single record if ID is provided
         if ($id !== null) {
-            $result = $query->where('contents.id', $id)->first(); // Fetch a single record
+            $result = $query->where('contents.id', $id)->first();
+
             if ($result) {
                 return response()->json([
                     'success' => true,
-                    'data' => $result, // Return the single content record
+                    'data' => $result,
                     'message' => 'Data retrieved successfully.',
                 ], 200);
-            } else {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Content not found.',
-                ], 404);
             }
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Content not found.',
+            ], 404);
         }
 
-        // If $id is not provided, paginate the results
+        // Paginate the results
         $data = $query->paginate($perPage, ['*'], 'page', $page);
 
-        // Return the paginated data with total count and pagination details
         return response()->json([
             'success' => true,
-            'data' => $data->items(), // Only return the current page data
-            'totalCount' => $data->total(), // Total number of records
-            'rowsPerPage' => $data->perPage(), // Number of records per page
-            'currentPage' => $data->currentPage(), // Current page
+            'data' => $data->items(),
+            'totalCount' => $data->total(),
+            'rowsPerPage' => $data->perPage(),
+            'currentPage' => $data->currentPage(),
             'message' => 'Data retrieved successfully.',
         ], 200);
     }
@@ -89,19 +89,20 @@ class ContentsController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create(Request $request){
+    public function create(Request $request)
+    {
 
         $validatedData = $request->except(['allsuperadmin', 'allstudents', 'allclasses', 'role']);
 
-        $onlyvalidatedData = $request->only(['allsuperadmin', 'allstudents', 'allclasses' ,'role']);
+        $onlyvalidatedData = $request->only(['allsuperadmin', 'allstudents', 'allclasses', 'role']);
 
 
         $content = new Contents();
         $content->title = $validatedData['title'] ?? "";
         $content->type = $validatedData['type'] ?? "";
         $content->is_public = $validatedData['is_public'] ?? "";
-        $content->class_id = $validatedData['class_id'] ;
-        $content->cls_sec_id = $validatedData['cls_sec_id'] ;
+        $content->class_id = $validatedData['class_id'];
+        $content->cls_sec_id = $validatedData['cls_sec_id'];
         $content->created_by = $validatedData['created_by'] ?? 1;
         $content->note = $validatedData['note'] ?? "";
         $content->is_active = $validatedData['is_active'] ?? "";
@@ -117,38 +118,32 @@ class ContentsController extends Controller
         $content->save();
         /* content for  */
 
-         /* added content for  */
-         $content_for = new ContentFor();
+        /* added content for  */
+        $content_for = new ContentFor();
 
 
 
-        if($onlyvalidatedData['allsuperadmin'] == "true")
-        {
+        if ($onlyvalidatedData['allsuperadmin'] == "true") {
             $content_for->role = 'All Super Admin';
-        }else if($onlyvalidatedData['allstudents'] == "true")
-        {
+        } else if ($onlyvalidatedData['allstudents'] == "true") {
 
             $content_for->role = 'All Student';
-
-        }elseif ($onlyvalidatedData['allclasses'] == "true")
-        {
+        } elseif ($onlyvalidatedData['allclasses'] == "true") {
             $content_for->role = 'All Classes';
-
-        }else{
+        } else {
             $content_for->role = 'Students';
-
         }
 
 
 
-         $content_for->content_id = $content->id ?? "";
+        $content_for->content_id = $content->id ?? "";
 
 
-         $content_for->user_id = null;
+        $content_for->user_id = null;
 
-         $content_for->created_at = $onlyvalidatedData['created_at'] ?? now();
+        $content_for->created_at = $onlyvalidatedData['created_at'] ?? now();
 
-         $content_for->save();
+        $content_for->save();
 
 
 
@@ -200,7 +195,7 @@ class ContentsController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request,string $id)
+    public function update(Request $request, string $id)
     {
 
         // Find the content by id
