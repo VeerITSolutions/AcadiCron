@@ -421,6 +421,7 @@ Route::post('/question/{id}', [QuestionsController::class, 'update']);
 
 
 Route::get('/homework', [HomeworkController::class, 'index']);
+Route::get('/homework-student', [HomeworkController::class, 'indexForStudent']);
 Route::post('/homework', [HomeworkController::class, 'create']);
 Route::delete('/homework/{id}', [HomeworkController::class, 'destroy']);
 Route::post('/homework/{id}', [HomeworkController::class, 'update']);

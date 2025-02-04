@@ -87,6 +87,38 @@ class HomeworkController extends Controller
         ], 200);
     }
 
+
+    public function indexForStudent(Request $request)
+    {
+        // Get pagination inputs, default to page 1 and 10 records per page if not provided
+        $page = (int) $request->input('page', 1);
+        $perPage = (int) $request->input('perPage', 10);
+
+        // Get filtering inputs from the request
+        $class_id = $request->input('selectedClass');
+        $section_id = $request->input('selectedSection');
+        $subject_group_id = $request->input('selectedSubjectGroup');
+        $student_session_id = $request->input('student_session_id');
+        $current_session_id = $request->input('current_session_id');
+        $subject_id = $request->input('selectedSubject');
+
+
+
+
+
+        $homeworkList = $this->getStudentHomeworkWithStatus($class_id, $section_id, $student_session_id, $current_session_id);
+
+
+
+
+
+        // Return paginated data with total count and pagination details
+        return response()->json([
+            'success' => true,
+            'data' => $homeworkList,
+        ], 200);
+    }
+
     public function getStudents(Request $request)
     {
         $object = new Homework();
@@ -261,6 +293,41 @@ class HomeworkController extends Controller
             'message' => 'Homework saved successfully',
             'homework' => $homework,
         ], 201); // 201 Created status code
+    }
+
+
+    public function getStudentHomeworkWithStatus($class_id, $section_id, $student_session_id, $current_session_id)
+    {
+        $homeworkList = Homework::select(
+            'homework.*',
+            DB::raw('IFNULL(homework_evaluation.id, 0) as homework_evaluation_id'),
+            'classes.class',
+            'sections.section',
+            'subject_group_subjects.subject_id',
+            'subject_group_subjects.id as subject_group_subject_id',
+            'subjects.name as subject_name',
+            'subject_groups.id as subject_groups_id',
+            'subject_groups.name as subject_group_name',
+            'staff.name as staff_name',
+            'staff.surname as staff_surname'
+        )
+            ->leftJoin('homework_evaluation', function ($join) use ($student_session_id) {
+                $join->on('homework_evaluation.homework_id', '=', 'homework.id')
+                    ->where('homework_evaluation.student_session_id', '=', $student_session_id);
+            })
+            ->join('classes', 'classes.id', '=', 'homework.class_id')
+            ->join('sections', 'sections.id', '=', 'homework.section_id')
+            ->join('staff', 'staff.id', '=', 'homework.staff_id')
+            ->join('subject_group_subjects', 'subject_group_subjects.id', '=', 'homework.subject_group_subject_id')
+            ->join('subjects', 'subjects.id', '=', 'subject_group_subjects.subject_id')
+            ->join('subject_groups', 'subject_group_subjects.subject_group_id', '=', 'subject_groups.id')
+            ->where('homework.class_id', $class_id)
+            ->where('homework.section_id', $section_id)
+            ->where('homework.session_id', $current_session_id)
+            ->orderBy('homework.homework_date', 'desc')
+            ->get();
+
+        return $homeworkList;
     }
     public function createEvaluvation(Request $request)
     {
