@@ -22,3 +22,7 @@ ALTER TABLE certificates CHANGE certificate_text certificate_text TEXT CHARACTER
 
 
 ALTER TABLE certificates CHANGE left_header left_header TEXT CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL, CHANGE center_header center_header TEXT CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL, CHANGE right_header right_header TEXT CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL, CHANGE left_footer left_footer TEXT CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL, CHANGE right_footer right_footer TEXT CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL, CHANGE center_footer center_footer TEXT CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL;
+
+
+//
+ALTER TABLE `homework` CHANGE `document` `document` VARCHAR(256) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL DEFAULT NULL;

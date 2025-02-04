@@ -223,13 +223,10 @@ class HomeworkController extends Controller
      */
     public function create(Request $request)
     {
-
-
-        // Validate the incoming request
+        // Get all request data
         $validatedData = $request->all();
 
-
-        // Create a new homework
+        // Create a new homework entry
         $homework = new Homework();
         $homework->class_id = $validatedData['selectedClass2'];
         $homework->section_id = $validatedData['selectedSection2'];
@@ -246,27 +243,25 @@ class HomeworkController extends Controller
         $homework->evaluated_by = $validatedData['evaluated_by'] ?? 0;
         $homework->save();
 
-        $updatehomework =  Homework::where('id', $homework->id)->first();
-        $file = $request->file('document');
-        if ($file) {
+        // Handle file upload if exists
+        if ($request->hasFile('document')) {
+            $file = $request->file('document');
             $imageName = $homework->id . '_document_' . time(); // Example name
-            $imageSubfolder = "/homework/download/" . $homework->id;   // Example subfolder
+            $imageSubfolder = "/homework/download/" . $homework->id; // Example subfolder
             $full_path = 0;
             $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
-            $updatehomework->document  =  $validatedData['document'] = $imagePath;
+
+            // Update homework document path
+            $homework->document = $imagePath;
+            $homework->save();
         }
-
-        $updatehomework->update($updatehomework);
-
-
 
         return response()->json([
             'success' => true,
-            'message' => 'Homework  saved successfully',
+            'message' => 'Homework saved successfully',
             'homework' => $homework,
         ], 201); // 201 Created status code
     }
-
     public function createEvaluvation(Request $request)
     {
 
