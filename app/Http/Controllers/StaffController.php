@@ -506,4 +506,28 @@ class StaffController extends Controller
             return response()->json(['success' => false, 'message' => 'Staff  deletion failed: ' . $e->getMessage()], 500);
         }
     }
+
+
+
+
+
+    public function StaffLoginDetails(Request $request)
+    {
+        $student_id = $request->input('id');
+        $studentId = intval($student_id); // Ensure the ID is sanitized
+
+        $staffUsers = DB::table('users')
+            ->join('staff', 'staff.id', '=', 'users.user_id')
+            ->select('users.*') // Ensure the same column structure as above
+            ->where('users.user_id', $studentId)
+            ->where('users.role', 'student');
+
+        $result = $parentUsers->union($studentUsers)->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $result,
+            'message' => 'Data fetched successfully.',
+        ], 201);
+    }
 }

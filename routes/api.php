@@ -529,6 +529,8 @@ Route::post('/staff-syllabus', [StaffController::class, 'getStaffSyllabusHTML'])
 
 Route::get('/staff-by-role', [StaffController::class, 'getStaffbyrole']);
 
+Route::post('/staff-get-login-details', [StaffController::class, 'StaffLoginDetails']);
+
 Route::get('/classes', [ClassesController::class, 'index']);
 Route::post('/classes', [classesController::class, 'create']);
 Route::delete('/classes/{id}', [classesController::class, 'destroy']);
