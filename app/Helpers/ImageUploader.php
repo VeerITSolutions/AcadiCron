@@ -15,9 +15,9 @@ if (!function_exists('uploadImage')) {
     {
         try {
             // Ensure the file is valid
-            if (!$file || !$file->isValid()) {
-                return false;
-            }
+            // if (!$file || !$file->isValid()) {
+            //     return false;
+            // }
 
             // Generate a full file name with the original extension
             $fileName = $imageName . '.' . $file->getClientOriginalExtension();

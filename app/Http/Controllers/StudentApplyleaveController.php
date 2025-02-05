@@ -48,8 +48,8 @@ class StudentApplyleaveController extends Controller
             'staff.name as staff_name',
             'staff.surname as staff_surname'
 
-        )
-            ->orderBy('student_applyleave.id');
+        );
+           
 
         // Apply filtering based on selectedClass
         if (!empty($selectedClass)) {
@@ -77,7 +77,7 @@ class StudentApplyleaveController extends Controller
             $query->where('students.id', $student);  // Filter by student ID if provided
         }
 
-
+        $query->orderBy('student_applyleave.id', 'desc');
         // Apply pagination
         $paginatedData = $query->paginate($perPage, ['*'], 'page', $page);
 
