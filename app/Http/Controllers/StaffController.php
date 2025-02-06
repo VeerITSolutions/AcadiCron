@@ -507,7 +507,40 @@ class StaffController extends Controller
         }
     }
 
-
+    public function StaffDisabled(Request $request)
+    {
+        $staff_id = $request->input('id');
+        $reason = $request->input('reason');
+        $date = $request->input('date');
+        $note = $request->input('note');
+        $status = $request->input('status');
+    
+        $staff = Staff::findOrFail($staff_id);
+        
+        if ($status == 'active') {
+            $staff->update([
+                'is_active' => 'yes',
+            ]);
+    
+            return response()->json([
+                'success' => true,
+                'message' => 'Staff enabled successfully.',
+            ], 201);
+        } else {
+            $staff->update([
+                'dis_reason' => $reason,
+                'dis_note' => $note,
+                'is_active' => 'no',
+                'disable_at' => $date,
+            ]);
+        }
+    
+        return response()->json([
+            'success' => true,
+            'message' => 'Staff disabled successfully.',
+        ], 201);
+    }
+    
 
 
     public function StaffLoginDetails(Request $request)
