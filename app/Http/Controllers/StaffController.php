@@ -510,35 +510,20 @@ class StaffController extends Controller
 
 
 
-
     public function StaffLoginDetails(Request $request)
     {
-        $student_id = $request->input('id');
-        $studentId = intval($student_id); // Ensure the ID is sanitized
-
-        // Select specific columns to ensure both queries return the same structure
-        $parentUsers = DB::table('users')
-            ->select('users.*') // Ensure the same column structure as above
-            ->whereIn('id', function ($query) use ($studentId) {
-                $query->select('students.parent_id')
-                    ->from('students')
-                    ->join('users', 'students.id', '=', 'users.user_id')
-                    ->where('users.user_id', $studentId)
-                    ->where('users.role', 'student');
-            });
-
-        $studentUsers = DB::table('users')
-            ->join('students', 'students.id', '=', 'users.user_id')
-            ->select('users.*') // Ensure the same column structure as above
-            ->where('users.user_id', $studentId)
-            ->where('users.role', 'student');
-
-        $result = $parentUsers->union($studentUsers)->get();
-
+        // Fetching only users with the 'staff' role
+        $staffUsers = DB::table('users')
+            ->select('users.*')
+            ->where('users.role', 'staff'); // Only 'staff' role
+    
+        $result = $staffUsers->get(); // Get the result
+    
         return response()->json([
             'success' => true,
             'data' => $result,
-            'message' => 'Data fetched successfully.',
+            'message' => 'Staff data fetched successfully.',
         ], 201);
     }
+    
 }
