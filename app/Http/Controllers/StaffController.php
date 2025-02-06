@@ -516,8 +516,19 @@ class StaffController extends Controller
         $student_id = $request->input('id');
         $studentId = intval($student_id); // Ensure the ID is sanitized
 
-        $staffUsers = DB::table('users')
-            ->join('staff', 'staff.id', '=', 'users.user_id')
+        // Select specific columns to ensure both queries return the same structure
+        $parentUsers = DB::table('users')
+            ->select('users.*') // Ensure the same column structure as above
+            ->whereIn('id', function ($query) use ($studentId) {
+                $query->select('students.parent_id')
+                    ->from('students')
+                    ->join('users', 'students.id', '=', 'users.user_id')
+                    ->where('users.user_id', $studentId)
+                    ->where('users.role', 'student');
+            });
+
+        $studentUsers = DB::table('users')
+            ->join('students', 'students.id', '=', 'users.user_id')
             ->select('users.*') // Ensure the same column structure as above
             ->where('users.user_id', $studentId)
             ->where('users.role', 'student');
