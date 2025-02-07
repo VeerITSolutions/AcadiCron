@@ -453,16 +453,16 @@ class StaffController extends Controller
     public function StaffDisabled(Request $request)
     {
         $staff_id = $request->input('id');
-        $reason = $request->input('reason');
         $date = $request->input('date');
-        $note = $request->input('note');
-        $status = $request->input('status');
+       
 
-        $staff = Staff::findOrFail($staff_id);
+        $staff = Staff::find($staff_id);
+        $staff2 = Staff::where('id', $staff_id)->first();
 
-        if ($status == 'active') {
+        if ($staff2->is_active == '0') {
             $staff->update([
-                'is_active' => 'yes',
+                'is_active' => '1',
+                'disable_at' => $date,
             ]);
 
             return response()->json([
@@ -471,9 +471,7 @@ class StaffController extends Controller
             ], 201);
         } else {
             $staff->update([
-                'dis_reason' => $reason,
-                'dis_note' => $note,
-                'is_active' => 'no',
+                'is_active' => '0',
                 'disable_at' => $date,
             ]);
         }
