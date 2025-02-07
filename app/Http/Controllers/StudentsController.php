@@ -318,7 +318,7 @@ class StudentsController extends Controller
         $studentLogin->save();
 
         // Check if the student has a sibling
-        /* if (!empty($validatedData['sibling_id'])) {
+        if (!empty($validatedData['sibling_id'])) {
             $sibling = Students::find($validatedData['sibling_id']);
             if ($sibling) {
                 // Assign the same parent ID
@@ -332,7 +332,7 @@ class StudentsController extends Controller
             // Create parent login
             $parentLogin = new User();
             $parentLogin->username = 'PAR' . $student->id;
-            $parentLogin->user_id = $student->parent_id;
+            $parentLogin->user_id = $student->id;
             $parentLogin->password = $parent_password;
             $parentLogin->role = 'parent';
             $parentLogin->is_active = 'yes';
@@ -344,10 +344,10 @@ class StudentsController extends Controller
             $decrypted_value = decrypt($encrypted_value);
              */
 
-        // Update student with the new parent ID
-        /* $student->parent_id = $parentLogin->id;
+            // Update student with the new parent ID
+            $student->parent_id = $parentLogin->id;
             $student->save();
-        } */
+        }
 
         return response()->json([
             'status' => 200,
