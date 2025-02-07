@@ -225,120 +225,53 @@ class StaffController extends Controller
      */
     public function create(Request $request)
     {
-
-
-
-        // Validate the incoming request
+        // Get all request data
         $validatedData = $request->all();
-        $chars_min = 6;
-        $chars_max = 6;
-        $use_upper_case = false;
-        $include_numbers = true;
-        $include_special_chars = false;
+
+        // Generate and encrypt password
         $encLib = new EncLib();
-        $getpassword =   $encLib->encrypt($encLib->generateRandomPassword($chars_min, $use_upper_case, $include_numbers, $include_special_chars));
-        // Create a new category
+        $getpassword = $encLib->encrypt($encLib->generateRandomPassword(6, false, true, false));
+
+        // Create a new staff instance
         $staff = new Staff();
-        /* image  */
-
-        $staff->employee_id = $validatedData['employee_id'];
-
-        $staff->department = $validatedData['department'];
-        $staff->designation = $validatedData['designation'];
-        $staff->qualification = $validatedData['qualification'];
-        $staff->work_exp = $validatedData['work_exp'];
-        $staff->name = $validatedData['name'];
-        $staff->surname = $validatedData['surname'];
-        $staff->father_name = $validatedData['father_name'];
-        $staff->mother_name = $validatedData['mother_name'];
-        $staff->contact_no = $validatedData['contact_no'];
-        $staff->emergency_contact_no = $validatedData['emergency_contact_no'];
-        $staff->email = $validatedData['email'];
-        $staff->dob = $validatedData['dob'];
-        $staff->marital_status = $validatedData['marital_status'];
-        $staff->date_of_joining = $validatedData['date_of_joining'] ?? now();
-        $staff->date_of_leaving = $validatedData['date_of_leaving'];
-        $staff->local_address = $validatedData['local_address'];
-        $staff->permanent_address = $validatedData['permanent_address'];
-        $staff->note = $validatedData['note'];
+        $staff->fill($validatedData); // Fill all properties at once
         $staff->password = $getpassword;
-        $staff->gender = $validatedData['gender'];
-        $staff->account_title = $validatedData['account_title'];
-        $staff->bank_account_no = $validatedData['bank_account_no'];
-        $staff->bank_name = $validatedData['bank_name'];
-        $staff->ifsc_code = $validatedData['ifsc_code'];
-        $staff->bank_branch = $validatedData['bank_branch'];
-        $staff->payscale = $validatedData['payscale'];
-        $staff->basic_salary = $validatedData['basic_salary'];
-        $staff->epf_no = $validatedData['epf_no'];
-        $staff->contract_type = $validatedData['contract_type'];
-        $staff->shift = $validatedData['shift'];
-        $staff->location = $validatedData['location'];
-        $staff->facebook = $validatedData['facebook'];
-        $staff->twitter = $validatedData['twitter'];
-        $staff->linkedin = $validatedData['linkedin'];
-        $staff->instagram = $validatedData['instagram'];
-        $staff->other_document_name = $validatedData['other_document_name'];
-        $staff->user_id = $validatedData['user_id'];
-        $staff->is_active = $validatedData['is_active'];
-        $staff->verification_code = $validatedData['verification_code'];
-        $staff->disable_at = $validatedData['disable_at'];
-        $staff->lang_id = $validatedData['lang_id'] ?? 0;
+        $staff->date_of_joining = $validatedData['date_of_joining'] ?? now();
+        $staff->lang_id = 0;
 
-
-
+        // Save the staff record
         $staff->save();
 
-        $updatestaff = Staff::findOrFail($staff->id);
+        // Handle file uploads
+        $staff->image = $this->handleFileUpload($request, 'image', $staff->id);
+        $staff->resume = $this->handleFileUpload($request, 'resume', $staff->id);
+        $staff->joining_letter = $this->handleFileUpload($request, 'joining_letter', $staff->id);
+        $staff->other_document_file = $this->handleFileUpload($request, 'other_document_file', $staff->id);
 
-        $file = $request->file('image');
-        if ($file) {
-            $imageName = $staff->id . '_image_' . time(); // Example name
-            $imageSubfolder = "/staff_documents/" . $staff->id;      // Example subfolder
-            $full_path = 0;
-            $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
-            $validatedData['image'] = $imagePath;
-        }
-
-        $file = $request->file('resume');
-        if ($file) {
-            $imageName = $staff->id . '_resume_' . time(); // Example name
-            $imageSubfolder = "/staff_documents/" . $staff->id;      // Example subfolder
-            $full_path = 0;
-            $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
-            $validatedData['resume'] = $imagePath;
-        }
-
-        $file = $request->file('joining_letter');
-        if ($file) {
-            $imageName = $staff->id . '_joining_letter_' . time(); // Example name
-            $imageSubfolder = "/staff_documents/" . $staff->id;      // Example subfolder
-            $full_path = 0;
-            $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
-            $validatedData['joining_letter'] = $imagePath;
-        }
-
-        $file = $request->file('other_document_file');
-        if ($file) {
-            $imageName = $staff->id . '_other_document_file_' . time(); // Example name
-            $imageSubfolder = "/staff_documents/" . $staff->id;   // Example subfolder
-            $full_path = 0;
-            $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
-            $validatedData['other_document_file'] = $imagePath;
-        }
-
-
-
-
-
-        // Update the category
-        $updatestaff->update($validatedData);
+        // Save updated file paths
+        $staff->save();
 
         return response()->json([
             'status' => 200,
             'message' => 'Created successfully',
-            'staff' => $updatestaff,
-        ], 201); // 201 Created status code
+            'staff' => $staff,
+        ], 201);
+    }
+
+    /**
+     * Handle file upload and return the file path.
+     */
+    private function handleFileUpload(Request $request, $fileKey, $staffId)
+    {
+        if ($request->hasFile($fileKey)) {
+            $file = $request->file($fileKey);
+            $imageName = "{$staffId}_{$fileKey}_" . time();
+            $imageSubfolder = "/staff_documents/{$staffId}";
+            $full_path = 0;
+
+            return uploadImage($file, $imageName, $imageSubfolder, $full_path);
+        }
+        return null;
     }
 
     public function getStaffSyllabusHTML(Request $request)
