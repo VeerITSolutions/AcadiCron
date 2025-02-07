@@ -9,6 +9,7 @@ use App\Models\SubjectTimetable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Hash;
 
 class StaffController extends Controller
 {
@@ -230,12 +231,14 @@ class StaffController extends Controller
 
         // Generate and encrypt password
         $encLib = new EncLib();
-        $getpassword = $encLib->encrypt($encLib->generateRandomPassword(6, false, true, false));
+        
+        
 
         // Create a new staff instance
         $staff = new Staff();
         $staff->fill($validatedData); // Fill all properties at once
-        $staff->password = $getpassword;
+        $staff->password = Hash::make($getpassword = $encLib->encrypt());
+        
         $staff->date_of_joining = $validatedData['date_of_joining'] ?? now();
         $staff->lang_id = 0;
 
@@ -502,14 +505,17 @@ class StaffController extends Controller
 
     public function ChangePassword(Request $request)
     {
-        $validatedData = $request->validate([
-            'id' => 'required|exists:staff,id',
-            'password' => 'required|string|min:8|confirmed',
-        ]);
+           $validatedData = $request->all();
+
+           $encLib = new EncLib();
+           $getpassword = $encLib->encrypt($validatedData['password']);
+   
     
-        $staff = Staff::findOrFail($validatedData['id']);
-        $staff->password = bcrypt($validatedData['password']);
-        $staff->save();
+           $hashedPassword = Hash::make($validatedData['password']);
+
+           $staff = Staff::find($validatedData['id']);
+           $staff->password = $hashedPassword;
+           $staff->save();
     
         return response()->json([
             'status' => 200,
