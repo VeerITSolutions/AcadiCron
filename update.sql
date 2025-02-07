@@ -29,3 +29,6 @@ ALTER TABLE `homework` CHANGE `document` `document` VARCHAR(256) CHARACTER SET u
 
 
 ALTER TABLE `users` CHANGE `verification_code` `verification_code` TEXT CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL;
+
+
+ALTER TABLE `staff` CHANGE `date_of_leaving` `date_of_leaving` DATE NULL DEFAULT NULL;

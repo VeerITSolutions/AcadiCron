@@ -250,12 +250,11 @@ class StaffController extends Controller
         $staff->email = $validatedData['email'];
         $staff->dob = $validatedData['dob'];
         $staff->marital_status = $validatedData['marital_status'];
-        $staff->date_of_joining = $validatedData['date_of_joining'];
+        $staff->date_of_joining = $validatedData['date_of_joining'] ?? now();
         $staff->date_of_leaving = $validatedData['date_of_leaving'];
         $staff->local_address = $validatedData['local_address'];
         $staff->permanent_address = $validatedData['permanent_address'];
         $staff->note = $validatedData['note'];
-
         $staff->password = $validatedData['password'];
         $staff->gender = $validatedData['gender'];
         $staff->account_title = $validatedData['account_title'];
@@ -278,6 +277,8 @@ class StaffController extends Controller
         $staff->is_active = $validatedData['is_active'];
         $staff->verification_code = $validatedData['verification_code'];
         $staff->disable_at = $validatedData['disable_at'];
+        $staff->lang_id = $validatedData['lang_id'] ?? 0;
+
 
 
         $staff->save();
@@ -514,14 +515,14 @@ class StaffController extends Controller
         $date = $request->input('date');
         $note = $request->input('note');
         $status = $request->input('status');
-    
+
         $staff = Staff::findOrFail($staff_id);
-        
+
         if ($status == 'active') {
             $staff->update([
                 'is_active' => 'yes',
             ]);
-    
+
             return response()->json([
                 'success' => true,
                 'message' => 'Staff enabled successfully.',
@@ -534,13 +535,13 @@ class StaffController extends Controller
                 'disable_at' => $date,
             ]);
         }
-    
+
         return response()->json([
             'success' => true,
             'message' => 'Staff disabled successfully.',
         ], 201);
     }
-    
+
 
 
     public function StaffLoginDetails(Request $request)
@@ -549,14 +550,13 @@ class StaffController extends Controller
         $staffUsers = DB::table('users')
             ->select('users.*')
             ->where('users.role', 'staff'); // Only 'staff' role
-    
+
         $result = $staffUsers->get(); // Get the result
-    
+
         return response()->json([
             'success' => true,
             'data' => $result,
             'message' => 'Staff data fetched successfully.',
         ], 201);
     }
-    
 }
