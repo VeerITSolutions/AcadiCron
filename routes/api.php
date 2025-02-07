@@ -531,6 +531,8 @@ Route::get('/staff-by-role', [StaffController::class, 'getStaffbyrole']);
 
 Route::post('/staff-get-login-details', [StaffController::class, 'StaffLoginDetails']);
 Route::post('/staff-disabled', [StaffController::class, 'StaffDisabled']);
+Route::post('/change-password', [StaffController::class, 'ChangePassword']);
+
 
 Route::get('/classes', [ClassesController::class, 'index']);
 Route::post('/classes', [classesController::class, 'create']);

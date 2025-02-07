@@ -558,5 +558,25 @@ class StaffController extends Controller
             'message' => 'Staff data fetched successfully.',
         ], 201);
     }
+
+
+
+    public function ChangePassword(Request $request)
+{
+    $validatedData = $request->validate([
+        'id' => 'required|exists:staff,id',
+        'password' => 'required|string|min:8|confirmed',
+    ]);
+
+    $staff = Staff::findOrFail($validatedData['id']);
+    $staff->password = bcrypt($validatedData['password']);
+    $staff->save();
+
+    return response()->json([
+        'status' => 200,
+        'message' => 'Password updated successfully',
+        'staff' => $staff,
+    ], 200); // 200 OK status code
+}
     
 }
