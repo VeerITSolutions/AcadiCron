@@ -124,7 +124,7 @@ class SiteController extends Controller
                         $get_session = SchSettings::first();
                         $currentYear = $get_session ? $get_session->session_id : null;
 
-                        $get_student = Students::where('students.parent_id', $user->user_id)
+                        $get_student = Students::where('students.parent_id', $user->id)
                             ->leftJoin('student_session', function ($join) use ($currentYear) {
                                 $join->on('student_session.student_id', '=', 'students.id')
                                     ->where('student_session.session_id', '=', $currentYear);

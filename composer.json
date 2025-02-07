@@ -31,7 +31,8 @@
         },
         "files": [
             "app/Helpers/GeneralHelpers.php",
-            "app/Helpers/ImageUploader.php"
+            "app/Helpers/ImageUploader.php",
+            "app/Helpers/EncLib.php"
         ]
     },
     "autoload-dev": {
