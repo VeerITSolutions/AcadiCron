@@ -26,3 +26,6 @@ ALTER TABLE certificates CHANGE left_header left_header TEXT CHARACTER SET utf8m
 
 //
 ALTER TABLE `homework` CHANGE `document` `document` VARCHAR(256) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL DEFAULT NULL;
+
+
+ALTER TABLE `users` CHANGE `verification_code` `verification_code` TEXT CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL;
