@@ -11,10 +11,6 @@ class EncLib
 
 
 
-
-
-
-
     /**
      * Encrypt a string using AES-256-CBC
      */
@@ -56,7 +52,7 @@ class EncLib
 
 
 
-    function generateRandomPassword($length = 6, $use_upper_case = false, $include_numbers = true, $include_special_chars = false)
+    public function generateRandomPassword($length = 6, $use_upper_case = false, $include_numbers = true, $include_special_chars = false)
     {
         $characters = 'abcdefghijklmnopqrstuvwxyz';
 

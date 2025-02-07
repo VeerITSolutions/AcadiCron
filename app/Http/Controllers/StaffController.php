@@ -236,6 +236,7 @@ class StaffController extends Controller
         $include_numbers = true;
         $include_special_chars = false;
         $encLib = new EncLib();
+        $getpassword =   $encLib->encrypt($encLib->generateRandomPassword($chars_min, $use_upper_case, $include_numbers, $include_special_chars));
         // Create a new category
         $staff = new Staff();
         /* image  */
@@ -260,7 +261,7 @@ class StaffController extends Controller
         $staff->local_address = $validatedData['local_address'];
         $staff->permanent_address = $validatedData['permanent_address'];
         $staff->note = $validatedData['note'];
-        $staff->password = $encLib->encrypt($encLib->generateRandomPassword($chars_min, $use_upper_case, $include_numbers, $include_special_chars));
+        $staff->password = $getpassword;
         $staff->gender = $validatedData['gender'];
         $staff->account_title = $validatedData['account_title'];
         $staff->bank_account_no = $validatedData['bank_account_no'];
@@ -336,7 +337,7 @@ class StaffController extends Controller
         return response()->json([
             'status' => 200,
             'message' => 'Created successfully',
-            'category' => $staff,
+            'staff' => $updatestaff,
         ], 201); // 201 Created status code
     }
 
