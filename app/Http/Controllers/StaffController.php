@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\EncLib;
 use App\Libraries\CustomLib;
 use App\Models\Staff;
 use App\Models\SubjectTimetable;
@@ -229,14 +230,18 @@ class StaffController extends Controller
 
         // Validate the incoming request
         $validatedData = $request->all();
-
-
+        $chars_min = 6;
+        $chars_max = 6;
+        $use_upper_case = false;
+        $include_numbers = true;
+        $include_special_chars = false;
+        $encLib = new EncLib();
         // Create a new category
         $staff = new Staff();
         /* image  */
 
         $staff->employee_id = $validatedData['employee_id'];
-        $staff->lang_id = $validatedData['lang_id'];
+
         $staff->department = $validatedData['department'];
         $staff->designation = $validatedData['designation'];
         $staff->qualification = $validatedData['qualification'];
@@ -255,7 +260,7 @@ class StaffController extends Controller
         $staff->local_address = $validatedData['local_address'];
         $staff->permanent_address = $validatedData['permanent_address'];
         $staff->note = $validatedData['note'];
-        $staff->password = $validatedData['password'];
+        $staff->password = $encLib->encrypt($encLib->generateRandomPassword($chars_min, $use_upper_case, $include_numbers, $include_special_chars));
         $staff->gender = $validatedData['gender'];
         $staff->account_title = $validatedData['account_title'];
         $staff->bank_account_no = $validatedData['bank_account_no'];
