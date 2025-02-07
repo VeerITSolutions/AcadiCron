@@ -6,9 +6,12 @@ use App\Models\SchSettings;
 use App\Models\Sessions;
 use App\Models\Students;
 use App\Models\StudentSession;
+use App\Models\User;
 use App\Services\StudentBalanceService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class StudentsController extends Controller
 {
@@ -296,6 +299,43 @@ class StudentsController extends Controller
         $student->update($validatedData);
 
         StudentSession::create($newdata);
+
+        /* new  */
+
+        // Generate random password
+        $user_password = Str::random(6);
+
+        // Create student login
+        $studentLogin = new User();
+        $studentLogin->username = 'STU' . $student->id;
+        $studentLogin->password = $user_password;
+        $studentLogin->user_id = $student->id;
+        $studentLogin->role = 'student';
+        $studentLogin->save();
+
+        // Check if the student has a sibling
+        if ($validatedData['sibling_id']) {
+            $sibling = Students::find($validatedData['sibling_id']);
+            if ($sibling) {
+                // Assign the same parent ID
+                $student->parent_id = $sibling->parent_id;
+                $student->save();
+            }
+        } else {
+            // Generate random parent password
+            $parent_password = Str::random(6);
+
+            // Create parent login
+            $parentLogin = new User();
+            $parentLogin->username = 'PAR' . $student->id;
+            $parentLogin->password = $parent_password;
+            $parentLogin->role = 'parent';
+            $parentLogin->save();
+
+            // Update student with the new parent ID
+            $student->parent_id = $parentLogin->id;
+            $student->save();
+        }
 
         return response()->json([
             'status' => 200,
