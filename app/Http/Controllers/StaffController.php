@@ -203,7 +203,7 @@ class StaffController extends Controller
             $query->where('staff.name', 'like', '%' . $keyword . '%');
         }
 
-        $query->where('staff.is_active', '1');
+        // $query->where('staff.is_active', '1');
 
         // Apply pagination
         $data = $query->first();
@@ -454,33 +454,27 @@ class StaffController extends Controller
     {
         $staff_id = $request->input('id');
         $date = $request->input('date');
-       
-
+    
         $staff = Staff::find($staff_id);
-        $staff2 = Staff::where('id', $staff_id)->first();
-
-        if ($staff2->is_active == '0') {
-            $staff->update([
-                'is_active' => '1',
-                'disable_at' => $date,
-            ]);
-
+    
+        if (!$staff) {
             return response()->json([
-                'success' => true,
-                'message' => 'Staff enabled successfully.',
-            ], 201);
-        } else {
-            $staff->update([
-                'is_active' => '0',
-                'disable_at' => $date,
-            ]);
+                'success' => false,
+                'message' => 'Staff not found.',
+            ], 404);
         }
-
+    
+        $staff->update([
+            'is_active' => $staff->is_active == '0' ? '1' : '0',
+            'disable_at' => $date,
+        ]);
+    
         return response()->json([
             'success' => true,
-            'message' => 'Staff disabled successfully.',
-        ], 201);
+            'message' => $staff->is_active == '1' ? 'Staff enabled successfully.' : 'Staff disabled successfully.',
+        ], 200);
     }
+    
 
 
 
