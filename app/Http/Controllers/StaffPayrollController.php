@@ -17,8 +17,8 @@ class StaffPayrollController extends Controller
 
 
         $selectedRole = $request->input('selectedRole');
-        $selectedMonth = $request->input('selectedMonth');
-        $selectedYear = $request->input('selectedYear');
+        $month = $request->input('selectedMonth');
+        $year = $request->input('selectedYear');
         $keyword = $request->input('keyword');
         // Validate the inputs (optional)
         $page = (int) $page;
@@ -30,43 +30,33 @@ class StaffPayrollController extends Controller
         }
 
         // Build the query with the necessary joins and conditions
-        $query = DB::table('staff')
+        $query = $query = DB::table('staff')
             ->leftJoin('staff_payslip', function ($join) use ($month, $year) {
-                $join->on('staff.id', '=', 'staff_payslip.staff_id');
+                $join->on('staff.id', '=', 'staff_payslip.staff_id')
+                    ->where('staff_payslip.month', '=', $month)
+                    ->where('staff_payslip.year', '=', $year);
             })
             ->leftJoin('department', 'department.id', '=', 'staff.department')
+            ->leftJoin('staff_designation', 'staff_designation.id', '=', 'staff.designation')
             ->leftJoin('staff_roles', 'staff_roles.staff_id', '=', 'staff.id')
             ->leftJoin('roles', 'staff_roles.role_id', '=', 'roles.id')
-            ->leftJoin('staff_designation', 'staff_designation.id', '=', 'staff.designation')
-            ->select([
+            ->select(
                 'staff_payslip.status',
                 DB::raw('IFNULL(staff_payslip.id, 0) as payslip_id'),
                 'staff.*',
                 'roles.name as user_type',
-                'roles.id as role_id',
                 'staff_designation.designation as designation',
                 'department.department_name as department'
-            ])
+            )
             ->where('staff.is_active', 1);
 
-            if (!empty($selectedMonth) && !empty($selectedYear)) {
-                $query->where(function($query) use ($selectedMonth, $selectedYear) {
-                    $query->where('staff_payslip.month', '=', $selectedMonth)
-                          ->where('staff_payslip.year', '=', $selectedYear);
-                });
-            }
-
-            if (!empty($keyword)) {
-                $query->where(function($q) use ($keyword) {
-                    $q->where('staff.name', 'like', '%' . $keyword . '%')
-                      ->orWhereRaw('CONCAT(staff.name, " ", staff.surname) like ?', ['%' . $keyword . '%']);
-                });
-            }
+        if (!empty($selectedRole) && !empty($emp_name)) {
+            $query->where('roles.id', $selectedRole)->where('staff.name', $emp_name);
+        } elseif (!empty($selectedRole)) {
+            $query->where('roles.id', $selectedRole);
+        }
 
 
-            if (!empty($selectedRole)) {
-                $query->where('roles.id', $selectedRole );
-            }
 
 
         // Apply pagination
