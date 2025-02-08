@@ -231,14 +231,14 @@ class StaffController extends Controller
 
         // Generate and encrypt password
         $encLib = new EncLib();
-        
-        
+
+
 
         // Create a new staff instance
         $staff = new Staff();
         $staff->fill($validatedData); // Fill all properties at once
         $staff->password = Hash::make($getpassword = $encLib->encrypt());
-        
+
         $staff->date_of_joining = $validatedData['date_of_joining'] ?? now();
         $staff->lang_id = 0;
 
@@ -454,27 +454,28 @@ class StaffController extends Controller
     {
         $staff_id = $request->input('id');
         $date = $request->input('date');
-    
+        $status = $request->input('status');
+
         $staff = Staff::find($staff_id);
-    
+
         if (!$staff) {
             return response()->json([
                 'success' => false,
                 'message' => 'Staff not found.',
             ], 404);
         }
-    
+
         $staff->update([
-            'is_active' => $staff->is_active == '0' ? '1' : '0',
+            'is_active' => $status,
             'disable_at' => $date,
         ]);
-    
+
         return response()->json([
             'success' => true,
-            'message' => $staff->is_active == '1' ? 'Staff enabled successfully.' : 'Staff disabled successfully.',
+            'message' => $status ? 'Staff enabled successfully.' : 'Staff disabled successfully.',
         ], 200);
     }
-    
+
 
 
 
@@ -497,23 +498,22 @@ class StaffController extends Controller
 
     public function ChangePassword(Request $request)
     {
-           $validatedData = $request->all();
+        $validatedData = $request->all();
 
-           $encLib = new EncLib();
-           $getpassword = $encLib->encrypt($validatedData['password']);
-   
-    
-           $hashedPassword = Hash::make($validatedData['password']);
+        $encLib = new EncLib();
+        $getpassword = $encLib->encrypt($validatedData['password']);
 
-           $staff = Staff::find($validatedData['id']);
-           $staff->password = $hashedPassword;
-           $staff->save();
-    
+
+        $hashedPassword = Hash::make($validatedData['password']);
+
+        $staff = Staff::find($validatedData['id']);
+        $staff->password = $hashedPassword;
+        $staff->save();
+
         return response()->json([
             'status' => 200,
             'message' => 'Password updated successfully',
             'staff' => $staff,
         ], 200); // 200 OK status code
     }
-    
 }
