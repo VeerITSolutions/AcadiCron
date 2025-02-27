@@ -265,8 +265,8 @@ class HomeworkController extends Controller
         $homework->homework_date = $validatedData['homework_date'];
         $homework->submit_date = $validatedData['submit_date'];
         $homework->description = $validatedData['description'];
-        $homework->subject_id = $validatedData['selectedSubject2'];
-        $homework->subject_group_subject_id = $validatedData['selectedSubjectGroup2'];
+        $homework->subject_id = $validatedData['selectedSubject2'] ?? null;
+        $homework->subject_group_subject_id = $validatedData['selectedSubjectGroup2'] ?? null;
         $homework->session_id = $validatedData['session_id'] ?? 1;
         $homework->staff_id = $validatedData['staff_id'] ?? 1;
         $homework->create_date = $validatedData['create_date'] ?? now();
