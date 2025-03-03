@@ -231,8 +231,8 @@ class StudentAttendencesController extends Controller
         if ($year && $month) {
             $attendance = StudentAttendences::with('attendanceType')
                 ->where('student_session_id', $student_session_id->id)
-                ->whereYear('date', $year) // Filter by year
-                ->whereMonth('date', $month) // Filter by month
+                // ->whereYear('date', $year) // Filter by year
+                // ->whereMonth('date', $month) // Filter by month
                 ->get();
         } else {
             $attendance = StudentAttendences::with('attendanceType')
