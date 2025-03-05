@@ -26,16 +26,16 @@ class EcampusMessageController extends Controller
 
         $role_id = 1;
 
-        $query = DB::table('send_notification')
+        $query = DB::table('send_ecampus_message')
             ->leftJoin(
                 DB::raw('(SELECT send_notification_id, GROUP_CONCAT(role_id) as roles FROM notification_roles GROUP BY send_notification_id) as notification_roles'),
                 'notification_roles.send_notification_id',
                 '=',
-                'send_notification.id'
+                'send_ecampus_message.id'
             );
 
         if (!is_null($id)) {
-            $query->where('send_notification.id', $id);
+            $query->where('send_ecampus_message.id', $id);
         }
 
         $result = $query->get();
