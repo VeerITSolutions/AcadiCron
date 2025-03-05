@@ -45,3 +45,49 @@ ALTER TABLE `homework` CHANGE `subject_id` `subject_id` INT NULL DEFAULT NULL;
 
 
 ALTER TABLE `homework` CHANGE `document` `document` VARCHAR(200) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL DEFAULT NULL;
+
+
+
+DROP TABLE IF EXISTS `send_ecampus_circular`;
+CREATE TABLE IF NOT EXISTS `send_ecampus_circular` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `title` varchar(50) DEFAULT NULL,
+  `publish_date` date DEFAULT NULL,
+  `date` date DEFAULT NULL,
+  `message` text,
+  `visible_student` varchar(10) NOT NULL DEFAULT 'no',
+  `visible_staff` varchar(10) NOT NULL DEFAULT 'no',
+  `visible_parent` varchar(10) NOT NULL DEFAULT 'no',
+  `created_by` varchar(60) DEFAULT NULL,
+  `created_id` int DEFAULT NULL,
+  `is_active` varchar(255) DEFAULT 'no',
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_at` date DEFAULT NULL,
+  `path` text,
+  `class_id` varchar(30) DEFAULT NULL,
+  `secid` varchar(30) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb3;
+
+
+
+DROP TABLE IF EXISTS `send_ecampus_message`;
+CREATE TABLE IF NOT EXISTS `send_ecampus_message` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `title` varchar(50) DEFAULT NULL,
+  `publish_date` date DEFAULT NULL,
+  `date` date DEFAULT NULL,
+  `message` text,
+  `visible_student` varchar(10) NOT NULL DEFAULT 'no',
+  `visible_staff` varchar(10) NOT NULL DEFAULT 'no',
+  `visible_parent` varchar(10) NOT NULL DEFAULT 'no',
+  `created_by` varchar(60) DEFAULT NULL,
+  `created_id` int DEFAULT NULL,
+  `is_active` varchar(255) DEFAULT 'no',
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `updated_at` date DEFAULT NULL,
+  `path` text,
+  `class_id` varchar(30) DEFAULT NULL,
+  `secid` varchar(30) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb3;
