@@ -31,7 +31,7 @@ class EcampusCicularController extends Controller
                 DB::raw('(SELECT send_notification_id, GROUP_CONCAT(role_id) as roles FROM notification_roles GROUP BY send_notification_id) as notification_roles'),
                 'notification_roles.send_notification_id',
                 '=',
-                'send_notification.id'
+                'send_ecampus_circular.id'
             );
 
         if (!is_null($id)) {
