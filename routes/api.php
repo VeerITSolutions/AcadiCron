@@ -88,6 +88,8 @@ use App\Http\Controllers\GradesController;
 use App\Http\Controllers\FrontCmsMenusController;
 use App\Http\Controllers\OnlineexamController;
 use App\Http\Controllers\AlumniEventsController;
+use App\Http\Controllers\EcampusCicularController;
+use App\Http\Controllers\EcampusMessageController;
 use App\Http\Controllers\LessonController;
 use App\Http\Controllers\TopicController;
 use App\Http\Controllers\MultiClassStudentsController;
@@ -411,6 +413,20 @@ Route::get('/notification/{id?}', [NotificationSettingController::class, 'index'
 Route::post('/notification', [NotificationSettingController::class, 'create']);
 Route::delete('/notification/{id}', [NotificationSettingController::class, 'destroy']);
 Route::post('/notification/{id}', [NotificationSettingController::class, 'update']);
+
+
+
+Route::get('/ecampus-cicular/{id?}', [EcampusCicularController::class, 'index']);
+Route::post('/ecampus-cicular', [EcampusCicularController::class, 'create']);
+Route::delete('/ecampus-cicular/{id}', [EcampusCicularController::class, 'destroy']);
+Route::post('/ecampus-cicular/{id}', [EcampusCicularController::class, 'update']);
+
+
+
+Route::get('/ecampus-message/{id?}', [EcampusMessageController::class, 'index']);
+Route::post('/ecampus-message', [EcampusMessageController::class, 'create']);
+Route::delete('/ecampus-message/{id}', [EcampusMessageController::class, 'destroy']);
+Route::post('/ecampus-message/{id}', [EcampusMessageController::class, 'update']);
 
 Route::get('/question', [QuestionsController::class, 'index']);
 Route::post('/question', [QuestionsController::class, 'create']);
