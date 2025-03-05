@@ -91,3 +91,30 @@ CREATE TABLE IF NOT EXISTS `send_ecampus_message` (
   `secid` varchar(30) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb3;
+
+
+
+DROP TABLE IF EXISTS `notification_ecampus_cicular_roles`;
+CREATE TABLE IF NOT EXISTS `notification_ecampus_cicular_roles` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `send_ecampus_cicular_id` int DEFAULT NULL,
+  `role_id` int DEFAULT NULL,
+  `is_active` int DEFAULT '0',
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `send_ecampus_cicular_id` (`send_ecampus_cicular_id`),
+  KEY `role_id` (`role_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+
+
+DROP TABLE IF EXISTS `notification_ecampus_message_roles`;
+CREATE TABLE IF NOT EXISTS `notification_ecampus_message_roles` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `send_ecampus_message_id` int DEFAULT NULL,
+  `role_id` int DEFAULT NULL,
+  `is_active` int DEFAULT '0',
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `send_ecampus_message_id` (`send_ecampus_message_id`),
+  KEY `role_id` (`role_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
