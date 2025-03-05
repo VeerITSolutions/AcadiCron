@@ -107,8 +107,8 @@ class EcampusCicularController extends Controller
             // Handle file upload
             if ($request->hasFile('path')) {
                 $file = $request->file('path');
-                $imageName = $notification->id . '_notification_' . time(); // Example name
-                $imageSubfolder = 'notification'; // Example subfolder
+                $imageName = $notification->id . '_notification_ecampus_cicular_' . time(); // Example name
+                $imageSubfolder = 'notification_ecampus_cicular'; // Example subfolder
                 $full_path = 1;
                 $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
                 $notification->path = $imagePath;
@@ -126,8 +126,8 @@ class EcampusCicularController extends Controller
 
             $file = $request->file('path');
             if ($file) {
-                $imageName = $notification->id . '_notification_' . time(); // Example name
-                $imageSubfolder = 'notification';    // Example subfolder
+                $imageName = $notification->id . '_notification_ecampus_cicular_' . time(); // Example name
+                $imageSubfolder = 'notification_ecampus_cicular';    // Example subfolder
                 $full_path = 1;
                 $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
                 $updatevalidatedData['path'] = $imagePath;
@@ -200,8 +200,8 @@ class EcampusCicularController extends Controller
 
         $file = $request->file('path');
         if ($file) {
-            $imageName = $id . '_notification_' . time(); // Example name
-            $imageSubfolder = 'notification';    // Example subfolder
+            $imageName = $id . '_notification_ecampus_cicular_' . time(); // Example name
+            $imageSubfolder = 'notification_ecampus_cicular';    // Example subfolder
             $full_path = 1;
             $imagePath = uploadImage($file, $imageName, $imageSubfolder, $full_path);
             $validatedData['path'] = $imagePath;
