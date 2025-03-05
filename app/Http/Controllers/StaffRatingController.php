@@ -42,12 +42,12 @@ class StaffRatingController extends Controller
     {
         $userId = $request->input('userId');
         $role = $request->input('role');
-        $userRatedStaffList = StaffRating::where('user_id', $userId)->with('staff', 'user.student')->get();
+        $userRatedStaffList = StaffRating::with('staff', 'user.student')->get();
 
         $data['user_ratedstafflist'] = $userRatedStaffList;
 
         if ($role == "student") {
-            $ratingsByStudent = StaffRating::where('user_id', $userId)->get();
+            $ratingsByStudent = StaffRating::get();
         } elseif ($role == "parent") {
             $allRatings = StaffRating::all();
             $data['rate_canview'] = 0;
