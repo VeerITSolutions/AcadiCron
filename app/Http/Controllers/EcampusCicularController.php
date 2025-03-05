@@ -28,8 +28,8 @@ class EcampusCicularController extends Controller
 
         $query = DB::table('send_ecampus_circular')
             ->leftJoin(
-                DB::raw('(SELECT send_notification_id, GROUP_CONCAT(role_id) as roles FROM notification_roles GROUP BY send_notification_id) as notification_roles'),
-                'notification_roles.send_notification_id',
+                DB::raw('(SELECT send_ecampus_cicular_id, GROUP_CONCAT(role_id) as roles FROM notification_ecampus_cicular_roles GROUP BY send_ecampus_cicular_id) as notification_ecampus_cicular_roles'),
+                'notification_ecampus_cicular_roles.send_ecampus_cicular_id',
                 '=',
                 'send_ecampus_circular.id'
             );
