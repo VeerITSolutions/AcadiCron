@@ -34,7 +34,7 @@ class Classwork extends Model
 
     public function assignments()
     {
-        return $this->hasMany(SubmitAssignment::class, 'homework_id');
+        return $this->hasMany(SubmitAssignment::class, 'classwork_id');
     }
 
     public function getStudents($id)
@@ -50,22 +50,22 @@ class Classwork extends Model
                 ')
             ->joinSub(
                 DB::table('classwork')
-                    ->select('id as homework_id', 'class_id', 'section_id', 'session_id', 'description')
+                    ->select('id as classwork_id', 'class_id', 'section_id', 'session_id', 'description')
                     ->where('id', '=', $id),
-                'home_work',
+                'classwork',
                 function ($join) {
-                    $join->on('home_work.class_id', '=', 'student_session.class_id')
-                        ->on('home_work.section_id', '=', 'student_session.section_id')
-                        ->on('home_work.session_id', '=', 'student_session.session_id');
+                    $join->on('classwork.class_id', '=', 'student_session.class_id')
+                        ->on('classwork.section_id', '=', 'student_session.section_id')
+                        ->on('classwork.session_id', '=', 'student_session.session_id');
                 }
             )
             ->join('students', function ($join) {
                 $join->on('students.id', '=', 'student_session.student_id')
                     ->where('students.is_active', '=', 'yes');
             })
-            ->leftJoin('homework_evaluation', function ($join) use ($id) {
-                $join->on('homework_evaluation.student_session_id', '=', 'student_session.id')
-                    ->on('homework_evaluation.homework_id', '=', DB::raw($id))
+            ->leftJoin('classwork_evaluation', function ($join) use ($id) {
+                $join->on('classwork_evaluation.student_session_id', '=', 'student_session.id')
+                    ->on('classwork_evaluation.classwork_id', '=', DB::raw($id))
                     ->where('students.is_active', '=', 'yes');
             })
             ->orderBy('students.id', 'desc')

@@ -236,8 +236,8 @@ class ClassworkController extends Controller
     {
         return DB::table('classwork')
             ->select(DB::raw('count(*) as total'))
-            ->join('homework_evaluation', 'homework_evaluation.homework_id', '=', 'classwork.id')
-            ->join('student_session', 'student_session.id', '=', 'homework_evaluation.student_session_id')
+            ->join('classwork_evaluation', 'classwork_evaluation.classwork_id', '=', 'classwork.id')
+            ->join('student_session', 'student_session.id', '=', 'classwork_evaluation.student_session_id')
             ->join('students', 'students.id', '=', 'student_session.student_id')
             ->where([
                 ['classwork.id', '=', $id],
@@ -300,7 +300,7 @@ class ClassworkController extends Controller
     {
         $homeworkList = Classwork::select(
             'classwork.*',
-            DB::raw('IFNULL(homework_evaluation.id, 0) as homework_evaluation_id'),
+            DB::raw('IFNULL(classwork_evaluation.id, 0) as classwork_evaluation_id'),
             'classes.class',
             'sections.section',
             'subject_group_subjects.subject_id',
@@ -311,9 +311,9 @@ class ClassworkController extends Controller
             'staff.name as staff_name',
             'staff.surname as staff_surname'
         )
-            ->leftJoin('homework_evaluation', function ($join) use ($student_session_id) {
-                $join->on('homework_evaluation.homework_id', '=', 'classwork.id')
-                    ->where('homework_evaluation.student_session_id', '=', $student_session_id);
+            ->leftJoin('classwork_evaluation', function ($join) use ($student_session_id) {
+                $join->on('classwork_evaluation.homework_id', '=', 'classwork.id')
+                    ->where('classwork_evaluation.student_session_id', '=', $student_session_id);
             })
             ->join('classes', 'classes.id', '=', 'classwork.class_id')
             ->join('sections', 'sections.id', '=', 'classwork.section_id')
@@ -343,8 +343,8 @@ class ClassworkController extends Controller
                 ->where('id', $data)
                 ->first();
 
-            DB::table('homework_evaluation')->insert([
-                'homework_id' => $formhomeworkid,
+            DB::table('classwork_evaluation')->insert([
+                'classwork_id' => $formhomeworkid,
                 'student_id' => $get->student_id,
                 'student_session_id' => $data,
                 'status' => 'Complete',
