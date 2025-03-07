@@ -182,7 +182,7 @@ class ClassworkController extends Controller
             ]);
         }
 
-        $query->orderBy('classwork.homework_date', 'DESC');
+        $query->orderBy('classwork.classwork_date', 'DESC');
         $homeworks = $query->get();
 
         // Add count_percentage logic
@@ -262,7 +262,7 @@ class ClassworkController extends Controller
         $homework = new Classwork();
         $homework->class_id = $validatedData['selectedClass2'];
         $homework->section_id = $validatedData['selectedSection2'];
-        $homework->homework_date = $validatedData['homework_date'];
+        $homework->classwork_date = $validatedData['classwork_date'];
         $homework->submit_date = $validatedData['submit_date'];
         $homework->description = $validatedData['description'];
         $homework->subject_id = $validatedData['selectedSubject2'] ?? null;
@@ -324,7 +324,7 @@ class ClassworkController extends Controller
             ->where('classwork.class_id', $class_id)
             ->where('classwork.section_id', $section_id)
             ->where('classwork.session_id', $current_session_id)
-            ->orderBy('classwork.homework_date', 'desc')
+            ->orderBy('classwork.classwork_date', 'desc')
             ->get();
 
         return $homeworkList;
@@ -405,7 +405,7 @@ class ClassworkController extends Controller
         // Update the homework properties
         $homework->class_id = $validatedData['selectedClass2'];
         $homework->section_id = $validatedData['selectedSection2'];
-        $homework->homework_date = $validatedData['homework_date'];
+        $homework->classwork_date = $validatedData['classwork_date'];
         $homework->submit_date = $validatedData['submit_date'];
         $homework->description = $validatedData['description'];
         $homework->subject_id = $validatedData['selectedSubject2'];

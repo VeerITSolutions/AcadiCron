@@ -10,7 +10,7 @@ class Classwork extends Model
 {
     use HasFactory;
     public $timestamps = false;
-    protected $fillable = ['class_id', 'section_id', 'homework_date', 'submit_date', 'description', 'subject_id'];
+    protected $fillable = ['class_id', 'section_id', 'classwork_date', 'submit_date', 'description', 'subject_id'];
 
     public function class()
     {
