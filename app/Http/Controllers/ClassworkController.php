@@ -33,16 +33,16 @@ class ClassworkController extends Controller
                 'subjects.name as subject_name',
                 'subject_groups.id as subject_groups_id',
                 'subject_groups.name as subject_groups_name',
-                DB::raw('(select count(*) from submit_assignment where submit_assignment.homework_id = homework.id) as assignments'),
+                DB::raw('(select count(*) from submit_assignment where submit_assignment.homework_id = classwork.id) as assignments'),
                 'staff.name as staff_name',
                 'staff.surname as staff_surname'
             )
-            ->leftjoin('classes', 'classes.id', '=', 'homework.class_id')
-            ->leftjoin('sections', 'sections.id', '=', 'homework.section_id')
-            ->leftjoin('subject_group_subjects', 'subject_group_subjects.id', '=', 'homework.subject_id')
+            ->leftjoin('classes', 'classes.id', '=', 'classwork.class_id')
+            ->leftjoin('sections', 'sections.id', '=', 'classwork.section_id')
+            ->leftjoin('subject_group_subjects', 'subject_group_subjects.id', '=', 'classwork.subject_id')
             ->leftjoin('subjects', 'subjects.id', '=', 'subject_group_subjects.subject_id')
-            ->leftjoin('subject_groups', 'homework.subject_group_subject_id', '=', 'subject_groups.id')
-            ->leftjoin('staff', 'homework.staff_id', '=', 'staff.id');
+            ->leftjoin('subject_groups', 'classwork.subject_group_subject_id', '=', 'subject_groups.id')
+            ->leftjoin('staff', 'classwork.staff_id', '=', 'staff.id');
 
 
 

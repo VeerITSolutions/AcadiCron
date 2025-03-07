@@ -88,6 +88,7 @@ use App\Http\Controllers\GradesController;
 use App\Http\Controllers\FrontCmsMenusController;
 use App\Http\Controllers\OnlineexamController;
 use App\Http\Controllers\AlumniEventsController;
+use App\Http\Controllers\ClassworkController;
 use App\Http\Controllers\EcampusCicularController;
 use App\Http\Controllers\EcampusMessageController;
 use App\Http\Controllers\LessonController;
@@ -444,13 +445,13 @@ Route::post('/get-students-homework', [HomeworkController::class, 'getStudents']
 Route::post('/homework-evaluvation', [HomeworkController::class, 'createEvaluvation']);
 
 
-Route::get('/classwork', [HomeworkController::class, 'index']);
-Route::get('/classwork-student', [HomeworkController::class, 'indexForStudent']);
-Route::post('/classwork', [HomeworkController::class, 'create']);
-Route::delete('/classwork/{id}', [HomeworkController::class, 'destroy']);
-Route::post('/classwork/{id}', [HomeworkController::class, 'update']);
-Route::post('/get-students-classwork', [HomeworkController::class, 'getStudents']);
-Route::post('/classwork-evaluvation', [HomeworkController::class, 'createEvaluvation']);
+Route::get('/classwork', [ClassworkController::class, 'index']);
+Route::get('/classwork-student', [ClassworkController::class, 'indexForStudent']);
+Route::post('/classwork', [ClassworkController::class, 'create']);
+Route::delete('/classwork/{id}', [ClassworkController::class, 'destroy']);
+Route::post('/classwork/{id}', [ClassworkController::class, 'update']);
+Route::post('/get-students-classwork', [ClassworkController::class, 'getStudents']);
+Route::post('/classwork-evaluvation', [ClassworkController::class, 'createEvaluvation']);
 
 
 Route::post('/search-homework', [HomeworkController::class, 'searchHomework']);
