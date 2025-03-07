@@ -10,6 +10,7 @@ class Classwork extends Model
 {
     use HasFactory;
     public $timestamps = false;
+    public $table = 'classwork';
     protected $fillable = ['class_id', 'section_id', 'classwork_date', 'submit_date', 'description', 'subject_id'];
 
     public function class()
@@ -41,7 +42,7 @@ class Classwork extends Model
     {
         return DB::table('student_session')
             ->selectRaw('
-                    IFNULL(homework_evaluation.id, 0) as homework_evaluation_id,
+                    IFNULL(classwork_evaluation.id, 0) as classwork_evaluation_id,
                     student_session.*,
                     students.firstname,
                     students.middlename,
