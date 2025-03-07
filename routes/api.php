@@ -443,6 +443,16 @@ Route::post('/homework/{id}', [HomeworkController::class, 'update']);
 Route::post('/get-students-homework', [HomeworkController::class, 'getStudents']);
 Route::post('/homework-evaluvation', [HomeworkController::class, 'createEvaluvation']);
 
+
+Route::get('/classwork', [HomeworkController::class, 'index']);
+Route::get('/classwork-student', [HomeworkController::class, 'indexForStudent']);
+Route::post('/classwork', [HomeworkController::class, 'create']);
+Route::delete('/classwork/{id}', [HomeworkController::class, 'destroy']);
+Route::post('/classwork/{id}', [HomeworkController::class, 'update']);
+Route::post('/get-students-classwork', [HomeworkController::class, 'getStudents']);
+Route::post('/classwork-evaluvation', [HomeworkController::class, 'createEvaluvation']);
+
+
 Route::post('/search-homework', [HomeworkController::class, 'searchHomework']);
 
 Route::get('/roomtype', [RoomTypesController::class, 'index']);
