@@ -118,3 +118,39 @@ CREATE TABLE IF NOT EXISTS `notification_ecampus_message_roles` (
   KEY `send_ecampus_message_id` (`send_ecampus_message_id`),
   KEY `role_id` (`role_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+
+
+
+DROP TABLE IF EXISTS `classwork_evaluation`;
+CREATE TABLE IF NOT EXISTS `classwork_evaluation` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `classwork_id` int NOT NULL,
+  `student_id` int NOT NULL,
+  `student_session_id` int DEFAULT NULL,
+  `date` date NOT NULL,
+  `status` varchar(100) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb3;
+
+
+
+DROP TABLE IF EXISTS `classwork`;
+CREATE TABLE IF NOT EXISTS `classwork` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `class_id` int NOT NULL,
+  `section_id` int NOT NULL,
+  `session_id` int NOT NULL,
+  `classwork_date` date NOT NULL,
+  `submit_date` date NOT NULL,
+  `staff_id` int NOT NULL,
+  `subject_group_subject_id` int DEFAULT NULL,
+  `subject_id` int DEFAULT NULL,
+  `description` text,
+  `create_date` date NOT NULL,
+  `evaluation_date` date NOT NULL,
+  `document` varchar(200) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
+  `created_by` int NOT NULL,
+  `evaluated_by` int NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `subject_group_subject_id` (`subject_group_subject_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=695 DEFAULT CHARSET=utf8mb3;
