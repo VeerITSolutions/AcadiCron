@@ -12,35 +12,47 @@ class FeeSessionGroupsController extends Controller
      */
     public function index(Request $request)
     {
-        $page = $request->input('page', 1); // Default to page 1 if not provided
-        $perPage = $request->input('perPage', 10); // Default to 10 records per page if not provided
+        $page = $request->input('page'); // Default to page 1 if not provided
+        $perPage = $request->input('perPage'); // Default to 10 records per page if not provided
 
         // Validate the inputs (optional)
         $page = (int) $page;
         $perPage = (int) $perPage;
 
-        // Ensure $perPage is a positive integer and set a reasonable maximum value if needed
-        if ($perPage <= 0 || $perPage > 100) {
-            $perPage = 10; // Default value if invalid
-        }
+
 
         // Paginate the students data
-        $data = FeeSessionGroups::join('fee_groups', 'fee_session_groups.fee_groups_id', '=', 'fee_groups.id')
-    ->select('fee_session_groups.*', 'fee_groups.name as fees_group_name') // Specify the columns you need from fee_groups
-    ->orderBy('id', 'desc')->paginate($perPage, ['*'], 'page', $page);
 
-        // Prepare the response message
-        $message = '';
+        if (empty($page)) { // Prepare the response message
+            $data = FeeSessionGroups::join('fee_groups', 'fee_session_groups.fee_groups_id', '=', 'fee_groups.id')
+                ->select('fee_session_groups.*', 'fee_groups.name as fees_group_name')
+                ->get();
+            $message = '';
 
-        // Return the paginated data with total count and pagination details
-        return response()->json([
-            'success' => true,
-            'data' => $data->items(), // Only return the current page data
-            'totalCount' => $data->total(), // Total number of records
-            'rowsPerPage' => $data->lastPage(), // Total number of pages
-            'currentPage' => $data->currentPage(), // Current page
-            'message' => $message,
-        ], 200);
+            // Return the paginated data with total count and pagination details
+            return response()->json([
+                'success' => true,
+                'data' => $data, // Only return the current page data
+
+                'message' => $message,
+            ], 200);
+        } else {
+            $data = FeeSessionGroups::join('fee_groups', 'fee_session_groups.fee_groups_id', '=', 'fee_groups.id')
+                ->select('fee_session_groups.*', 'fee_groups.name as fees_group_name') // Specify the columns you need from fee_groups
+                ->orderBy('id', 'desc')->paginate($perPage, ['*'], 'page', $page);
+            // Prepare the response message
+            $message = '';
+
+            // Return the paginated data with total count and pagination details
+            return response()->json([
+                'success' => true,
+                'data' => $data->items(), // Only return the current page data
+                'totalCount' => $data->total(), // Total number of records
+                'rowsPerPage' => $data->lastPage(), // Total number of pages
+                'currentPage' => $data->currentPage(), // Current page
+                'message' => $message,
+            ], 200);
+        }
     }
 
 
@@ -48,7 +60,8 @@ class FeeSessionGroupsController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create(Request $request){
+    public function create(Request $request)
+    {
 
 
         // Validate the incoming request
@@ -110,24 +123,24 @@ class FeeSessionGroupsController extends Controller
      */
 
 
-    public function update(Request $request,string $id)
+    public function update(Request $request, string $id)
     {
 
         // Find the house_name by id
         $category = FeeSessionGroups::findOrFail($id);
 
-       // Validate only the fields you need to validate
-            $validatedData = $request->validate([
-                'house_name' => 'required',
-            ]);
+        // Validate only the fields you need to validate
+        $validatedData = $request->validate([
+            'house_name' => 'required',
+        ]);
 
-            // Get the description from the request without validation
-            $description = $request->input('description');
+        // Get the description from the request without validation
+        $description = $request->input('description');
 
-            // Merge the validated data with the description
-            $updatedData = array_merge($validatedData, [
-                'description' => $description,
-            ]);
+        // Merge the validated data with the description
+        $updatedData = array_merge($validatedData, [
+            'description' => $description,
+        ]);
 
         // Update the category
         $category->update($updatedData);

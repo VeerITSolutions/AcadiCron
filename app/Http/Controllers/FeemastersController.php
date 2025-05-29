@@ -101,7 +101,7 @@ class FeemastersController extends Controller
 
         // Validate the incoming request
         $validatedData = $request->validate([
-            'fees_group' => 'required|string|max:255',
+            'fees_group' => 'required',
         ]);
 
         // Check if the category already exists in the Category model
@@ -116,6 +116,9 @@ class FeemastersController extends Controller
 
         // Create a new category
         $category = new Feemasters();
+
+        $category->fees_group = $validatedData['fees_group'];
+
         $category->fee_session_group_id = $validatedData['fee_session_group_id'];
         $category->fees_type = $request->fees_type;
         $category->due_date = $request->due_date;
