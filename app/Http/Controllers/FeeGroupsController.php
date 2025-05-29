@@ -13,24 +13,24 @@ class FeeGroupsController extends Controller
      */
     public function index(Request $request)
 {
-    $page = (int) $request->input('page', 1);
-$perPage = (int) $request->input('perPage', 10);
+        $page = (int) $request->input('page', 1);
+        $perPage = (int) $request->input('perPage', 10);
 
-// Build the query for FeeGroups and order by created_at in descending order
-$query = DB::table('fee_groups')->select('fee_groups.*')
-            ->orderBy('created_at', 'desc'); // Adjust column name if needed
+        // Build the query for FeeGroups and order by created_at in descending order
+        $query = DB::table('fee_groups')->select('fee_groups.*')
+                    ->orderBy('created_at', 'desc'); // Adjust column name if needed
 
-// Apply pagination
-$paginatedData = $query->orderBy('id', 'desc')->paginate($perPage, ['*'], 'page', $page);
+        // Apply pagination
+        $paginatedData = $query->orderBy('id', 'desc')->paginate($perPage, ['*'], 'page', $page);
 
-// Return paginated data with pagination details
-return response()->json([
-    'success' => true,
-    'data' => $paginatedData->items(), // Current page data
-    'current_page' => $paginatedData->currentPage(),
-    'per_page' => $paginatedData->perPage(),
-    'total' => $paginatedData->total(),
-], 200);
+        // Return paginated data with pagination details
+        return response()->json([
+            'success' => true,
+            'data' => $paginatedData->items(), // Current page data
+            'current_page' => $paginatedData->currentPage(),
+            'per_page' => $paginatedData->perPage(),
+            'total' => $paginatedData->total(),
+        ], 200);
 
 }
 
