@@ -355,6 +355,7 @@ Route::post('/fees-discount/{id}', [FeesDiscountsController::class, 'update']);
 
 
 Route::get('/fees-session-group', [FeeSessionGroupsController::class, 'index']);
+Route::get('/fees-session-by-group', [FeeSessionGroupsController::class, 'getFeesByGroup']);
 Route::post('/fees-session-group', [FeeSessionGroupsController::class, 'create']);
 Route::delete('/fees-session-group/{id}', [FeeSessionGroupsController::class, 'destroy']);
 Route::post('/fees-session-group/{id}', [FeeSessionGroupsController::class, 'update']);

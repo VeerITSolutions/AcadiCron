@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\FeeSessionGroups;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class FeeSessionGroupsController extends Controller
 {
@@ -54,9 +55,38 @@ class FeeSessionGroupsController extends Controller
             ], 200);
         }
     }
+    public function getFeesByGroup($id = null)
+    {
+        $query = DB::table('fee_session_groups')
+            ->select('fee_session_groups.*', 'fee_groups.name as group_name')
+            ->join('fee_groups', 'fee_groups.id', '=', 'fee_session_groups.fee_groups_id')
+            ->where('fee_session_groups.session_id', '20')
+            ->where('fee_groups.is_system', 0);
 
+        if (!is_null($id)) {
+            $query->where('fee_session_groups.id', $id);
+        }
 
+        $results = $query->get();
 
+        // Attach feetypes to each result
+        foreach ($results as $value) {
+            $value->feetypes = $this->getFeeTypeByGroup($value->id, $value->fee_groups_id);
+        }
+
+        return $results;
+    }
+
+    public function getFeeTypeByGroup($fee_session_group_id, $id = null)
+    {
+        return DB::table('fee_groups_feetype')
+            ->select('fee_groups_feetype.*', 'feetype.type', 'feetype.code')
+            ->join('feetype', 'feetype.id', '=', 'fee_groups_feetype.feetype_id')
+            ->where('fee_groups_feetype.fee_groups_id', $id)
+            ->where('fee_groups_feetype.fee_session_group_id', $fee_session_group_id)
+            ->orderBy('fee_groups_feetype.id', 'asc')
+            ->get();
+    }
     /**
      * Show the form for creating a new resource.
      */
