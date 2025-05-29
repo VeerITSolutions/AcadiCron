@@ -12,33 +12,36 @@ class FeeGroupsController extends Controller
      * Display a listing of the resource.
      */
     public function index(Request $request)
-{
+    {
         $page = (int) $request->input('page', 1);
         $perPage = (int) $request->input('perPage', 10);
+        $search = $request->input('search');
 
-        // Build the query for FeeGroups and order by created_at in descending order
-        $query = DB::table('fee_groups')->select('fee_groups.*')
-                    ->orderBy('created_at', 'desc'); // Adjust column name if needed
+        $query = DB::table('fee_groups')->select('fee_groups.*');
 
-        // Apply pagination
-        $paginatedData = $query->orderBy('id', 'desc')->paginate($perPage, ['*'], 'page', $page);
+        if ($search) {
+            $query->where('name', 'LIKE', '%' . $search . '%');
+        }
 
-        // Return paginated data with pagination details
+        $paginatedData = $query
+            ->orderBy('id', 'desc')
+            ->paginate($perPage, ['*'], 'page', $page);
+
         return response()->json([
             'success' => true,
-            'data' => $paginatedData->items(), // Current page data
+            'data' => $paginatedData->items(),
             'current_page' => $paginatedData->currentPage(),
             'per_page' => $paginatedData->perPage(),
             'total' => $paginatedData->total(),
         ], 200);
-
-}
+    }
 
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create(Request $request){
+    public function create(Request $request)
+    {
         $name = $request->name;
         $validatedData = $request->validate([
             'name' => 'required',
@@ -53,8 +56,8 @@ class FeeGroupsController extends Controller
         }
         // Create a new category
         $category = new FeeGroups();
-        $category->name= $request->name;
-        $category->description= $request->description;
+        $category->name = $request->name;
+        $category->description = $request->description;
         $category->is_active = $request->is_active ?  $request->is_active  : 'no';
         $category->save();
         return response()->json([
@@ -84,9 +87,9 @@ class FeeGroupsController extends Controller
         }
         // Create a new category
         $category = new FeeGroups();
-        $category->name= $request->name;
+        $category->name = $request->name;
         $category->is_active = $request->is_active ?  $request->is_active  : 'no';
-        $category->description= $request->description;
+        $category->description = $request->description;
 
         $category->save();
         return response()->json([
@@ -115,26 +118,26 @@ class FeeGroupsController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request,string $id)
+    public function update(Request $request, string $id)
     {
         // Find the house_name by id
         $FeeGroups = FeeGroups::findOrFail($id);
-       // Validate only the fields you need to validate
-            $validatedData = $request->validate([
-                'name' => 'required',
-            ]);
-            // Get the description from the request without validation
-            $description = $request->input('description');
+        // Validate only the fields you need to validate
+        $validatedData = $request->validate([
+            'name' => 'required',
+        ]);
+        // Get the description from the request without validation
+        $description = $request->input('description');
 
 
-            $is_active = $request->input('is_active') ?  $request->input('is_active')  : 'no';
-            $name = $request->input('name');
-            // Merge the validated data with the description
-            $updatedData = array_merge($validatedData, [
-                'description' => $description,
-                'is_active' => $is_active,
-                'name' => $name,
-            ]);
+        $is_active = $request->input('is_active') ?  $request->input('is_active')  : 'no';
+        $name = $request->input('name');
+        // Merge the validated data with the description
+        $updatedData = array_merge($validatedData, [
+            'description' => $description,
+            'is_active' => $is_active,
+            'name' => $name,
+        ]);
         // Update the category
         $FeeGroups->update($updatedData);
         return response()->json([
