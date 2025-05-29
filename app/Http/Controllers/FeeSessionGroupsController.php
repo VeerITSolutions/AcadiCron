@@ -55,34 +55,56 @@ class FeeSessionGroupsController extends Controller
             ], 200);
         }
     }
-    public function getFeesByGroup($id = null)
+    public function getFeesByGroup(Request $request)
     {
+        $perPage = $request->input('per_page', 10); // default 10 per page
+        $id = $request->input('id'); // optional filter
+        $current_session = '20'; // or get from auth/session
+
         $query = DB::table('fee_session_groups')
             ->select('fee_session_groups.*', 'fee_groups.name as group_name')
             ->join('fee_groups', 'fee_groups.id', '=', 'fee_session_groups.fee_groups_id')
-            ->where('fee_session_groups.session_id', '20')
+            ->where('fee_session_groups.session_id', $current_session)
             ->where('fee_groups.is_system', 0);
 
         if (!is_null($id)) {
             $query->where('fee_session_groups.id', $id);
         }
 
-        $results = $query->get();
+        $data = $query->paginate($perPage);
 
-        // Attach feetypes to each result
-        foreach ($results as $value) {
-            $value->feetypes = $this->getFeeTypeByGroup($value->id, $value->fee_groups_id);
-        }
+        // Add `feetypes` to each item
+        // Map over the items and manually set updated collection
+        $items = collect($data->items())->map(function ($item) {
+            $item->feetypes = $this->getFeeTypeByGroup($item->id, $item->fee_groups_id);
+            return $item;
+        });
 
-        return $results;
+        // Replace the original items with a new paginator instance
+        $data = new \Illuminate\Pagination\LengthAwarePaginator(
+            $items,
+            $data->total(),
+            $data->perPage(),
+            $data->currentPage(),
+            ['path' => request()->url(), 'query' => request()->query()]
+        );
+
+        return response()->json([
+            'success' => true,
+            'data' => $data->items(),            // current page items
+            'totalCount' => $data->total(),      // total records
+            'rowsPerPage' => $data->lastPage(),  // total pages
+            'currentPage' => $data->currentPage(), // current page number
+            'message' => 'Fees group fetched successfully',
+        ], 200);
     }
 
-    public function getFeeTypeByGroup($fee_session_group_id, $id = null)
+    public function getFeeTypeByGroup($fee_session_group_id, $fee_group_id)
     {
         return DB::table('fee_groups_feetype')
             ->select('fee_groups_feetype.*', 'feetype.type', 'feetype.code')
             ->join('feetype', 'feetype.id', '=', 'fee_groups_feetype.feetype_id')
-            ->where('fee_groups_feetype.fee_groups_id', $id)
+            ->where('fee_groups_feetype.fee_groups_id', $fee_group_id)
             ->where('fee_groups_feetype.fee_session_group_id', $fee_session_group_id)
             ->orderBy('fee_groups_feetype.id', 'asc')
             ->get();
