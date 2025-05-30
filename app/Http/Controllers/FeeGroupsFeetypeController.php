@@ -47,7 +47,11 @@ class FeeGroupsFeetypeController extends Controller
 
 
         $FeeGroupsFeetype = new FeeGroupsFeetype();
-        $FeeGroupsFeetype->feetype_id = $validatedData['fees_type'];
+        $FeeGroupsFeetype->fee_session_group_id = $validatedData['fee_session_group_id'];
+        $FeeGroupsFeetype->fee_groups_id = $validatedData['fee_groups_id'];
+        $FeeGroupsFeetype->feetype_id = $validatedData['feetype_id'];
+        $FeeGroupsFeetype->session_id = $validatedData['session_id'];
+
         $FeeGroupsFeetype->due_date = $validatedData['due_date'];
         $FeeGroupsFeetype->amount = $validatedData['amount'];
         $FeeGroupsFeetype->fine_type = $validatedData['fine_type'];
