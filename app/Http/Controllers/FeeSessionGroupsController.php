@@ -57,18 +57,11 @@ class FeeSessionGroupsController extends Controller
     }
     public function getFeesByGroup(Request $request)
     {
+        $page = (int) $request->input('page', 1);       // Default to 1
+        $perPage = (int) $request->input('perPage', 10); // Default to 10
 
-
-        $page = $request->input('page'); // Default to page 1 if not provided
-        $perPage = $request->input('perPage'); // Default to 10 records per page if not provided
-
-        // Validate the inputs (optional)
-        $page = (int) $page;
-        $perPage = (int) $perPage;
-
-
-        $id = $request->input('id'); // optional filter
-        $current_session = '20'; // or get from auth/session
+        $id = $request->input('id'); // Optional
+        $current_session = '20';     // Or from session/auth
 
         $query = DB::table('fee_session_groups')
             ->select('fee_session_groups.*', 'fee_groups.name as group_name')
@@ -82,14 +75,31 @@ class FeeSessionGroupsController extends Controller
 
         $data = $query->paginate($perPage, ['*'], 'page', $page);
 
-        // Add `feetypes` to each item
-        // Map over the items and manually set updated collection
+        // Map and attach feetypes + HTML
         $items = collect($data->items())->map(function ($item) {
-            $item->feetypes = $this->getFeeTypeByGroup($item->id, $item->fee_groups_id);
+            $feetypes = DB::table('fee_groups_feetype')
+                ->select('fee_groups_feetype.*', 'feetype.type', 'feetype.code')
+                ->join('feetype', 'feetype.id', '=', 'fee_groups_feetype.feetype_id')
+                ->where('fee_groups_feetype.fee_groups_id', $item->fee_groups_id)
+                ->where('fee_groups_feetype.fee_session_group_id', $item->id)
+                ->orderBy('fee_groups_feetype.id', 'asc')
+                ->get();
+
+            // Generate HTML list for frontend use
+            $htmlList = '';
+            foreach ($feetypes as $feetype) {
+                $htmlList .= '' .
+                    $feetype->code . ' ₹' . $feetype->amount .
+                    '';
+            }
+
+            $item->feetypes = $feetypes;
+            $item->feetypes_html = $htmlList;
+
             return $item;
         });
 
-        // Replace the original items with a new paginator instance
+        // Rebuild pagination with modified items
         $data = new \Illuminate\Pagination\LengthAwarePaginator(
             $items,
             $data->total(),
@@ -100,10 +110,10 @@ class FeeSessionGroupsController extends Controller
 
         return response()->json([
             'success' => true,
-            'data' => $data->items(),            // current page items
-            'totalCount' => $data->total(),      // total records
-            'rowsPerPage' => $data->lastPage(),  // total pages
-            'currentPage' => $data->currentPage(), // current page number
+            'data' => $data->items(),
+            'totalCount' => $data->total(),
+            'rowsPerPage' => $data->lastPage(),
+            'currentPage' => $data->currentPage(),
             'message' => 'Fees group fetched successfully',
         ], 200);
     }
