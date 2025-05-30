@@ -61,7 +61,7 @@ class FeeSessionGroupsController extends Controller
         $perPage = (int) $request->input('perPage', 10); // Default to 10
 
         $id = $request->input('id'); // Optional
-        $current_session = '20';     // Or from session/auth
+        $current_session = $request->input('selectedSection');     // Or from session/auth
 
         $query = DB::table('fee_session_groups')
             ->select('fee_session_groups.*', 'fee_groups.name as group_name')
