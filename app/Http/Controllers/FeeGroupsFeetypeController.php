@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\FeeGroupsFeetype;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class FeeGroupsFeetypeController extends Controller
 {
@@ -43,13 +44,24 @@ class FeeGroupsFeetypeController extends Controller
     {
         $validatedData = $request->all();
 
+        // Simulate `group_exists()` logic: fetch parent ID based on fee_groups_id
+        $feeSessionGroupId = DB::table('fee_session_groups')
+            ->where('fee_groups_id', $validatedData['fees_group'])
+            ->value('id');
 
+        // If not found, optionally return error
+        if (!$feeSessionGroupId) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Fee Session Group not found for the given Fee Group ID',
+            ], 404);
+        }
 
-
+        // Create and save the record
         $FeeGroupsFeetype = new FeeGroupsFeetype();
-        $FeeGroupsFeetype->fee_session_group_id = $validatedData['fee_session_group_id'];
-        $FeeGroupsFeetype->fee_groups_id = $validatedData['fee_groups_id'];
-        $FeeGroupsFeetype->feetype_id = $validatedData['feetype_id'];
+        $FeeGroupsFeetype->fee_session_group_id = $feeSessionGroupId;
+        $FeeGroupsFeetype->fee_groups_id = $validatedData['fees_group'];
+        $FeeGroupsFeetype->feetype_id = $validatedData['fees_type'];
         $FeeGroupsFeetype->session_id = $validatedData['session_id'];
 
         $FeeGroupsFeetype->due_date = $validatedData['due_date'];
@@ -58,14 +70,13 @@ class FeeGroupsFeetypeController extends Controller
         $FeeGroupsFeetype->fine_percentage = $validatedData['percentage'];
         $FeeGroupsFeetype->fine_amount = $validatedData['fine_amount'];
 
-
         $FeeGroupsFeetype->save();
 
         return response()->json([
             'success' => true,
-            'message' => ' saved successfully',
-            'FeeGroupsFeetype' => $FeeGroupsFeetype,
-        ], 201); // 201 Created status code
+            'message' => 'Saved successfully',
+            'data' => $FeeGroupsFeetype,
+        ], 201);
     }
 
     /**
