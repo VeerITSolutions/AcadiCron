@@ -91,6 +91,7 @@ use App\Http\Controllers\AlumniEventsController;
 use App\Http\Controllers\ClassworkController;
 use App\Http\Controllers\EcampusCicularController;
 use App\Http\Controllers\EcampusMessageController;
+use App\Http\Controllers\FeeGroupsFeetypeController;
 use App\Http\Controllers\LessonController;
 use App\Http\Controllers\TopicController;
 use App\Http\Controllers\MultiClassStudentsController;
@@ -359,6 +360,13 @@ Route::get('/fees-session-by-group', [FeeSessionGroupsController::class, 'getFee
 Route::post('/fees-session-group', [FeeSessionGroupsController::class, 'create']);
 Route::delete('/fees-session-group/{id}', [FeeSessionGroupsController::class, 'destroy']);
 Route::post('/fees-session-group/{id}', [FeeSessionGroupsController::class, 'update']);
+
+
+Route::get('/fee-groups-feetype', [FeeGroupsFeetypeController::class, 'index']);
+Route::get('/fee-groups-feetype-by-group', [FeeGroupsFeetypeController::class, 'getFeesByGroup']);
+Route::post('/fee-groups-feetype', [FeeGroupsFeetypeController::class, 'create']);
+Route::delete('/fee-groups-feetype/{id}', [FeeGroupsFeetypeController::class, 'destroy']);
+Route::post('/fee-groups-feetype/{id}', [FeeGroupsFeetypeController::class, 'update']);
 
 Route::get('/subjects', [SubjectsController::class, 'index']);
 Route::post('/subjects', [SubjectsController::class, 'create']);
