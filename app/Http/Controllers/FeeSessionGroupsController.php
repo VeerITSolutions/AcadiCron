@@ -57,10 +57,10 @@ class FeeSessionGroupsController extends Controller
     }
     public function getFeesByGroup(Request $request)
     {
-        $page = (int) $request->input('page', 1);       // Default to 1
-        $perPage = (int) $request->input('perPage', 10); // Default to 10
-        $session_id = $request->input('selectedSection'); // Session filter (optional)
-        $id = $request->input('id'); // Optional
+        $page = (int) $request->input('page', 1);
+        $perPage = (int) $request->input('perPage', 10);
+        $session_id = $request->input('selectedSection');
+        $id = $request->input('id');
 
         $query = DB::table('fee_groups_feetype')
             ->select(
@@ -88,6 +88,23 @@ class FeeSessionGroupsController extends Controller
 
         $data = $query->orderBy('fee_groups_feetype.id', 'desc')
             ->paginate($perPage, ['*'], 'page', $page);
+
+        // Append feetypes_html to each record
+        $currency_symbol = '₹'; // Or fetch from settings/config if dynamic
+
+        $items = collect($data->items())->map(function ($item) use ($currency_symbol) {
+            $item->feetypes_html = $item->feetype_code . ' ' . $currency_symbol . $item->amount;
+            return $item;
+        });
+
+        // Replace original items with modified items
+        $data = new \Illuminate\Pagination\LengthAwarePaginator(
+            $items,
+            $data->total(),
+            $data->perPage(),
+            $data->currentPage(),
+            ['path' => request()->url(), 'query' => request()->query()]
+        );
 
         return response()->json([
             'success' => true,

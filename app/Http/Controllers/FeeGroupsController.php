@@ -17,9 +17,11 @@ class FeeGroupsController extends Controller
         $perPage = (int) $request->input('perPage', 10);
         $search = $request->input('search');
 
-        $query = DB::table('fee_groups')->select('fee_groups.*');
+        $query = DB::table('fee_groups')
+            ->select('fee_groups.*')
+            ->where('is_system', 0); // Exclude system-defined groups
 
-        if ($search) {
+        if (!empty($search)) {
             $query->where('name', 'LIKE', '%' . $search . '%');
         }
 
@@ -33,6 +35,7 @@ class FeeGroupsController extends Controller
             'current_page' => $paginatedData->currentPage(),
             'per_page' => $paginatedData->perPage(),
             'total' => $paginatedData->total(),
+            'message' => 'Fee groups fetched successfully',
         ], 200);
     }
 

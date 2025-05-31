@@ -67,7 +67,7 @@ class FeeGroupsFeetypeController extends Controller
         $FeeGroupsFeetype->due_date = $validatedData['due_date'];
         $FeeGroupsFeetype->amount = $validatedData['amount'];
         $FeeGroupsFeetype->fine_type = $validatedData['fine_type'];
-        $FeeGroupsFeetype->fine_percentage = $validatedData['percentage'];
+        $FeeGroupsFeetype->fine_percentage = $validatedData['percentage'] ?? 0; // Default to 0 if not provided
         $FeeGroupsFeetype->fine_amount = $validatedData['fine_amount'];
 
         $FeeGroupsFeetype->save();
