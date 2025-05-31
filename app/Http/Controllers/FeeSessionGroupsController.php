@@ -59,54 +59,35 @@ class FeeSessionGroupsController extends Controller
     {
         $page = (int) $request->input('page', 1);       // Default to 1
         $perPage = (int) $request->input('perPage', 10); // Default to 10
-
+        $session_id = $request->input('selectedSection'); // Session filter (optional)
         $id = $request->input('id'); // Optional
-        $current_session = $request->input('selectedSection');     // Or from session/auth
 
-        $query = DB::table('fee_session_groups')
-            ->select('fee_session_groups.*', 'fee_groups.name as group_name')
-            ->join('fee_groups', 'fee_groups.id', '=', 'fee_session_groups.fee_groups_id')
-            ->where('fee_session_groups.session_id', $current_session)
+        $query = DB::table('fee_groups_feetype')
+            ->select(
+                'fee_groups_feetype.*',
+                'fee_groups.name as group_name',
+                'feetype.type as feetype_name',
+                'feetype.code as feetype_code',
+                'fee_session_groups.session_id'
+            )
+            ->join('feetype', 'feetype.id', '=', 'fee_groups_feetype.feetype_id')
+            ->join('fee_groups', 'fee_groups.id', '=', 'fee_groups_feetype.fee_groups_id')
+            ->join('fee_session_groups', function ($join) {
+                $join->on('fee_session_groups.id', '=', 'fee_groups_feetype.fee_session_group_id')
+                    ->on('fee_session_groups.fee_groups_id', '=', 'fee_groups_feetype.fee_groups_id');
+            })
             ->where('fee_groups.is_system', 0);
 
-        if (!is_null($id)) {
-            $query->where('fee_session_groups.id', $id);
+        if (!is_null($session_id)) {
+            $query->where('fee_session_groups.session_id', $session_id);
         }
 
-        $data = $query->paginate($perPage, ['*'], 'page', $page);
+        if (!is_null($id)) {
+            $query->where('fee_groups_feetype.id', $id);
+        }
 
-        // Map and attach feetypes + HTML
-        $items = collect($data->items())->map(function ($item) {
-            $feetypes = DB::table('fee_groups_feetype')
-                ->select('fee_groups_feetype.*', 'feetype.type', 'feetype.code')
-                ->join('feetype', 'feetype.id', '=', 'fee_groups_feetype.feetype_id')
-                ->where('fee_groups_feetype.fee_groups_id', $item->fee_groups_id)
-                ->where('fee_groups_feetype.fee_session_group_id', $item->id)
-                ->orderBy('fee_groups_feetype.id', 'asc')
-                ->get();
-
-            // Generate HTML list for frontend use
-            $htmlList = '';
-            foreach ($feetypes as $feetype) {
-                $htmlList .= '' .
-                    $feetype->code . ' ₹' . $feetype->amount .
-                    '';
-            }
-
-            $item->feetypes = $feetypes;
-            $item->feetypes_html = $htmlList;
-
-            return $item;
-        });
-
-        // Rebuild pagination with modified items
-        $data = new \Illuminate\Pagination\LengthAwarePaginator(
-            $items,
-            $data->total(),
-            $data->perPage(),
-            $data->currentPage(),
-            ['path' => request()->url(), 'query' => request()->query()]
-        );
+        $data = $query->orderBy('fee_groups_feetype.id', 'desc')
+            ->paginate($perPage, ['*'], 'page', $page);
 
         return response()->json([
             'success' => true,
@@ -114,11 +95,11 @@ class FeeSessionGroupsController extends Controller
             'totalCount' => $data->total(),
             'rowsPerPage' => $data->lastPage(),
             'currentPage' => $data->currentPage(),
-            'message' => 'Fees group fetched successfully',
-        ], 200);
+            'message' => 'Fee group feetype list fetched successfully',
+        ]);
     }
 
-    public function getFeeTypeByGroup($fee_session_group_id, $fee_group_id)
+    /*  public function getFeeTypeByGroup($fee_session_group_id, $fee_group_id)
     {
         return DB::table('fee_groups_feetype')
             ->select('fee_groups_feetype.*', 'feetype.type', 'feetype.code')
@@ -127,7 +108,7 @@ class FeeSessionGroupsController extends Controller
             ->where('fee_groups_feetype.fee_session_group_id', $fee_session_group_id)
             ->orderBy('fee_groups_feetype.id', 'asc')
             ->get();
-    }
+    } */
     /**
      * Show the form for creating a new resource.
      */
