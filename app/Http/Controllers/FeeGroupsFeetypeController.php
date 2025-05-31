@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\FeeGroupsFeetype;
+use App\Models\FeeSessionGroups;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -47,15 +48,19 @@ class FeeGroupsFeetypeController extends Controller
         // Simulate `group_exists()` logic: fetch parent ID based on fee_groups_id
         $feeSessionGroupId = DB::table('fee_session_groups')
             ->where('fee_groups_id', $validatedData['fees_group'])
+            ->where('session_id', $validatedData['session_id'])
             ->value('id');
 
-        // If not found, optionally return error
-        if (!$feeSessionGroupId) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Fee Session Group not found for the given Fee Group ID',
-            ], 404);
+        if (empty($feeSessionGroupId)) {
+            $FeeGroupsFeetype = new FeeSessionGroups();
+
+            $FeeGroupsFeetype->fee_groups_id = $validatedData['fees_group'];
+            $FeeGroupsFeetype->session_id = $validatedData['session_id'];
+            $FeeGroupsFeetype->is_active = 'no'; // Default to 'no' if not provided
+            $FeeGroupsFeetype->save();
+            $feeSessionGroupId = $FeeGroupsFeetype->id; // Get the newly created ID
         }
+
 
         // Create and save the record
         $FeeGroupsFeetype = new FeeGroupsFeetype();

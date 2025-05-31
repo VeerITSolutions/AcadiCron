@@ -8,4 +8,5 @@ use Illuminate\Database\Eloquent\Model;
 class FeeSessionGroups extends Model
 {
     use HasFactory;
+    public $timestamps = false; // Disable timestamps if not needed
 }
