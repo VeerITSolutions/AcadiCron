@@ -107,22 +107,13 @@ class FeeGroupsController extends Controller
      */
     public function show($id)
     {
-        $group = DB::table('fee_groups')
-            ->select('id', 'name')
-            ->where('id', $id)
-            ->first();
+        $item = DB::table('fee_groups')->where('id', $id)->first();
 
-        if (!$group) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Fee group not found.',
-            ], 404);
+        if (!$item) {
+            return response()->json(['success' => false, 'message' => 'Not found'], 404);
         }
 
-        return response()->json([
-            'success' => true,
-            'data' => $group,
-        ]);
+        return response()->json($item);
     }
 
 
