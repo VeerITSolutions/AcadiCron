@@ -105,10 +105,26 @@ class FeeGroupsController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show($id)
     {
-        //
+        $group = DB::table('fee_groups')
+            ->select('id', 'name')
+            ->where('id', $id)
+            ->first();
+
+        if (!$group) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Fee group not found.',
+            ], 404);
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => $group,
+        ]);
     }
+
 
     /**
      * Show the form for editing the specified resource.

@@ -339,6 +339,7 @@ Route::post('/role/{id}', [RolesController::class, 'update']);
 
 
 Route::get('/fees-group', [FeeGroupsController::class, 'index']);
+Route::get('/fees-group/{id}', [FeeGroupsController::class, 'show']);
 Route::post('/fees-group', [FeeGroupsController::class, 'create']);
 Route::delete('/fees-group/{id}', [FeeGroupsController::class, 'destroy']);
 Route::post('/fees-group/{id}', [FeeGroupsController::class, 'update']);
