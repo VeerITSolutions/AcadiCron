@@ -164,6 +164,24 @@ class FeeGroupsFeetypeController extends Controller
 
             $FeeGroupsFeetype = FeeGroupsFeetype::findOrFail($id);
 
+
+            $fFeeSessionGroups = DB::table('fee_session_groups')
+                ->where('id', $FeeGroupsFeetype->fee_session_group_id)
+                ->first();
+            if ($fFeeSessionGroups) {
+                // Check if there are any other FeeGroupsFeetype records associated with this fee_session_group_id
+                $count = DB::table('fee_groups_feetype')
+                    ->where('fee_session_group_id', $FeeGroupsFeetype->fee_session_group_id)
+                    ->count();
+
+                // If no other records exist, delete the fee_session_group
+                if ($count <= 1) {
+                    DB::table('fee_session_groups')
+                        ->where('id', $FeeGroupsFeetype->fee_session_group_id)
+                        ->delete();
+                }
+            }
+
             $FeeGroupsFeetype->delete();
 
             return response()->json(['success' => true, 'message' => ' deleted successfully']);
