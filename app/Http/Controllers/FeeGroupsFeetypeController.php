@@ -114,14 +114,33 @@ class FeeGroupsFeetypeController extends Controller
     public function update(Request $request, string $id)
     {
         $validatedData = $request->all();
+        // Simulate `group_exists()` logic: fetch parent ID based on fee_groups_id
+        $feeSessionGroupId = DB::table('fee_session_groups')
+            ->where('fee_groups_id', $validatedData['fees_group'])
+            ->where('session_id', $validatedData['selectedSessionId'])
+            ->value('id');
+
+        if (empty($feeSessionGroupId)) {
+            $FeeGroupsFeetype = new FeeSessionGroups();
+
+            $FeeGroupsFeetype->fee_groups_id = $validatedData['fees_group'];
+            $FeeGroupsFeetype->session_id = $validatedData['selectedSessionId'];
+            $FeeGroupsFeetype->is_active = 'no'; // Default to 'no' if not provided
+            $FeeGroupsFeetype->save();
+            $feeSessionGroupId = $FeeGroupsFeetype->id; // Get the newly created ID
+        }
+
 
         $FeeGroupsFeetype = FeeGroupsFeetype::findOrFail($id);
+        $FeeGroupsFeetype->fee_session_group_id = $feeSessionGroupId;
+        $FeeGroupsFeetype->fee_groups_id = $validatedData['fees_group'];
+        $FeeGroupsFeetype->feetype_id = $validatedData['fees_type'];
+        $FeeGroupsFeetype->session_id = $validatedData['selectedSessionId'];
 
-        $FeeGroupsFeetype->feetype_id = $validatedData['feetype_id'];
         $FeeGroupsFeetype->due_date = $validatedData['due_date'];
         $FeeGroupsFeetype->amount = $validatedData['amount'];
         $FeeGroupsFeetype->fine_type = $validatedData['fine_type'];
-        $FeeGroupsFeetype->fine_percentage = $validatedData['fine_percentage'];
+        $FeeGroupsFeetype->fine_percentage = $validatedData['percentage'] ?? 0; // Default to 0 if not provided
         $FeeGroupsFeetype->fine_amount = $validatedData['fine_amount'];
 
 
