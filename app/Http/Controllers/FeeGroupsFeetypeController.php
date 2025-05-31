@@ -190,4 +190,32 @@ class FeeGroupsFeetypeController extends Controller
             return response()->json(['success' => false, 'message' => ' deletion failed: ' . $e->getMessage()], 500);
         }
     }
+
+    public function remove($id)
+    {
+        DB::beginTransaction();
+
+        try {
+            // Delete from fee_groups_feetype where fee_session_group_id matches
+            DB::table('fee_groups_feetype')
+                ->join('fee_session_groups', 'fee_session_groups.id', '=', 'fee_groups_feetype.fee_session_group_id')
+                ->where('fee_session_groups.id', $id)
+                ->delete();
+
+            // Delete the fee_session_group itself
+            DB::table('fee_session_groups')->where('id', $id)->delete();
+
+            // Log entry (adjust if using a log table)
+            $message = 'Deleted record from fee_session_groups with ID ' . $id;
+            $this->log($message, $id, 'Delete'); // Assuming you have a log() method
+
+            DB::commit();
+            return response()->json(['success' => true, 'message' => $message]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Delete failed: ' . $e->getMessage());
+
+            return response()->json(['success' => false, 'message' => 'Delete failed'], 500);
+        }
+    }
 }
