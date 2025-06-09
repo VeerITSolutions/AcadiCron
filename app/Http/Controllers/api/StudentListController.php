@@ -277,15 +277,53 @@ class StudentListController extends Controller
 
     public function assignstudentbulk(Request $request)
     {
+        $studentIds = $request->input('student_ids'); // selected in UI
+        $feeSessionGroupId = $request->input('fee_session_group_id');
 
-        $studentIds =    $request->all();
-        /*  foreach ($studentIds as $studentId) {
-            Students::where('id', $studentId)->delete();
-        } */
+        if (!$studentIds || !$feeSessionGroupId) {
+            return response()->json([
+                'status' => 400,
+                'message' => 'Missing required parameters.',
+            ], 400);
+        }
+
+        // Get existing assigned students
+        $existing = DB::table('student_fees_master')
+            ->where('fee_session_group_id', $feeSessionGroupId)
+            ->pluck('student_session_id')
+            ->toArray();
+
+        // Find new students to add
+        $toInsert = array_diff($studentIds, $existing);
+
+
+        // Find removed students to delete
+        $toDelete = array_diff($existing, $studentIds);
+
+        // Insert new records
+        foreach ($toInsert as $studentId) {
+            DB::table('student_fees_master')->insert([
+                'student_session_id' => $studentId,
+                'fee_session_group_id' => $feeSessionGroupId,
+                /*  'created_at' => now(),
+                'updated_at' => now(), */
+            ]);
+        }
+
+        // Delete removed records
+        if (!empty($toDelete)) {
+            DB::table('student_fees_master')
+                ->where('fee_session_group_id', $feeSessionGroupId)
+                ->whereIn('student_session_id', $toDelete)
+                ->delete();
+        }
 
         return response()->json([
-            'status' => 200
-        ], 200);
+            'status' => 200,
+            'message' => 'Fee group updated.',
+            'added' => array_values($toInsert),
+            'removed' => array_values($toDelete),
+        ]);
     }
 
     public function getdisableStudent(Request $request)
