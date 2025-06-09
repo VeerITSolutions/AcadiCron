@@ -61,7 +61,6 @@ class FeeSessionGroupsController extends Controller
         $perPage = (int) $request->input('perPage', 10);
         $session_id = $request->input('selectedSection');
         $id = $request->input('id');
-        $search = $request->input('search');
 
         $query = DB::table('fee_groups_feetype')
             ->select(
@@ -87,25 +86,18 @@ class FeeSessionGroupsController extends Controller
             $query->where('fee_groups_feetype.id', $id);
         }
 
-        if (!empty($search)) {
-            $query->where(function ($q) use ($search) {
-                $q->where('fee_groups.name', 'LIKE', '%' . $search . '%')
-                    ->orWhere('feetype.code', 'LIKE', '%' . $search . '%');
-            });
-        }
-
         $data = $query->orderBy('fee_groups_feetype.id', 'desc')
             ->paginate($perPage, ['*'], 'page', $page);
 
-        // Append feetypes_html to each record
-        $currency_symbol = '₹';
+        $currency_symbol = '₹'; // You can replace or fetch dynamically
 
         $items = collect($data->items())->map(function ($item) use ($currency_symbol) {
             $item->feetypes_html = $item->feetype_code . ' ' . $currency_symbol . $item->amount;
             return $item;
         });
 
-        $data = new \Illuminate\Pagination\LengthAwarePaginator(
+        // Re-create paginator with modified items
+        $paginatedData = new \Illuminate\Pagination\LengthAwarePaginator(
             $items,
             $data->total(),
             $data->perPage(),
@@ -115,13 +107,14 @@ class FeeSessionGroupsController extends Controller
 
         return response()->json([
             'success' => true,
-            'data' => $data->items(),
-            'totalCount' => $data->total(),
-            'rowsPerPage' => $data->lastPage(),
-            'currentPage' => $data->currentPage(),
+            'data' => $paginatedData->items(),
+            'total' => $paginatedData->total(),
+            'per_page' => $paginatedData->perPage(),
+            'current_page' => $paginatedData->currentPage(),
             'message' => 'Fee group feetype list fetched successfully',
         ]);
     }
+
 
     public function showSingle($id)
     {

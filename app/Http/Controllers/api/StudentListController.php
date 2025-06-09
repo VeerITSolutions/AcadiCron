@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Response;
 
+use Illuminate\Pagination\LengthAwarePaginator;
+
 class StudentListController extends Controller
 {
 
@@ -260,6 +262,150 @@ class StudentListController extends Controller
             'currentPage' => $paginatedData->currentPage(),
         ], 200);
     }
+
+
+    public function getDueStudentFees(Request $request)
+    {
+        $fee_groups_feetype_id = $request->input('selectedFeesGroup');
+
+        $feegroup_id = $request->input('selectedFeesGroup');
+
+        $class_id = $request->input('selectedClass');
+        $section_id = $request->input('selectedSection');
+
+        $session_id = session('selectedSessionId'); // or use your way to get current session
+        $perPage = $request->input('per_page', 10);
+        $page = $request->input('page', 1);
+
+        $query = DB::table('students')
+            ->selectRaw("
+            IFNULL(student_fees_deposite.id, 0) as student_fees_deposite_id,
+            IFNULL(student_fees_deposite.fee_groups_feetype_id, 0) as fee_groups_feetype_id,
+            IFNULL(student_fees_deposite.amount_detail, 0) as amount_detail,
+            student_fees_master.id as fee_master_id,
+            fee_groups_feetype.feetype_id,
+            fee_groups_feetype.amount,
+            fee_groups_feetype.due_date,
+            classes.id as class_id,
+            student_session.id as student_session_id,
+            students.id,
+            classes.class,
+            sections.id as section_id,
+            sections.section,
+            students.admission_no,
+            students.roll_no,
+            students.admission_date,
+            students.firstname,
+            students.middlename,
+            students.lastname,
+            students.image,
+            students.mobileno,
+            students.email,
+            students.state,
+            students.city,
+            students.pincode,
+            students.religion,
+            students.dob,
+            students.current_address,
+            students.permanent_address,
+            IFNULL(students.category_id, 0) as category_id,
+            IFNULL(categories.category, '') as category,
+            students.adhar_no,
+            students.samagra_id,
+            students.bank_account_no,
+            students.bank_name,
+            students.ifsc_code,
+            students.guardian_name,
+            students.guardian_relation,
+            students.guardian_phone,
+            students.guardian_address,
+            students.is_active,
+            students.created_at,
+            students.updated_at,
+            students.father_name,
+            students.rte,
+            students.gender
+        ")
+            ->join('student_session', 'student_session.student_id', '=', 'students.id')
+            ->join('classes', 'student_session.class_id', '=', 'classes.id')
+            ->join('sections', 'sections.id', '=', 'student_session.section_id')
+            ->leftJoin('categories', 'students.category_id', '=', 'categories.id')
+            ->join('student_fees_master', function ($join) use ($feegroup_id) {
+                $join->on('student_fees_master.student_session_id', '=', 'student_session.id')
+                    ->where('student_fees_master.fee_session_group_id', '=', $feegroup_id);
+            })
+            ->leftJoin('student_fees_deposite', function ($join) use ($fee_groups_feetype_id) {
+                $join->on('student_fees_deposite.student_fees_master_id', '=', 'student_fees_master.id')
+                    ->where('student_fees_deposite.fee_groups_feetype_id', '=', $fee_groups_feetype_id);
+            })
+            ->join('fee_groups_feetype', 'fee_groups_feetype.id', '=', DB::raw($fee_groups_feetype_id))
+            ->where('student_session.session_id', '=', $session_id)
+            ->where('students.is_active', '=', 'yes');
+
+        if (!empty($class_id)) {
+            $query->where('student_session.class_id', $class_id);
+        }
+
+        if (!empty($section_id)) {
+            $query->where('student_session.section_id', $section_id);
+        }
+
+        $results = $query->orderBy('students.id')->get();
+
+        // Parse amount_detail JSON and filter records
+        $filtered = collect($results)->map(function ($row) {
+            // Ensure $row is an object before accessing properties
+            if (!is_object($row)) {
+                return null;
+            }
+            $amt_due = $row->amount;
+            $row->amount_discount = 0;
+            $row->amount_fine = 0;
+
+            $details = json_decode($row->amount_detail, true);
+            if (!empty($details)) {
+                $amount_paid = 0;
+                $amount_discount = 0;
+                $amount_fine = 0;
+
+                foreach ($details as $entry) {
+                    $amount_paid += $entry['amount'] ?? 0;
+                    $amount_discount += $entry['amount_discount'] ?? 0;
+                    $amount_fine += $entry['amount_fine'] ?? 0;
+                }
+
+                if ($amt_due <= $amount_paid) {
+                    return null; // fully paid
+                }
+
+                $row->amount_detail = $amount_paid;
+                $row->amount_discount = $amount_discount;
+                $row->amount_fine = $amount_fine;
+            }
+
+            return $row;
+        })->filter(function ($row) {
+            // Filter out any non-object or null values
+            return is_object($row);
+        })->values();
+
+        // Manually paginate collection
+        $paginated = new LengthAwarePaginator(
+            $filtered->forPage($page, $perPage)->values(),
+            $filtered->count(),
+            $perPage,
+            $page
+        );
+
+        return response()->json([
+            'success' => true,
+            'data' => $paginated->items(),
+            'current_page' => $paginated->currentPage(),
+            'per_page' => $paginated->perPage(),
+            'total' => $paginated->total(),
+        ]);
+    }
+
 
 
     public function studentBlukDelete(Request $request)
