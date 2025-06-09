@@ -61,6 +61,7 @@ class FeeSessionGroupsController extends Controller
         $perPage = (int) $request->input('perPage', 10);
         $session_id = $request->input('selectedSection');
         $id = $request->input('id');
+        $search = $request->input('search');
 
         $query = DB::table('fee_groups_feetype')
             ->select(
@@ -86,18 +87,24 @@ class FeeSessionGroupsController extends Controller
             $query->where('fee_groups_feetype.id', $id);
         }
 
+        if (!empty($search)) {
+            $query->where(function ($q) use ($search) {
+                $q->where('fee_groups.name', 'LIKE', '%' . $search . '%')
+                    ->orWhere('feetype.code', 'LIKE', '%' . $search . '%');
+            });
+        }
+
         $data = $query->orderBy('fee_groups_feetype.id', 'desc')
             ->paginate($perPage, ['*'], 'page', $page);
 
         // Append feetypes_html to each record
-        $currency_symbol = '₹'; // Or fetch from settings/config if dynamic
+        $currency_symbol = '₹';
 
         $items = collect($data->items())->map(function ($item) use ($currency_symbol) {
             $item->feetypes_html = $item->feetype_code . ' ' . $currency_symbol . $item->amount;
             return $item;
         });
 
-        // Replace original items with modified items
         $data = new \Illuminate\Pagination\LengthAwarePaginator(
             $items,
             $data->total(),
@@ -114,6 +121,36 @@ class FeeSessionGroupsController extends Controller
             'currentPage' => $data->currentPage(),
             'message' => 'Fee group feetype list fetched successfully',
         ]);
+    }
+
+    public function showSingle($id)
+    {
+        $item = DB::table('fee_groups_feetype')
+            ->select(
+                'fee_groups_feetype.*',
+                'fee_groups.name as group_name',
+                'feetype.type as feetype_name',
+                'feetype.code as feetype_code',
+                'fee_session_groups.session_id'
+            )
+            ->join('feetype', 'feetype.id', '=', 'fee_groups_feetype.feetype_id')
+            ->join('fee_groups', 'fee_groups.id', '=', 'fee_groups_feetype.fee_groups_id')
+            ->join('fee_session_groups', function ($join) {
+                $join->on('fee_session_groups.id', '=', 'fee_groups_feetype.fee_session_group_id')
+                    ->on('fee_session_groups.fee_groups_id', '=', 'fee_groups_feetype.fee_groups_id');
+            })
+            ->where('fee_groups_feetype.id', $id)
+            ->first();
+
+        if (!$item) {
+            return response()->json(['success' => false, 'message' => 'Not found'], 404);
+        }
+
+        // Append feetypes_html for label
+        $currency_symbol = '₹';
+        $item->feetypes_html = $item->feetype_code . ' ' . $currency_symbol . $item->amount;
+
+        return response()->json($item);
     }
 
     /*  public function getFeeTypeByGroup($fee_session_group_id, $fee_group_id)
