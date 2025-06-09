@@ -275,6 +275,19 @@ class StudentListController extends Controller
         ], 200);
     }
 
+    public function assignstudentbulk(Request $request)
+    {
+
+        $studentIds =    $request->all();
+        /*  foreach ($studentIds as $studentId) {
+            Students::where('id', $studentId)->delete();
+        } */
+
+        return response()->json([
+            'status' => 200
+        ], 200);
+    }
+
     public function getdisableStudent(Request $request)
     {
         $page = $request->input('page', 1); // Default to page 1 if not provided

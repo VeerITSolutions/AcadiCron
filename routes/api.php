@@ -148,6 +148,7 @@ Route::get('/admin/expense', [IncomeController::class, 'adminExpense']);
 
 Route::match(['get', 'post'], '/admin/dtstudentlist', [StudentListController::class, 'searchdtByClassSection']);
 Route::post('/admin/deletestudentbulk', [StudentListController::class, 'studentBlukDelete']);
+Route::post('/admin/assignstudentbulk', [StudentListController::class, 'assignstudentbulk']);
 
 
 
