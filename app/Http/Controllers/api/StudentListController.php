@@ -113,6 +113,9 @@ class StudentListController extends Controller
         $selectedSection = $request->input('selectedSection');
         $keyword = $request->input('keyword');
         $bulkDelete = $request->input('bulkDelete', 0); // Default to 0 (no bulk delete)
+        $selectedCategory = $request->input('selectedCategory');
+        $selectedGender = $request->input('selectedGender');
+        $selectedRTE = $request->input('selectedRTE');
 
         /* attendacne */
         $attendance = $request->attendance;
@@ -208,6 +211,18 @@ class StudentListController extends Controller
 
         if (!empty($selectedSessionId)) {
             $query->where('student_session.session_id', $selectedSessionId);
+        }
+
+        if (!empty($selectedCategory)) {
+            $query->where('students.category_id', $selectedCategory);
+        }
+
+        if (!empty($selectedGender)) {
+            $query->where('students.gender', $selectedGender);
+        }
+
+        if (!empty($selectedRTE)) {
+            $query->where('students.rte', $selectedRTE);
         }
 
         // Apply keyword search filter
