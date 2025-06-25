@@ -136,12 +136,16 @@ class StudentFeesController extends Controller
         $studentfeesmaster = new StudentFeesMaster();
         $getdata = $studentfeesmaster->getDueFeeByFeeSessionGroupFeetype($fee_session_groups_id, $student_fees_master_id, $fee_groups_feetype_id);
 
-        $getdata = `<html>
-            <p>Hello</p>
-        </html>`;
+        $html = view('admin.feemaster.feesprint', [
+            'getdata' => $getdata,
+            'fee_session_groups_id' => $fee_session_groups_id,
+            'student_fees_master_id' => $student_fees_master_id,
+            'fee_groups_feetype_id' => $fee_groups_feetype_id
+        ])->render();
+
+        return response()->json($html);
 
 
-        return response()->json($getdata);
 
 
         // returns a single row
