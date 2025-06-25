@@ -126,6 +126,28 @@ class StudentFeesController extends Controller
     }
 
 
+    public function getDueFeeByFeeSessionGroupFeetype(Request $request)
+    {
+
+        $fee_session_groups_id = $request->input('fee_session_groups_id');
+        $student_fees_master_id = $request->input('student_fees_master_id');
+        $fee_groups_feetype_id = $request->input('fee_groups_feetype_id');
+
+        $studentfeesmaster = new StudentFeesMaster();
+        $getdata = $studentfeesmaster->getDueFeeByFeeSessionGroupFeetype($fee_session_groups_id, $student_fees_master_id, $fee_groups_feetype_id);
+
+        $getdata = `<html>
+            <p>Hello</p>
+        </html>`;
+
+
+        return response()->json($getdata);
+
+
+        // returns a single row
+    }
+
+
 
 
     /**

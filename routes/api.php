@@ -645,6 +645,9 @@ Route::delete('/studentfees/{id}', [StudentFeesController::class, 'destroy']);
 Route::post('/studentfees/{id}', [StudentFeesController::class, 'update']);
 
 
+Route::post('/student-fees-print-by-group', [StudentFeesController::class, 'getDueFeeByFeeSessionGroupFeetype']);
+
+
 Route::post('/calculate-balances', [StudentsController::class, 'calculateBalances']);
 
 Route::get('/approve-leave', [StudentApplyleaveController::class, 'index']);
