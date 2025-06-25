@@ -191,18 +191,6 @@ class StudentListController extends Controller
             ], 200);
         }
 
-
-        // Apply filters based on request parameters
-        if (!empty($id)) {
-            $query->where('students.id', $id);
-            $student = $query->first(); // Fetch single record without pagination
-
-            return response()->json([
-                'success' => true,
-                'data' => $student,
-            ], 200);
-        }
-
         if (!empty($selectedClass)) {
             $query->where('student_session.class_id', $selectedClass);
         }
@@ -234,6 +222,20 @@ class StudentListController extends Controller
                     ->orWhereRaw('CONCAT(students.firstname, " ", students.lastname) LIKE ?', ['%' . $keyword . '%']);
             });
         }
+
+
+        // Apply filters based on request parameters
+        if (!empty($id)) {
+            $query->where('students.id', $id);
+            $student = $query->first(); // Fetch single record without pagination
+
+            return response()->json([
+                'success' => true,
+                'data' => $student,
+            ], 200);
+        }
+
+
 
         // Order by students ID
         $query->orderBy('students.id', 'desc');
