@@ -68,12 +68,23 @@
         <img src="logo_url_here.png" alt="School Logo" class="logo">
     </div>
 
-    <div class="date">Date: <?php echo date('m-d-y'); ?></div>
+    <div class="date">Date: <?php echo date('d-m-y'); ?> <br />
+        @foreach ($deposits as $payloadItem)
+            <td>{{ $payloadItem['description'] ?? '-' }}</td>
+        @endforeach
+    </div>
+
 
     <div class="student-info">
-        <p><strong>Name:</strong> Aarohi Dani (0698)</p>
-        <p><strong>Father:</strong> Sameer Dani</p>
-        <p><strong>Class:</strong> Class 2 (Bright)</p>
+
+        @foreach ($student_details as $payloadItem)
+            <p><strong>Name:</strong> {{ $payloadItem['firstname'] ?? '-' }} {{ $payloadItem['lastname'] ?? '-' }} -
+                {{ $payloadItem['admission_no'] ?? '(' . $payloadItem['admission_no'] . ')' }}</p>
+            <p><strong>Father:</strong> {{ $payloadItem['father_name'] ?? '-' }}</p>
+            <p><strong>Class:</strong> {{ $payloadItem['class_name'] ?? '-' }} {{ $payloadItem['section_name'] ?? '-' }}
+            </p>
+        @endforeach
+
     </div>
 
     <table>
@@ -102,9 +113,12 @@
                     <td>{{ $payloadItem['due_date'] ?? '-' }}</td>
                     <td>{{ $payloadItem['paid'] ? 'Paid' : 'Unpaid' }}</td>
                     <td>₹{{ number_format($payloadItem['amount'] ?? 0, 2) }}</td>
-                    <td>{{ $payloadItem['payment_id'] ?? '-' }}</td>
-                    <td>{{ $payloadItem['mode'] ?? '-' }}</td>
-                    <td>{{ $payloadItem['date'] ?? '-' }}</td>
+                    @foreach ($deposits as $payloadItem)
+                        <td>{{ $payloadItem['amount'] ?? '-' }}</td>
+                        <td>{{ $payloadItem['payment_mode'] ?? '-' }}</td>
+                        <td>{{ $payloadItem['date'] ?? '-' }}</td>
+                    @endforeach
+
                     <td>₹{{ number_format($payloadItem['paid'] ?? 0, 2) }}</td>
                     <td>₹{{ number_format($payloadItem['fine'] ?? 0, 2) }}</td>
                     <td>₹{{ number_format($payloadItem['discount'] ?? 0, 2) }}</td>

@@ -132,6 +132,8 @@ class StudentFeesController extends Controller
         $student_fees_master_id = $request->input('student_fees_master_id');
         $fee_groups_feetype_id = $request->input('fee_groups_feetype_id');
         $payload = $request->input('payload');
+        $deposits = $request->input('deposits');
+        $student_details = $request->input('student_details');
 
         if (!is_array($payload)) {
             $payload = json_decode($payload, true);
@@ -140,6 +142,14 @@ class StudentFeesController extends Controller
         // Handle single object payloads
         if (!isset($payload[0]) || !is_array($payload[0])) {
             $payload = [$payload];
+        }
+
+        if (!isset($deposits[0]) || !is_array($deposits[0])) {
+            $deposits = [$deposits];
+        }
+
+        if (!isset($student_details[0]) || !is_array($student_details[0])) {
+            $student_details = [$student_details];
         }
 
         $getdata = (new StudentFeesMaster())->getDueFeeByFeeSessionGroupFeetype(
@@ -154,6 +164,8 @@ class StudentFeesController extends Controller
             'student_fees_master_id' => $student_fees_master_id,
             'fee_groups_feetype_id' => $fee_groups_feetype_id,
             'payload' => $payload,
+            'deposits' => $deposits,
+            'student_details' => $student_details,
         ])->render();
 
         return response()->json($html);
