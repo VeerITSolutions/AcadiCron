@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\FeeGroupsFeetype;
 use App\Models\StudentFees;
 use App\Models\StudentFeesMaster;
 use App\Models\StudentSession;
 use Illuminate\Http\Request; // Add this line
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\View;
 
 class StudentFeesController extends Controller
@@ -186,6 +188,73 @@ class StudentFeesController extends Controller
         );
 
         /*     return response()->json($html); */
+    }
+
+    public function addFeeGroup(Request $request)
+    {
+        /*  $validator = Validator::make($request->all(), [
+            'row_counter'    => 'required|array',
+            'collected_date' => 'required|date',
+        ], [], [
+            'row_counter'    => __('fees_list'),
+            'collected_date' => __('date'),
+        ]); */
+
+        /*  if ($validator->fails()) {
+            return response()->json([
+                'status' => 0,
+                'error' => $validator->errors(),
+            ]);
+        } */
+
+        $admin = Session::get('admin');
+        $collectedBy = ' Collected By: ' . ($admin['name'] ?? 'Admin');
+
+        $sendTo = $request->input('guardian_phone');
+        $email = $request->input('guardian_email');
+        $parentAppKey = $request->input('parent_app_key');
+        $studentSessionId = $request->input('student_session_id');
+
+        $rowCounter = $request->input('row_counter');
+        $collectedArray = [];
+
+        foreach ($rowCounter as $row) {
+            $jsonArray = [
+                'amount'          => $request->input("fee_amount_$row"),
+                'date'            => date('Y-m-d', strtotime($request->input('collected_date'))),
+                'description'     => $request->input('fee_gupcollected_note') . $collectedBy,
+                'amount_discount' => 0,
+                'amount_fine'     => $request->input("fee_groups_feetype_fine_amount_$row"),
+                'payment_mode'    => $request->input('payment_mode_fee'),
+                'received_by'     => $admin['id'],
+            ];
+
+            $collectedArray[] = [
+                'student_fees_master_id' => $request->input("student_fees_master_id_$row"),
+                'fee_groups_feetype_id'  => $request->input("fee_groups_feetype_id_$row"),
+                'amount_detail'          => $jsonArray,
+            ];
+        }
+
+        // Call service or model to save data
+        $depositedFees = app(StudentFeesMaster::class)->feeDepositCollections($collectedArray);
+        $feesRecord = json_decode($depositedFees, true);
+
+        /* foreach ($rowCounter as $index => $row) {
+            $feeGroup = app(FeeGroupsFeetype::class)->getFeeGroupByID($request->input("fee_groups_feetype_id_$row"));
+
+            $feeGroup->invoice = json_encode($feesRecord[$index]);
+            $feeGroup->contact_no = $sendTo;
+            $feeGroup->email = $email;
+            $feeGroup->parent_app_key = $parentAppKey;
+
+            app(MailSmsConf::class)->mailsms('fee_submission', $feeGroup);
+        }
+ */
+        return response()->json([
+            'status' => 1,
+            'error' => '',
+        ]);
     }
 
 
