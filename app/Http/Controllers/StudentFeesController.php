@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\StudentFees;
 use App\Models\StudentFeesMaster;
 use App\Models\StudentSession;
 use Illuminate\Http\Request; // Add this line
@@ -173,11 +174,15 @@ class StudentFeesController extends Controller
 
     public function getRestoreFeeSessionGroupFeetype(Request $request)
     {
-        $fee_session_groups_id = $request->input('fee_session_groups_id');
-        $student_fees_master_id = $request->input('student_fees_master_id');
+        $fees_id = $request->input('fees_id');
+        $deposits_id = $request->input('deposits_id');
+
+        $fees_model = new StudentFees();
+        $result = $fees_model->remove($fees_id, $deposits_id);
+
 
         return response()->json(
-            ['data' => $fee_session_groups_id]
+            ['data' => $fees_id]
         );
 
         /*     return response()->json($html); */
