@@ -128,27 +128,35 @@ class StudentFeesController extends Controller
 
     public function getDueFeeByFeeSessionGroupFeetype(Request $request)
     {
-
         $fee_session_groups_id = $request->input('fee_session_groups_id');
         $student_fees_master_id = $request->input('student_fees_master_id');
         $fee_groups_feetype_id = $request->input('fee_groups_feetype_id');
+        $payload = $request->input('payload');
 
-        $studentfeesmaster = new StudentFeesMaster();
-        $getdata = $studentfeesmaster->getDueFeeByFeeSessionGroupFeetype($fee_session_groups_id, $student_fees_master_id, $fee_groups_feetype_id);
+        if (!is_array($payload)) {
+            $payload = json_decode($payload, true);
+        }
+
+        // Handle single object payloads
+        if (!isset($payload[0]) || !is_array($payload[0])) {
+            $payload = [$payload];
+        }
+
+        $getdata = (new StudentFeesMaster())->getDueFeeByFeeSessionGroupFeetype(
+            $fee_session_groups_id,
+            $student_fees_master_id,
+            $fee_groups_feetype_id
+        );
 
         $html = view('admin.feemaster.feesprint', [
             'getdata' => $getdata,
             'fee_session_groups_id' => $fee_session_groups_id,
             'student_fees_master_id' => $student_fees_master_id,
-            'fee_groups_feetype_id' => $fee_groups_feetype_id
+            'fee_groups_feetype_id' => $fee_groups_feetype_id,
+            'payload' => $payload,
         ])->render();
 
         return response()->json($html);
-
-
-
-
-        // returns a single row
     }
 
 

@@ -68,7 +68,7 @@
         <img src="logo_url_here.png" alt="School Logo" class="logo">
     </div>
 
-    <div class="date">Date: 25-06-2025</div>
+    <div class="date">Date: <?php echo date('m-d-y'); ?></div>
 
     <div class="student-info">
         <p><strong>Name:</strong> Aarohi Dani (0698)</p>
@@ -78,6 +78,7 @@
 
     <table>
         <thead>
+
             <tr>
                 <th>Fees Group</th>
                 <th>Fees Code</th>
@@ -94,20 +95,24 @@
             </tr>
         </thead>
         <tbody>
-            <tr>
-                <td>Class 1 - Installment</td>
-                <td>At the time of Admission</td>
-                <td>30-06-2024</td>
-                <td>Unpaid</td>
-                <td>₹10000.00</td>
-                <td>-</td>
-                <td>-</td>
-                <td>-</td>
-                <td>₹0.00</td>
-                <td>₹0.00</td>
-                <td>₹0.00</td>
-                <td>₹10000.00</td>
-            </tr>
+            @foreach ($payload as $payloadItem)
+                <tr>
+                    <td>{{ $payloadItem['name'] ?? '-' }}</td>
+                    <td>{{ $payloadItem['code'] ?? '-' }}</td>
+                    <td>{{ $payloadItem['due_date'] ?? '-' }}</td>
+                    <td>{{ $payloadItem['paid'] ? 'Paid' : 'Unpaid' }}</td>
+                    <td>₹{{ number_format($payloadItem['amount'] ?? 0, 2) }}</td>
+                    <td>{{ $payloadItem['payment_id'] ?? '-' }}</td>
+                    <td>{{ $payloadItem['mode'] ?? '-' }}</td>
+                    <td>{{ $payloadItem['date'] ?? '-' }}</td>
+                    <td>₹{{ number_format($payloadItem['paid'] ?? 0, 2) }}</td>
+                    <td>₹{{ number_format($payloadItem['fine'] ?? 0, 2) }}</td>
+                    <td>₹{{ number_format($payloadItem['discount'] ?? 0, 2) }}</td>
+                    <td>₹{{ number_format($payloadItem['balance'] ?? 0, 2) }}</td>
+                </tr>
+            @endforeach
+
+
         </tbody>
     </table>
 
