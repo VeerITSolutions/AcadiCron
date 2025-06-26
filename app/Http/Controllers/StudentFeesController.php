@@ -171,6 +171,18 @@ class StudentFeesController extends Controller
         return response()->json($html);
     }
 
+    public function getRestoreFeeSessionGroupFeetype(Request $request)
+    {
+        $fee_session_groups_id = $request->input('fee_session_groups_id');
+        $student_fees_master_id = $request->input('student_fees_master_id');
+
+        return response()->json(
+            ['data' => $fee_session_groups_id]
+        );
+
+        /*     return response()->json($html); */
+    }
+
 
 
 
