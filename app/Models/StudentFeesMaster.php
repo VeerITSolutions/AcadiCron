@@ -82,4 +82,49 @@ class StudentFeesMaster extends Model
             ])
             ->first(); // returns a single row
     }
+
+
+
+    public function feeDepositCollectionsCIStyle(array $data): array
+    {
+        $collectedFees = [];
+
+        foreach ($data as $item) {
+            $masterId = $item['student_fees_master_id'];
+            $typeId   = $item['fee_groups_feetype_id'];
+            $detail   = $item['amount_detail'];
+
+            $existing = DB::table('student_fees_deposite')
+                ->where('student_fees_master_id', $masterId)
+                ->where('fee_groups_feetype_id', $typeId)
+                ->first();
+
+            if ($existing) {
+                $existingDetail = json_decode($existing->amount_detail, true) ?? [];
+                $invNo = empty($existingDetail) ? 1 : (max(array_keys($existingDetail)) + 1);
+
+                $detail['inv_no'] = $invNo;
+                $existingDetail[$invNo] = $detail;
+
+                DB::table('student_fees_deposite')
+                    ->where('id', $existing->id)
+                    ->update(['amount_detail' => json_encode($existingDetail)]);
+
+                $collectedFees[] = ['invoice_id' => $existing->id, 'sub_invoice_id' => $invNo];
+            } else {
+                $detail['inv_no'] = 1;
+                $dataToInsert = [
+                    'student_fees_master_id' => $masterId,
+                    'fee_groups_feetype_id'  => $typeId,
+                    'amount_detail'          => json_encode(['1' => $detail]),
+                ];
+
+                $newId = DB::table('student_fees_deposite')->insertGetId($dataToInsert);
+
+                $collectedFees[] = ['invoice_id' => $newId, 'sub_invoice_id' => 1];
+            }
+        }
+
+        return $collectedFees;
+    }
 }
