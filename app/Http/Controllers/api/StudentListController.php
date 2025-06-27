@@ -106,91 +106,28 @@ class StudentListController extends Controller
     }
     public function searchdtByClassSection(Request $request)
     {
-        // Extract request inputs with defaults
         $id = $request->input('id');
         $selectedSessionId = $request->input('selectedSessionId');
-        $page = $request->input('page'); // Check if page is present (null if not provided)
-        $perPage = (int) $request->input('perPage', 10); // Default to 10 records per page
+        $page = $request->input('page');
+        $perPage = (int) $request->input('perPage', 10);
         $selectedClass = $request->input('selectedClass');
         $selectedSection = $request->input('selectedSection');
         $keyword = $request->input('keyword');
-        $bulkDelete = $request->input('bulkDelete', 0); // Default to 0 (no bulk delete)
+        $bulkDelete = $request->input('bulkDelete', 0);
         $selectedCategory = $request->input('selectedCategory');
         $selectedGender = $request->input('selectedGender');
         $selectedRTE = $request->input('selectedRTE');
-
-        /* attendacne */
         $attendance = $request->attendance;
         $searchDate = $request->attendance_date;
+
         // Base query
-        $query = Students::join('student_session', 'student_session.student_id', '=', 'students.id')
+        $query = Students::query()
+            ->join('student_session', 'student_session.student_id', '=', 'students.id')
             ->join('classes', 'classes.id', '=', 'student_session.class_id')
             ->join('sections', 'sections.id', '=', 'student_session.section_id')
             ->leftJoin('categories', 'categories.id', '=', 'students.category_id');
-        if ($attendance) {
-            if ($searchDate) {
-                $query->leftJoin('student_attendences', function ($join) use ($searchDate) {
-                    $join->on('student_attendences.student_session_id', '=', 'student_session.id')
-                        ->where('student_attendences.date', '=', $searchDate); // Filter by attendance date
-                });
-            } else {
-                $query->leftJoin('student_attendences', 'student_attendences.student_session_id', '=', 'student_session.id');
-            }
-        }
-        if ($attendance) {
 
-            $query->select(
-                'students.*',
-                'student_session.class_id as class_id',
-                'student_session.section_id as section_id',
-                'classes.class as class_name',
-                'sections.section as section_name',
-                'categories.category as category_name',
-
-                'student_session.id as student_session_id',
-                'student_attendences.date as attendance_date',
-                'student_attendences.biometric_attendence as student_biometric_attendence',
-
-                'student_attendences.attendence_type_id as attendance_status',
-                'student_attendences.id as attendance_id',
-                'student_attendences.remark as attendance_note'
-            );
-            $query->where('students.is_active', 'yes');
-        } else {
-            $query->select(
-                'students.*',
-                'student_session.class_id as class_id',
-                'student_session.section_id as section_id',
-                'student_session.id as student_session_id',
-
-                'classes.class as class_name',
-                'sections.section as section_name',
-                'categories.category as category_name'
-            );
-            /*   $query->where('students.is_active', 'yes'); */
-        }
-
-
-
-        // Bulk delete logic
-        if ($bulkDelete == 1) {
-            // Apply filters for class, section, and session
-            if (!empty($selectedClass)) {
-                $query->where('student_session.class_id', $selectedClass);
-            }
-            if (!empty($selectedSection)) {
-                $query->where('student_session.section_id', $selectedSection);
-            }
-            if (!empty($selectedSessionId)) {
-                $query->where('student_session.session_id', $selectedSessionId);
-            }
-
-            return response()->json([
-                'success' => true,
-                'data' => $query->get(),
-            ], 200);
-        }
-
+        // Apply all filters first
         if (!empty($selectedClass)) {
             $query->where('student_session.class_id', $selectedClass);
         }
@@ -215,7 +152,6 @@ class StudentListController extends Controller
             $query->where('students.rte', $selectedRTE);
         }
 
-        // Apply keyword search filter
         if (!empty($keyword)) {
             $query->where(function ($q) use ($keyword) {
                 $q->where('students.firstname', 'like', '%' . $keyword . '%')
@@ -223,11 +159,17 @@ class StudentListController extends Controller
             });
         }
 
-
-        // Apply filters based on request parameters
         if (!empty($id)) {
             $query->where('students.id', $id);
-            $student = $query->first(); // Fetch single record without pagination
+            $student = $query->select(
+                'students.*',
+                'student_session.class_id',
+                'student_session.section_id',
+                'student_session.id as student_session_id',
+                'classes.class as class_name',
+                'sections.section as section_name',
+                'categories.category as category_name'
+            )->first();
 
             return response()->json([
                 'success' => true,
@@ -235,16 +177,57 @@ class StudentListController extends Controller
             ], 200);
         }
 
+        // If attendance is requested, join attendance table
+        if ($attendance) {
+            $query->leftJoin('student_attendences', function ($join) use ($searchDate) {
+                $join->on('student_attendences.student_session_id', '=', 'student_session.id');
+                if (!empty($searchDate)) {
+                    $join->where('student_attendences.date', '=', $searchDate);
+                }
+            });
 
+            $query->where('students.is_active', 'yes');
 
-        // Order by students ID
+            $query->select(
+                'students.*',
+                'student_session.class_id',
+                'student_session.section_id',
+                'student_session.id as student_session_id',
+                'classes.class as class_name',
+                'sections.section as section_name',
+                'categories.category as category_name',
+                'student_attendences.date as attendance_date',
+                'student_attendences.biometric_attendence as student_biometric_attendence',
+                'student_attendences.attendence_type_id as attendance_status',
+                'student_attendences.id as attendance_id',
+                'student_attendences.remark as attendance_note'
+            );
+        } else {
+            $query->select(
+                'students.*',
+                'student_session.class_id',
+                'student_session.section_id',
+                'student_session.id as student_session_id',
+                'classes.class as class_name',
+                'sections.section as section_name',
+                'categories.category as category_name'
+            );
+        }
+
+        // If bulk delete is requested, return data without pagination
+        if ($bulkDelete == 1) {
+            return response()->json([
+                'success' => true,
+                'data' => $query->get(),
+            ], 200);
+        }
+
+        // Order by latest student ID
         $query->orderBy('students.id', 'desc');
 
-        // Check if pagination is required
+        // If no pagination requested
         if (is_null($page)) {
-            // No pagination; return all data
             $data = $query->get();
-
             return response()->json([
                 'success' => true,
                 'data' => $data,
@@ -253,8 +236,8 @@ class StudentListController extends Controller
         }
 
         // Paginated response
-        $perPage = max(1, min($perPage, 100)); // Ensure valid perPage value
-        $paginatedData = $query->paginate($perPage, ['*'], 'page', (int) $page);
+        $perPage = max(1, min($perPage, 100));
+        $paginatedData = $query->paginate($perPage, ['*'], 'page', (int)$page);
 
         return response()->json([
             'success' => true,
@@ -264,6 +247,7 @@ class StudentListController extends Controller
             'currentPage' => $paginatedData->currentPage(),
         ], 200);
     }
+
 
 
     public function getDueStudentFees(Request $request)
