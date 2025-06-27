@@ -649,6 +649,8 @@ Route::post('/student-fees-print-by-group', [StudentFeesController::class, 'getD
 Route::post('/student-fees-restore-by-group', [StudentFeesController::class, 'getRestoreFeeSessionGroupFeetype']);
 Route::post('/student-fees-add-grp', [StudentFeesController::class, 'addFeeGroup']);
 
+Route::post('/student-fees-add-by-group', [StudentFeesController::class, 'addFeeGroupStudentByFeeSessionGroup']);
+
 
 Route::post('/calculate-balances', [StudentsController::class, 'calculateBalances']);
 

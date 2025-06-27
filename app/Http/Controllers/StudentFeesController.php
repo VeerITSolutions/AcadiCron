@@ -255,6 +255,52 @@ class StudentFeesController extends Controller
         return response()->json(['status' => 1, 'error' => '']);
     }
 
+    public function addFeeGroupStudentByFeeSessionGroup(Request $request)
+    {
+        $studentIds = $request->input('student_ids');
+        $feeSessionGroupId = $request->input('fee_session_groups');
+
+        if (empty($studentIds) || !$feeSessionGroupId) {
+            return response()->json([
+                'status' => 0,
+                'message' => 'Invalid data: Missing student_ids or fee_session_groups'
+            ], 422);
+        }
+
+        $collectedArray = [];
+
+        foreach ($studentIds as $studentId) {
+            $studentFeesMasterId = $request->input("student_fees_master_id_$studentId");
+
+            $collectedArray[] = [
+                'student_id'             => $studentId,
+                'fee_session_group_id'   => $feeSessionGroupId,
+                'student_fees_master_id' => $studentFeesMasterId,
+            ];
+        }
+
+        // You can now process this as needed — save, update, or forward to another service.
+        // Example: Create records if master ID is 0
+
+        foreach ($collectedArray as $item) {
+            if ((int) $item['student_fees_master_id'] === 0) {
+                // Create new student_fees_master entry
+                DB::table('student_fees_master')->insert([
+                    'student_session_id'    => $item['student_id'], // or session ID if needed
+                    'fee_session_group_id'  => $item['fee_session_group_id'],
+                    'amount'                => 0,
+                    'is_system'             => 0,
+                ]);
+            }
+        }
+
+        return response()->json([
+            'status' => 1,
+            'message' => 'Student fee records processed successfully.',
+            'processed_count' => count($collectedArray),
+        ]);
+    }
+
 
 
 
