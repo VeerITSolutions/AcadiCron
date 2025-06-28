@@ -258,19 +258,21 @@ class StudentFeesController extends Controller
     public function addFeeGroupStudentByFeeSessionGroup(Request $request)
     {
         $studentIds = $request->input('student_ids');
-        $feeSessionGroupId = $request->input('fee_session_groups');
+        $feeSessionGroupId = $request->input('fee_session_group_id');
 
         if (empty($studentIds) || !$feeSessionGroupId) {
             return response()->json([
                 'status' => 0,
-                'message' => 'Invalid data: Missing student_ids or fee_session_groups'
+                'message' => 'Invalid data: Missing student_ids or fee_session_group_id'
             ], 422);
         }
 
         $collectedArray = [];
 
         foreach ($studentIds as $studentId) {
-            $studentFeesMasterId = $request->input("student_fees_master_id_$studentId");
+            // You are NOT sending student_fees_master_id_$studentId
+            // So we assume it's 0 or you can query DB if needed
+            $studentFeesMasterId = 0; // default/fallback
 
             $collectedArray[] = [
                 'student_id'             => $studentId,
@@ -279,14 +281,11 @@ class StudentFeesController extends Controller
             ];
         }
 
-        // You can now process this as needed — save, update, or forward to another service.
-        // Example: Create records if master ID is 0
-
+        // Process entries where fees_master_id is 0 (i.e., new records)
         foreach ($collectedArray as $item) {
             if ((int) $item['student_fees_master_id'] === 0) {
-                // Create new student_fees_master entry
                 DB::table('student_fees_master')->insert([
-                    'student_session_id'    => $item['student_id'], // or session ID if needed
+                    'student_session_id'    => $item['student_id'], // use student_id directly
                     'fee_session_group_id'  => $item['fee_session_group_id'],
                     'amount'                => 0,
                     'is_system'             => 0,
