@@ -13,39 +13,44 @@ class EventsController extends Controller
      */
     public function index(Request $request)
     {
-        $page = $request->input('page'); 
-        $perPage = $request->input('perPage', 10);
-
-        $page = (int) $page;
-        $perPage = (int) $perPage;
+        $page = (int) $request->input('page', 1);
+        $perPage = (int) $request->input('perPage', 10);
 
         if ($perPage <= 0 || $perPage > 100) {
-            $perPage = 10; 
+            $perPage = 10;
         }
 
-        if($page == null){
-            $data = Events::orderBy('id', 'desc')->get();
+        $message = 'Events retrieved successfully';
+
+        if (!$request->has('page')) {
+            $data = DB::table('events')->orderBy('id', 'desc')->get();
+
             return response()->json([
                 'success' => true,
-                'data' => $data, 
-                'totalCount' => $data->count(), 
-                'rowsPerPage' => 1, 
+                'data' => $data,
+                'totalCount' => $data->count(),
+                'rowsPerPage' => 1,
                 'currentPage' => 1,
-                'message' => '',
+                'message' => $message,
             ], 200);
         }
-     
-        $data = Events::orderBy('id', 'desc')->paginate($perPage, ['*'], 'page', $page);
 
+        // Get total count
+        $totalCount = DB::table('events')->count();
 
-        $message = '';
+        // Get paginated data
+        $data = DB::table('events')
+            ->orderBy('id', 'desc')
+            ->offset(($page - 1) * $perPage)
+            ->limit($perPage)
+            ->get();
 
         return response()->json([
             'success' => true,
-            'data' => $data->Events(), 
-            'totalCount' => $data->total(), 
-            'rowsPerPage' => $data->lastPage(), 
-            'currentPage' => $data->currentPage(),
+            'data' => $data,
+            'totalCount' => $totalCount,
+            'rowsPerPage' => $perPage,
+            'currentPage' => $page,
             'message' => $message,
         ], 200);
     }
@@ -56,7 +61,7 @@ class EventsController extends Controller
     public function create(Request $request)
     {
         $validatedData = $request->all();
-    
+
         $Events = new Events();
         $Events->event_title = $validatedData['event_title'];
         $Events->event_description = $validatedData['event_description'];
@@ -67,19 +72,19 @@ class EventsController extends Controller
         $Events->event_for = $validatedData['event_for'];
         $Events->role_id = $validatedData['role_id'];
         $Events->is_active = $validatedData['is_active'];
-       
 
 
-    
+
+
         $Events->save();
-    
+
         return response()->json([
             'success' => true,
             'message' => 'Events saved successfully',
             'Events' => $Events,
         ], 201); // 201 Created status code
     }
-    
+
     /**
      * Store a newly created resource in storage.
      */
@@ -121,8 +126,8 @@ class EventsController extends Controller
         $Events->event_for = $validatedData['event_for'];
         $Events->role_id = $validatedData['role_id'];
         $Events->is_active = $validatedData['is_active'];
-        
-     
+
+
         $Events->update();
 
         return response()->json([
@@ -147,7 +152,7 @@ class EventsController extends Controller
 
             return response()->json(['success' => true, 'message' => 'Events Category  deleted successfully']);
         } catch (\Exception $e) {
-        
+
             return response()->json(['success' => false, 'message' => 'Leave type deletion failed: ' . $e->getMessage()], 500);
         }
     }
