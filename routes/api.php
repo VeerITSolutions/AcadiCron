@@ -93,6 +93,7 @@ use App\Http\Controllers\EcampusCicularController;
 use App\Http\Controllers\EcampusMessageController;
 use App\Http\Controllers\FeeGroupsFeetypeController;
 use App\Http\Controllers\FrontBannerImageController;
+use App\Http\Controllers\FrontEventsController;
 use App\Http\Controllers\FrontGalleryController;
 use App\Http\Controllers\FrontMediaGalleryController;
 use App\Http\Controllers\FrontNewsController;
@@ -740,10 +741,13 @@ Route::delete('/item-issue/{id}', [ItemIssueController::class, 'destroy']);
 Route::post('/item-issue/{id}', [ItemIssueController::class, 'update']);
 /* crm start */
 
-Route::get('/front-event', [EventsController::class, 'index']);
-Route::post('/front-event', [EventsController::class, 'create']);
-Route::delete('/front-event/{id}', [EventsController::class, 'destroy']);
-Route::post('/front-event/{id}', [EventsController::class, 'update']);
+
+
+
+Route::get('/front-event', [FrontEventsController::class, 'index']);
+Route::post('/front-event', [FrontEventsController::class, 'create']);
+Route::delete('/front-event/{id}', [FrontEventsController::class, 'destroy']);
+Route::post('/front-event/{id}', [FrontEventsController::class, 'update']);
 
 Route::get('/front-gallery', [FrontGalleryController::class, 'index']);
 Route::post('/front-gallery', [FrontGalleryController::class, 'create']);

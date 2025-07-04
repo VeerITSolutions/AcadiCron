@@ -8,5 +8,5 @@ use Illuminate\Database\Eloquent\Model;
 class FrontCmsPrograms extends Model
 {
     use HasFactory;
-    protected $table = 'sections';
+    protected $table = 'front_cms_programs';
 }
