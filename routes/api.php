@@ -92,6 +92,10 @@ use App\Http\Controllers\ClassworkController;
 use App\Http\Controllers\EcampusCicularController;
 use App\Http\Controllers\EcampusMessageController;
 use App\Http\Controllers\FeeGroupsFeetypeController;
+use App\Http\Controllers\FrontBannerImageController;
+use App\Http\Controllers\FrontGalleryController;
+use App\Http\Controllers\FrontMediaGalleryController;
+use App\Http\Controllers\FrontNewsController;
 use App\Http\Controllers\LessonController;
 use App\Http\Controllers\TopicController;
 use App\Http\Controllers\MultiClassStudentsController;
@@ -734,22 +738,50 @@ Route::get('/item-issue', [ItemIssueController::class, 'index']);
 Route::post('/item-issue', [ItemIssueController::class, 'create']);
 Route::delete('/item-issue/{id}', [ItemIssueController::class, 'destroy']);
 Route::post('/item-issue/{id}', [ItemIssueController::class, 'update']);
-
+/* crm start */
 
 Route::get('/front-event', [EventsController::class, 'index']);
 Route::post('/front-event', [EventsController::class, 'create']);
 Route::delete('/front-event/{id}', [EventsController::class, 'destroy']);
 Route::post('/front-event/{id}', [EventsController::class, 'update']);
 
+Route::get('/front-gallery', [FrontGalleryController::class, 'index']);
+Route::post('/front-gallery', [FrontGalleryController::class, 'create']);
+Route::delete('/front-gallery/{id}', [FrontGalleryController::class, 'destroy']);
+Route::post('/front-gallery/{id}', [FrontGalleryController::class, 'update']);
+
+
+Route::get('/front-news', [FrontNewsController::class, 'index']);
+Route::post('/front-news', [FrontNewsController::class, 'create']);
+Route::delete('/front-news/{id}', [FrontNewsController::class, 'destroy']);
+Route::post('/front-news/{id}', [FrontNewsController::class, 'update']);
+
+
+Route::get('/front-media-gallery', [FrontMediaGalleryController::class, 'index']);
+Route::post('/front-media-gallery', [FrontMediaGalleryController::class, 'create']);
+Route::delete('/front-media-gallery/{id}', [FrontMediaGalleryController::class, 'destroy']);
+Route::post('/front-media-gallery/{id}', [FrontMediaGalleryController::class, 'update']);
+
+
+Route::get('/front-menus', [FrontCmsMenusController::class, 'index']);
+Route::post('/front-menus', [FrontCmsMenusController::class, 'create']);
+Route::delete('/front-menus/{id}', [FrontCmsMenusController::class, 'destroy']);
+Route::post('/front-menus/{id}', [FrontCmsMenusController::class, 'update']);
+
+Route::get('/front-banner-image', [FrontBannerImageController::class, 'index']);
+Route::post('/front-banner-image', [FrontBannerImageController::class, 'create']);
+Route::delete('/front-banner-image/{id}', [FrontBannerImageController::class, 'destroy']);
+Route::post('/front-banner-image/{id}', [FrontBannerImageController::class, 'update']);
+
+
+
+/* crm end  */
 Route::get('/grades', [GradesController::class, 'index']);
 Route::post('/grades', [GradesController::class, 'create']);
 Route::delete('/grades/{id}', [GradesController::class, 'destroy']);
 Route::post('/grades/{id}', [GradesController::class, 'update']);
 
-Route::get('/frontcms-menus', [FrontCmsMenusController::class, 'index']);
-Route::post('/frontcms-menus', [FrontCmsMenusController::class, 'create']);
-Route::delete('/frontcms-menus/{id}', [FrontCmsMenusController::class, 'destroy']);
-Route::post('/frontcms-menus/{id}', [FrontCmsMenusController::class, 'update']);
+
 
 Route::get('/alumni-event', [AlumniEventsController::class, 'index']);
 Route::post('/alumni-event', [AlumniEventsController::class, 'create']);
