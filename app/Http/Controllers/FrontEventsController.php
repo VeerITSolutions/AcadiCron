@@ -65,16 +65,19 @@ class FrontEventsController extends Controller
 
         $Events = new FrontCmsPrograms();
         $Events->title = $validatedData['title'];
-        $Events->description = $validatedData['meta_description'];
-        $Events->meta_title = $validatedData['meta_title'];
-        $Events->meta_keyword = $validatedData['meta_keywords'];
+
         $Events->event_start = $validatedData['event_type'];
         $Events->event_end = $validatedData['event_color'];
         $Events->event_venue = $validatedData['venue'];
         $Events->feature_image = $validatedData['role_id'];
-        $Events->sidebar = $validatedData['is_active'];
-        $Events->type = $validatedData['is_active'];
+        $Events->sidebar = '1';
+        $Events->publish_date = '0000-00-00';
+        $Events->publish = '0';
+
+        $Events->is_active = 'no';
+        $Events->meta_title = $validatedData['meta_title'];
         $Events->meta_description = $validatedData['meta_description'];
+        $Events->meta_keyword = $validatedData['meta_keywords'];
 
 
 
