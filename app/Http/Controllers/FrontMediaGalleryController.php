@@ -61,13 +61,15 @@ class FrontMediaGalleryController extends Controller
      */
     public function create(Request $request)
     {
-        $validatedData = $request->validate();
+        $validatedData = $request->all();
 
         $media_type = $validatedData['type'];
         $imageSubfolder = 'gallery/media/';
         $cmsMediaGallery = null;
 
-        if ($media_type === 'image') {
+
+
+        if ($media_type == 'image') {
             $file = $request->file('file');
             $imageName = 'media_gallery_' . time();
             $file_path = 1; // Customize as needed
@@ -87,17 +89,18 @@ class FrontMediaGalleryController extends Controller
                 'vid_title'  => '',
             ]);
         } elseif ($media_type === 'video') {
-            // $cmsMediaGallery = FrontCmsMediaGallery::create([
-            //     'image'      => '',
-            //     'thumb_path' => '',
-            //     'dir_path'   => '',
-            //     'img_name'   => '',
-            //     'thumb_name' => '',
-            //     'file_type'  => $validatedData['file_type'] ?? '',
-            //     'file_size'  => $validatedData['file_size'] ?? '',
-            //     'vid_url'    => $validatedData['vid_url'],
-            //     'vid_title'  => $validatedData['vid_title'],
-            // ]);
+
+            $cmsMediaGallery = FrontCmsMediaGallery::create([
+                'image'      => '',
+                'thumb_path' => '',
+                'dir_path'   => '',
+                'img_name'   => '',
+                'thumb_name' => '',
+                'file_type'  => $validatedData['file_type'] ?? '',
+                'file_size'  => $validatedData['file_size'] ?? '',
+                'vid_url'    =>  $validatedData['video_url'],
+                'vid_title'  =>  $validatedData['video_url'],
+            ]);
         }
 
         return response()->json([
