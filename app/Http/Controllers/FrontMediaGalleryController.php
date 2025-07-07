@@ -63,22 +63,34 @@ class FrontMediaGalleryController extends Controller
     {
         $validatedData = $request->all();
 
-        $cmsMediaGallery = new FrontCmsMediaGallery();
-        $cmsMediaGallery->image = $validatedData['image'];
-        $cmsMediaGallery->thumb_path = $validatedData['thumb_path'];
-        $cmsMediaGallery->dir_path = $validatedData['dir_path'];
-        $cmsMediaGallery->img_name = $validatedData['img_name'];
-        $cmsMediaGallery->thumb_name = $validatedData['thumb_name'];
-        $cmsMediaGallery->created_at = now();
-        $cmsMediaGallery->file_type = $validatedData['file_type'];
-        $cmsMediaGallery->file_size = $validatedData['file_size'];
-        $cmsMediaGallery->vid_url = $validatedData['vid_url'];
-        $cmsMediaGallery->vid_title = $validatedData['vid_title'];
+        $media_type = $validatedData['type'];
+        if ($media_type == 'image') {
+            $validatedData['file'] = $request->file('file')->store('images', 'public');
+
+
+            $cmsMediaGallery = FrontCmsMediaGallery::create([
+                'image' => $validatedData['file'],
+                'thumb_path' => $validatedData['thumb_path'] ?? '',
+                'dir_path' => $validatedData['dir_path'] ?? '',
+                'img_name' => $validatedData['img_name'] ?? '',
+                'thumb_name' => $validatedData['thumb_name'] ?? '',
+                'file_type' => $validatedData['file_type'] ?? '',
+                'file_size' => $validatedData['file_size'] ?? '',
+                'vid_url' => $validatedData['vid_url'] ?? '',
+                'vid_title' => $validatedData['vid_title'] ?? '',
+            ]);
+        } elseif ($media_type == 'video') {
+            $cmsMediaGallery = new FrontCmsMediaGallery();
+            $cmsMediaGallery->image = $validatedData['file'];
 
 
 
 
-        $cmsMediaGallery->save();
+
+
+            $cmsMediaGallery->save();
+        }
+
 
         return response()->json([
             'success' => true,
@@ -86,6 +98,8 @@ class FrontMediaGalleryController extends Controller
             'Events' => $cmsMediaGallery,
         ], 201); // 201 Created status code
     }
+
+
 
     /**
      * Store a newly created resource in storage.
