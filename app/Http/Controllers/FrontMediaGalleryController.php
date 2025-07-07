@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Events;
+use App\Models\FrontCmsMediaGallery;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -23,7 +24,7 @@ class FrontMediaGalleryController extends Controller
         $message = 'Events retrieved successfully';
 
         if (!$request->has('page')) {
-            $data = DB::table('events')->orderBy('id', 'desc')->get();
+            $data = DB::table('front_cms_media_gallery')->orderBy('id', 'desc')->get();
 
             return response()->json([
                 'success' => true,
@@ -39,7 +40,7 @@ class FrontMediaGalleryController extends Controller
         $totalCount = DB::table('events')->count();
 
         // Get paginated data
-        $data = DB::table('events')
+        $data = DB::table('front_cms_media_gallery')
             ->orderBy('id', 'desc')
             ->offset(($page - 1) * $perPage)
             ->limit($perPage)
@@ -62,26 +63,27 @@ class FrontMediaGalleryController extends Controller
     {
         $validatedData = $request->all();
 
-        $Events = new Events();
-        $Events->event_title = $validatedData['event_title'];
-        $Events->event_description = $validatedData['event_description'];
-        $Events->start_date = $validatedData['start_date'];
-        $Events->end_date = $validatedData['end_date'];
-        $Events->event_type = $validatedData['event_type'];
-        $Events->event_color = $validatedData['event_color'];
-        $Events->event_for = $validatedData['event_for'];
-        $Events->role_id = $validatedData['role_id'];
-        $Events->is_active = $validatedData['is_active'];
+        $cmsMediaGallery = new FrontCmsMediaGallery();
+        $cmsMediaGallery->image = $validatedData['image'];
+        $cmsMediaGallery->thumb_path = $validatedData['thumb_path'];
+        $cmsMediaGallery->dir_path = $validatedData['dir_path'];
+        $cmsMediaGallery->img_name = $validatedData['img_name'];
+        $cmsMediaGallery->thumb_name = $validatedData['thumb_name'];
+        $cmsMediaGallery->created_at = now();
+        $cmsMediaGallery->file_type = $validatedData['file_type'];
+        $cmsMediaGallery->file_size = $validatedData['file_size'];
+        $cmsMediaGallery->vid_url = $validatedData['vid_url'];
+        $cmsMediaGallery->vid_title = $validatedData['vid_title'];
 
 
 
 
-        $Events->save();
+        $cmsMediaGallery->save();
 
         return response()->json([
             'success' => true,
-            'message' => 'Events saved successfully',
-            'Events' => $Events,
+            'message' => 'Media Gallery saved successfully',
+            'Events' => $cmsMediaGallery,
         ], 201); // 201 Created status code
     }
 
@@ -116,25 +118,26 @@ class FrontMediaGalleryController extends Controller
     {
         $validatedData = $request->all();
 
-        $Events = Events::findOrFail($id);
-        $Events->event_title = $validatedData['event_title'];
-        $Events->event_description = $validatedData['event_description'];
-        $Events->start_date = $validatedData['start_date'];
-        $Events->end_date = $validatedData['end_date'];
-        $Events->event_type = $validatedData['event_type'];
-        $Events->event_color = $validatedData['event_color'];
-        $Events->event_for = $validatedData['event_for'];
-        $Events->role_id = $validatedData['role_id'];
-        $Events->is_active = $validatedData['is_active'];
+        $cmsMediaGallery = FrontCmsMediaGallery::findOrFail($id);
 
+        $cmsMediaGallery->image = $validatedData['image'];
+        $cmsMediaGallery->thumb_path = $validatedData['thumb_path'];
+        $cmsMediaGallery->dir_path = $validatedData['dir_path'];
+        $cmsMediaGallery->img_name = $validatedData['img_name'];
+        $cmsMediaGallery->thumb_name = $validatedData['thumb_name'];
+        $cmsMediaGallery->created_at = now();
+        $cmsMediaGallery->file_type = $validatedData['file_type'];
+        $cmsMediaGallery->file_size = $validatedData['file_size'];
+        $cmsMediaGallery->vid_url = $validatedData['vid_url'];
+        $cmsMediaGallery->vid_title = $validatedData['vid_title'];
 
-        $Events->update();
+        $cmsMediaGallery->update();
 
         return response()->json([
 
             'success' => true,
-            'message' => 'Edit successfully',
-            'Events' => $Events,
+            'message' => 'Media Gallery successfully',
+            'Events' => $cmsMediaGallery,
         ], 200);
     }
 
@@ -146,7 +149,7 @@ class FrontMediaGalleryController extends Controller
     {
         try {
 
-            $Events = Events::findOrFail($id);
+            $Events = FrontCmsMediaGallery::findOrFail($id);
 
             $Events->delete();
 
