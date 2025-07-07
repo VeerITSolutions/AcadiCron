@@ -236,3 +236,5 @@ CREATE TABLE `personal_access_tokens` (
   `updated_at` TIMESTAMP NULL,
   INDEX `tokenable_type_tokenable_id_index` (`tokenable_type`, `tokenable_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+ALTER TABLE `front_cms_media_gallery` CHANGE `vid_url` `vid_url` TEXT CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL;
+ALTER TABLE `front_cms_media_gallery` CHANGE `vid_title` `vid_title` VARCHAR(250) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NULL DEFAULT NULL;

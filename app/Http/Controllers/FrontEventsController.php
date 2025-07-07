@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Events;
+use App\Models\FrontCmsMediaGallery;
 use App\Models\FrontCmsPrograms;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
+use Intervention\Image\Facades\Image;
 
 class FrontEventsController extends Controller
 {
@@ -61,35 +64,66 @@ class FrontEventsController extends Controller
      */
     public function create(Request $request)
     {
-        $validatedData = $request->all();
+        $validatedData = $request->validate([
+            'title' => 'required|string|max:255',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date',
+            'venue' => 'nullable|string|max:255',
+            'meta_title' => 'nullable|string|max:255',
+            'meta_description' => 'nullable|string',
+            'meta_keywords' => 'nullable|string',
+            'feature_image' => 'nullable|image|mimes:jpeg,jpg,png|max:2048',
+        ]);
 
         $Events = new FrontCmsPrograms();
         $Events->title = $validatedData['title'];
-
-        $Events->event_start = $validatedData['event_type'];
-        $Events->event_end = $validatedData['event_color'];
-        $Events->event_venue = $validatedData['venue'];
-        $Events->feature_image = $validatedData['role_id'];
+        $Events->event_start = $validatedData['start_date'];
+        $Events->event_end = $validatedData['end_date'];
+        $Events->event_venue = $validatedData['venue'] ?? '';
         $Events->sidebar = '1';
-        $Events->publish_date = '0000-00-00';
+        $Events->publish_date = now();
         $Events->publish = '0';
-
         $Events->is_active = 'no';
-        $Events->meta_title = $validatedData['meta_title'];
-        $Events->meta_description = $validatedData['meta_description'];
-        $Events->meta_keyword = $validatedData['meta_keywords'];
+        $Events->meta_title = $validatedData['meta_title'] ?? '';
+        $Events->meta_description = $validatedData['meta_description'] ?? '';
+        $Events->meta_keyword = $validatedData['meta_keywords'] ?? '';
 
+        // Upload the image using your helper
+        if ($request->hasFile('feature_image')) {
+            $file = $request->file('feature_image');
+            $imageName = 'media_gallery_' . time();
+            $imageSubfolder = 'gallery/media/';
+            $file_path = 1; // Customize this logic as needed
 
+            $storedPath = uploadImage($file, $imageName, $imageSubfolder, $file_path); // your helper
+            $filename = basename($storedPath);
 
+            // Save to media gallery table
+            $media = new FrontCmsMediaGallery();
+            $media->image = $filename;
+            $media->img_name = $filename;
+            $media->file_type = $file->getClientMimeType();
+            $media->file_size = $file->getSize();
+            $media->thumb_name = $filename;
+            $media->thumb_path = $imageSubfolder . '/'; // optional, adjust if needed
+            $media->dir_path = $imageSubfolder . '/';
+            $media->vid_url = '';
+            $media->created_at = now();
+            $media->save();
+
+            // Store image reference in event table
+            $Events->feature_image = $filename;
+        }
 
         $Events->save();
 
         return response()->json([
             'success' => true,
-            'message' => 'Events saved successfully',
+            'message' => 'Event saved successfully',
             'Events' => $Events,
-        ], 201); // 201 Created status code
+        ], 201);
     }
+
 
     /**
      * Store a newly created resource in storage.

@@ -9,4 +9,5 @@ class FrontCmsPrograms extends Model
 {
     use HasFactory;
     protected $table = 'front_cms_programs';
+    public $timestamps = false;
 }
