@@ -44,6 +44,7 @@ class SiteController extends Controller
     public function attendanceDashboard(Request $request)
     {
         $session_id = $request->sessionId;
+
         $attendances = DB::table('student_attendences')
             ->where('attendence_type_id', 1)
             ->whereDate('date', Carbon::today())
@@ -57,20 +58,43 @@ class SiteController extends Controller
         $totalstudent = DB::table('student_session')
             ->where('session_id', $session_id)
             ->count();
+
         $totalstaff = DB::table('staff')
             ->where('is_active', '1')
             ->count();
 
+        // Monthly collection logic
+        $firstDay = Carbon::now()->startOfMonth();
+        $today = Carbon::today();
+        $monthly_collection = 0;
 
-        // Return paginated data with pagination details
+        $records = DB::table('student_fees_deposite')->get();
+
+        foreach ($records as $record) {
+            $details = json_decode($record->amount_detail, true); // decode as array
+
+            if (is_array($details)) {
+                foreach ($details as $entry) {
+                    $entryDate = Carbon::parse($entry['date']);
+                    if ($entryDate->between($firstDay, $today)) {
+                        $amount   = (float) ($entry['amount'] ?? 0);
+                        $discount = (float) ($entry['amount_discount'] ?? 0);
+                        $fine     = (float) ($entry['amount_fine'] ?? 0);
+
+                        $monthly_collection += ($amount + $discount + $fine);
+                    }
+                }
+            }
+        }
+
         return response()->json([
             'success' => true,
-            'todayattendance' => $attendances, // Only return the current page data
+            'todayattendance' => $attendances,
             'totalstudents' => $totalstudent,
             'staffattendance' => $staffattendances,
             'totalstaff' => $totalstaff,
-            'current_date' => Carbon::today()->format('Y-m-d'),
-
+            'monthly_collection' => $monthly_collection,
+            'current_date' => $today->format('Y-m-d'),
         ], 200);
     }
 
