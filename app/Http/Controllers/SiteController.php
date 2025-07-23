@@ -12,6 +12,8 @@ use App\Models\FrontCmsPrograms;
 use App\Models\Staff;
 use App\Models\Students;
 use App\Models\User;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 
@@ -39,7 +41,38 @@ class SiteController extends Controller
     }
 
 
+    public function attendanceDashboard(Request $request)
+    {
+        $session_id = $request->sessionId;
+        $attendances = DB::table('student_attendences')
+            ->where('attendence_type_id', 1)
+            ->whereDate('date', Carbon::today())
+            ->count();
 
+        $staffattendances = DB::table('staff_attendance')
+            ->where('staff_attendance_type_id', 1)
+            ->whereDate('date', Carbon::today())
+            ->count();
+
+        $totalstudent = DB::table('student_session')
+            ->where('session_id', $session_id)
+            ->count();
+        $totalstaff = DB::table('staff')
+            ->where('is_active', '1')
+            ->count();
+
+
+        // Return paginated data with pagination details
+        return response()->json([
+            'success' => true,
+            'todayattendance' => $attendances, // Only return the current page data
+            'totalstudents' => $totalstudent,
+            'staffattendance' => $staffattendances,
+            'totalstaff' => $totalstaff,
+            'current_date' => Carbon::today()->format('Y-m-d'),
+
+        ], 200);
+    }
 
     public function dashboard(Request $request)
     {

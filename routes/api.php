@@ -306,6 +306,8 @@ Route::get('/admin/updater', [SiteController::class, 'adminUpdater']);
 
 
 
+Route::get('/dashboard', [SiteController::class, 'attendanceDashboard']);
+
 Route::get('/student/search', [SiteController::class, 'studentSearch']);
 Route::get('/studentfee', [SiteController::class, 'studentFee']);
 Route::get('/student/create', [SiteController::class, 'studentCreate']);
