@@ -268,35 +268,42 @@ class StudentFeesController extends Controller
         }
 
         $collectedArray = [];
+        $alreadyAssigned = [];
 
         foreach ($studentIds as $studentId) {
-            // You are NOT sending student_fees_master_id_$studentId
-            // So we assume it's 0 or you can query DB if needed
-            $studentFeesMasterId = 0; // default/fallback
+            // Check if the fee group is already assigned to the student
+            $exists = DB::table('student_fees_master')
+                ->where('student_session_id', $studentId)
+                ->where('fee_session_group_id', $feeSessionGroupId)
+                ->exists();
+
+            if ($exists) {
+                $alreadyAssigned[] = $studentId;
+                continue;
+            }
 
             $collectedArray[] = [
                 'student_id'             => $studentId,
                 'fee_session_group_id'   => $feeSessionGroupId,
-                'student_fees_master_id' => $studentFeesMasterId,
+                'student_fees_master_id' => 0, // assuming new record
             ];
         }
 
-        // Process entries where fees_master_id is 0 (i.e., new records)
+        // Insert only new entries
         foreach ($collectedArray as $item) {
-            if ((int) $item['student_fees_master_id'] === 0) {
-                DB::table('student_fees_master')->insert([
-                    'student_session_id'    => $item['student_id'], // use student_id directly
-                    'fee_session_group_id'  => $item['fee_session_group_id'],
-                    'amount'                => 0,
-                    'is_system'             => 0,
-                ]);
-            }
+            DB::table('student_fees_master')->insert([
+                'student_session_id'    => $item['student_id'],
+                'fee_session_group_id'  => $item['fee_session_group_id'],
+                'amount'                => 0,
+                'is_system'             => 0,
+            ]);
         }
 
         return response()->json([
             'status' => 1,
             'message' => 'Student fee records processed successfully.',
             'processed_count' => count($collectedArray),
+            'already_assigned' => $alreadyAssigned, // optional info
         ]);
     }
 
