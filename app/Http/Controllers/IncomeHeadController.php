@@ -14,21 +14,21 @@ class IncomeHeadController extends Controller
     public function index(Request $request)
     {
         $page = $request->input('page', 1);
-        $perPage = $request->input('perPage', 10); 
+        $perPage = $request->input('perPage', 10);
         $page = (int) $page;
         $perPage = (int) $perPage;
         if ($perPage <= 0 || $perPage > 100) {
-            $perPage = 10; 
+            $perPage = 10;
         }
         $data = IncomeHead::orderBy('id', 'desc')->paginate($perPage, ['*'], 'page', $page);
         $message = '';
 
         return response()->json([
             'success' => true,
-            'data' => $data->items(), 
+            'data' => $data->items(),
             'totalCount' => $data->total(),
-            'rowsPerPage' => $data->lastPage(), 
-            'currentPage' => $data->currentPage(), 
+            'rowsPerPage' => $data->lastPage(),
+            'currentPage' => $data->currentPage(),
             'message' => $message,
         ], 200);
     }
@@ -44,14 +44,14 @@ class IncomeHeadController extends Controller
         $incomeHeads = new IncomeHead();
         $incomeHeads->income_category = $validatedData['income_category'];
         $incomeHeads->description = $validatedData['description'];
-       
+
         $incomeHeads->save();
 
         return response()->json([
             'success' => true,
             'message' => 'Income  saved successfully',
             'incomeHeads' => $incomeHeads,
-        ], 201); 
+        ], 201);
     }
 
 
@@ -87,14 +87,14 @@ class IncomeHeadController extends Controller
         $validatedData = $request->all();
         $incomeHeads = IncomeHead::findOrFail($id);
         $incomeHeads->income_category = $validatedData['income_category'];
-        $incomeHeads->description = $validatedData['description'];
+        $incomeHeads->description = $validatedData['description'] ?? $incomeHeads->description;
         $incomeHeads->update();
 
         return response()->json([
             'success' => true,
             'message' => 'Edit successfully',
             'incomeHeads' => $incomeHeads,
-        ], 200); 
+        ], 200);
     }
 
 
