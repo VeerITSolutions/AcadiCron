@@ -181,6 +181,8 @@ class StudentListController extends Controller
         if ($attendance) {
             $query->leftJoin('student_attendences', function ($join) use ($searchDate) {
                 $join->on('student_attendences.student_session_id', '=', 'student_session.id');
+
+                // Only apply the date filter inside the join condition
                 if (!empty($searchDate)) {
                     $join->where('student_attendences.date', '=', $searchDate);
                 }
